@@ -1,5 +1,5 @@
 <template>
-    <h1>這是貼About</h1>
+    <h1>這是AboutUs</h1>
     <div class="p-6">
         <PostCard :post="samplePost" />
     </div>
