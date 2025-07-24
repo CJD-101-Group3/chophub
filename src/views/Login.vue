@@ -1,9 +1,8 @@
 <script setup>
+// Script 部分完全不需要修改，因為它只處理邏輯，與樣式無關
 import { ref } from 'vue';
 
-// 如果這是一個獨立頁面，可能不需要 emit，但保留它無害
 const emit = defineEmits(['submit']);
-
 const account = ref('');
 const password = ref('');
 
@@ -17,26 +16,36 @@ function handleSubmit() {
     password: password.value,
   };
   emit('submit', credentials);
-  // 在這裡可以加入實際的登入 API 請求
   console.log('表單已提交:', credentials);
 }
 </script>
 
 <template>
-  <!-- 👇👇👇 主要修改在這裡：這是整個頁面的容器 👇👇👇 -->
+  <!-- 頁面容器: 
+    手機上背景為淺灰，電腦上也是，這部分通常不需要改動 -->
   <div class="flex items-center justify-center min-h-screen bg-gray-50">
 
-    <!-- 這是表單本身的主要區塊 -->
-    <div class="max-w-sm w-full text-center p-6">
+    <!-- 表單主要區塊: 這是修改的核心 -->
+    <!-- 
+      手機 (預設): 佔滿寬度(w-full)、上下左右留一些邊距(p-4)。
+      電腦 (lg): 限制最大寬度(lg:max-w-sm)、變成白色卡片(lg:bg-white)、
+               增加陰影(lg:shadow-md)、增加圓角(lg:rounded-lg)、增加更多邊距(lg:p-8)。
+    -->
+    <div class="w-full p-4 text-center 
+                lg:max-w-sm  lg:p-8">
       
-      <!-- Logo -->
+      <!-- Logo: 手機上較小，電腦上較大 -->
       <div class="mx-auto mb-4">
-        <img src="/src/assets/blackLogo.png" alt="ChopHub Logo" class="w-[250px] h-[250px] mx-auto">
+        <!--
+          手機 (預設): 寬高設為 180px
+          電腦 (lg): 寬高恢復到 250px
+        -->
+        <img src="/src/assets/blackLogo.png" alt="ChopHub Logo" class="w-[180px] h-[180px] mx-auto 
+                                                                    lg:w-[250px] lg:h-[250px]">
       </div>
 
-
       <form @submit.prevent="handleSubmit" class="space-y-4">
-        <!-- 帳號輸入欄 -->
+        <!-- 帳號輸入欄: 這類輸入框的樣式通常在手機和電腦上通用，不需修改 -->
         <div>
           <input 
             v-model="account" 
@@ -47,7 +56,7 @@ function handleSubmit() {
           >
         </div>
         
-        <!-- 密碼輸入欄 -->
+        <!-- 密碼輸入欄: 同上，通用樣式不需修改 -->
         <div class="relative">
           <input 
             v-model="password" 
@@ -64,12 +73,16 @@ function handleSubmit() {
           </button>
         </div>
         
-        <!-- 忘記密碼連結 -->
-        <div class="text-left">
+        <!-- 忘記密碼連結: 手機上置中，電腦上靠左 -->
+        <!--
+          手機 (預設): 繼承父層的 text-center
+          電腦 (lg): 明確指定為 text-left
+        -->
+        <div class="text-center lg:text-left">
             <a href="#" class="text-sm text-gray-600 hover:text-orange-500 transition-colors">忘記密碼？</a>
         </div>
 
-        <!-- 登入按鈕 -->
+        <!-- 登入按鈕: 通用樣式不需修改 -->
         <button 
           type="submit" 
           class="w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-4 rounded-md 
@@ -78,10 +91,10 @@ function handleSubmit() {
           登入
         </button>
 
-        <!-- 立即註冊按鈕 -->
+        <!-- 立即註冊按鈕: 通用樣式不需修改 -->
         <button
           type="button"
-          class="w-full bg-white border border-[#F2994A] text-[#F2994A] hover: hover:border-[#e87a3a] hover:bg-[#E88C3A] hover:text-[#FFFFFF] font-bold py-3 px-4 rounded-md transition-colors duration-300 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+          class="w-full bg-white border border-[#F2994A] text-[#F2994A] hover:border-[#e87a3a] hover:bg-[#E88C3A] hover:text-[#FFFFFF] font-bold py-3 px-4 rounded-md transition-colors duration-300 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
         >
           立即註冊
         </button>
