@@ -1,5 +1,5 @@
 <template>
-    <h1>這是貼文區</h1>
+    <h1>這是貼文區1</h1>
     <div class="w-full h-80 bg-black"></div>
     <div class="w-full h-20 bg-red-200"></div>
 
