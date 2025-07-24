@@ -75,7 +75,7 @@ function handleSubmit() {
         <button 
           type="submit" 
           class="w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-4 rounded-md 
-                 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F2994A]"
+                 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E87A3A]"
         >
           登入
         </button>
@@ -83,8 +83,7 @@ function handleSubmit() {
         <!-- 立即註冊按鈕 -->
         <button
           type="button"
-          class="w-full bg-white border border-[#F2994A] text-[#F2994A] hover:bg-[#FFF3E6] font-bold py-3 px-4 rounded-md
-                 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F2994A]"
+          class="w-full bg-white border border-[#F2994A] text-[#F2994A] hover: hover:border-[#e87a3a] hover:text-[#e87a3a] font-bold py-3 px-4 rounded-md transition-colors duration-300 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
         >
           立即註冊
         </button>
