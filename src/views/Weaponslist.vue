@@ -1,5 +1,5 @@
 <template>
-    <h1>這是貼文區</h1>
+    <h1>這是貼文區1</h1>
     <div class="w-full h-80 bg-black"></div>
     <div class="w-full h-20 bg-red-200"></div>
 
@@ -43,14 +43,7 @@
 </template>
 
 <script setup>
-<<<<<<< HEAD
-    import { ref } from 'vue';
-    // 1. 引入 Card 元件
-    import Card from '../components/PostCard.vue'
-=======
 import { ref, onMounted, onBeforeUnmount } from 'vue'
->>>>>>> 93ade5814a8401187114b06cc8652d46f3c15d26
-
 const colors = [
   'bg-red-500',
   'bg-green-500',
