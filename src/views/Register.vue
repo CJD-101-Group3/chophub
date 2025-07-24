@@ -49,7 +49,7 @@ function handleSubmit() {
       
       <!-- Logo -->
       <div class="mx-auto mb-4">
-        <img src="/src/assets/logo.png" alt="ChopHub Logo" class="w-[250px] h-[250px] mx-auto">
+        <img src="/src/assets/blackLogo.png" alt="ChopHub Logo" class="w-[250px] h-[250px] mx-auto">
       </div>
 
       <!-- 👇 表單的 title 可以更新一下 👇-->
@@ -126,7 +126,7 @@ function handleSubmit() {
           註冊
         </button>
 
-        <!-- 這裡不再需要 "立即註冊" 按鈕，所以將它移除 -->
+        
         
       </form>
     </div>
