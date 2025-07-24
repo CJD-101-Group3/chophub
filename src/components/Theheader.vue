@@ -1,5 +1,6 @@
 <script setup>
 import logo from '@/src/assets/icon/LOGO.png'
+import Basebutton from '@/components/Basebutton.vue'
 </script>
 
 <template>
