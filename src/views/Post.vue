@@ -35,7 +35,7 @@
 <script setup>
 import { ref } from 'vue';
 // 1. 引入 Card 元件
-import Card from '../components/Card.vue'
+import Card from '@/components/Card.vue'
 
 // 2. 準備要顯示的資料陣列 (通常這些資料會來自後端 API)
 const posts = ref([
