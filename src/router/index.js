@@ -5,8 +5,9 @@ import About from '../views/AboutUs.vue'
 import Post from '../views/Post.vue'
 import Weaponslist from '../views/Weaponslist.vue'
 import Login from '../views/Login.vue'
-// import events from '../views/events.vue'
-// import EventPayment from '../views/EventPayment.vue'
+import events from '../views/events.vue'
+import EventPayment from '../views/EventPayment.vue'
+
 
 
 const routes = [
@@ -15,8 +16,8 @@ const routes = [
     { path: '/post', component: Post },
     { path: '/Weaponslist', component: Weaponslist },
     { path: '/Login', component: Login },
-    // { path: '/events', component: events},
-    // { path: '/EventPayment', component: EventPayment},
+    { path: '/events', component: events},
+    { path: '/EventPayment', component: EventPayment},
 ]
 
 const router = createRouter({

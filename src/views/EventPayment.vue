@@ -1,6 +1,6 @@
 <template>
   <!-- HTML 模板 -->
-   <Theheader />
+   <!-- <Theheader /> -->
    <main>
     <div>
         <h1 class=".h1">確認與繳費</h1>
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Theheader from '../components/Theheader.vue'
+// import Theheader from '../components/Theheader.vue'
 // JavaScript 邏輯
 </script>
 

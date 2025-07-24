@@ -1,13 +1,13 @@
 <template>
   <!-- HTML 模板 -->
-   <Theheader />
+   <!-- <Theheader /> -->
    <main>
     
    </main>
 </template>
 
 <script>
-import Theheader from '../components/Theheader.vue'
+// import Theheader from '../components/Theheader.vue'
 // JavaScript 邏輯
 </script>
 
