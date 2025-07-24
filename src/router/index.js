@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import About from '../views/AboutUs.vue'
 import Post from '../views/Post.vue'
 import Weaponslist from '../views/Weaponslist.vue'
+import Login from '../views/Login.vue'
 
 
 const routes = [
@@ -11,6 +12,7 @@ const routes = [
     { path: '/About', component: About },
     { path: '/post', component: Post },
     { path: '/Weaponslist', component: Weaponslist },
+    { path: '/Login', component: Login },
 ]
 
 const router = createRouter({
