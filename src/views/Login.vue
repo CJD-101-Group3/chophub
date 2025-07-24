@@ -31,7 +31,7 @@ function handleSubmit() {
       
       <!-- Logo -->
       <div class="mx-auto mb-4">
-        <img src="/src/assets/logo.png" alt="ChopHub Logo" class="w-[250px] h-[250px] mx-auto">
+        <img src="/src/assets/blackLogo.png" alt="ChopHub Logo" class="w-[250px] h-[250px] mx-auto">
       </div>
 
 
