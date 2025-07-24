@@ -30,11 +30,11 @@ function handleSubmit() {
     <div class="max-w-sm w-full text-center p-6">
       
       <!-- Logo -->
-      <div class="mx-auto mb-4 h-24">
-        <img src="/src/assets/logo.png" alt="ChopHub Logo" class="w-30 h-30 mx-auto">
+      <div class="mx-auto mb-4">
+        <img src="/src/assets/logo.png" alt="ChopHub Logo" class="w-[250px] h-[250px] mx-auto">
       </div>
 
-      
+
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <!-- 帳號輸入欄 -->
         <div>
@@ -81,7 +81,7 @@ function handleSubmit() {
         <!-- 立即註冊按鈕 -->
         <button
           type="button"
-          class="w-full bg-white border border-[#F2994A] text-[#F2994A] hover: hover:border-[#e87a3a] hover:text-[#e87a3a] font-bold py-3 px-4 rounded-md transition-colors duration-300 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+          class="w-full bg-white border border-[#F2994A] text-[#F2994A] hover: hover:border-[#e87a3a] hover:bg-[#E88C3A] hover:text-[#FFFFFF] font-bold py-3 px-4 rounded-md transition-colors duration-300 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
         >
           立即註冊
         </button>
