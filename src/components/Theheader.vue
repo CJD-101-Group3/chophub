@@ -10,7 +10,7 @@ import Basebutton from '@/components/Basebutton.vue'
         <!-- 導覽連結 -->
         <nav class="flex items-center space-x-6 text-white text-sm">
             <a href="#" class="hover:text-orange-400 transition">貼文區</a>
-            <a href="#" class="hover:text-orange-400 transition">武器展示區</a>
+            <a href="#" class="hover:text-orange-400 transition">武器展示1區</a>
             <a href="#" class="hover:text-orange-400 transition">活動專區</a>
             <a href="#" class="hover:text-orange-400 transition">關於我們</a>
         </nav>
