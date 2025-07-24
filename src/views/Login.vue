@@ -31,8 +31,7 @@ function handleSubmit() {
       
       <!-- Logo -->
       <div class="mx-auto mb-4 h-24">
-        <!-- 這裡放上您的 Logo 圖片或 SVG -->
-        <!-- <img src="/logo.svg" alt="ChopHub Logo" class="w-24 h-24 mx-auto"> -->
+        <img src="./src/assets/logo.png" alt="ChopHub Logo" class="w-24 h-24 mx-auto">
       </div>
 
       <h1 class="text-4xl font-bold text-gray-800 mb-8">ChopHub</h1>
