@@ -1,12 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+/* 預設不套字重，請根據需求使用 .font-semibold / .font-bold / .font-medium 等 */
 @layer base {
     body {
         @apply font-sans text-base leading-relaxed text-gray-800;
     }
-/* 預設不套字重，請根據需求使用 .font-semibold / .font-bold / .font-medium 等 */
+
     h1,
     h2,
     h3,
@@ -19,7 +19,6 @@
     h1 {
         font-size: 28px;
         line-height: 50.4px;
-
         @screen md {
             font-size: 56px;
             line-height: 78.4px;
@@ -29,7 +28,6 @@
     h2 {
         font-size: 36px;
         line-height: 39.2px;
-
         @screen md {
             line-height: 50.4px;
         }
@@ -38,7 +36,6 @@
     h3 {
         font-size: 24px;
         line-height: 33.6px;
-
         @screen md {
             font-size: 28px;
             line-height: 39.2px;
@@ -48,24 +45,76 @@
     h4 {
         font-size: 20px;
         line-height: 28px;
-
         @screen md {
             font-size: 24px;
             line-height: 33.6px;
         }
     }
 
-    h5 {
+    h5,
+    h6 {
         font-size: 16px;
         line-height: 22.4px;
+        @screen md {
+            font-size: 20px;
+            line-height: 28px;
+        }
+    }
+}
 
+/* components layer：用在 button、div 等非語意標籤上 */
+@layer components {
+    .h1 {
+        @apply font-heading;
+        font-size: 28px;
+        line-height: 50.4px;
+        @screen md {
+            font-size: 56px;
+            line-height: 78.4px;
+        }
+    }
+
+    .h2 {
+        @apply font-heading;
+        font-size: 36px;
+        line-height: 39.2px;
+        @screen md {
+            line-height: 50.4px;
+        }
+    }
+
+    .h3 {
+        @apply font-heading;
+        font-size: 24px;
+        line-height: 33.6px;
+        @screen md {
+            font-size: 28px;
+            line-height: 39.2px;
+        }
+    }
+
+    .h4 {
+        @apply font-heading;
+        font-size: 20px;
+        line-height: 28px;
+        @screen md {
+            font-size: 24px;
+            line-height: 33.6px;
+        }
+    }
+
+    .h5 {
+        @apply font-heading;
+        font-size: 16px;
+        line-height: 22.4px;
         @screen md {
             font-size: 20px;
             line-height: 28px;
         }
     }
 
-    h6 {
+    .h6 {
+        @apply font-heading;
         font-size: 16px;
         line-height: 22.4px;
     }
