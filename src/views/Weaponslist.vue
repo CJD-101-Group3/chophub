@@ -43,7 +43,13 @@
 </template>
 
 <script setup>
+<<<<<<< HEAD
+    import { ref } from 'vue';
+    // 1. 引入 Card 元件
+    import Card from '../components/PostCard.vue'
+=======
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+>>>>>>> 93ade5814a8401187114b06cc8652d46f3c15d26
 
 const colors = [
   'bg-red-500',
