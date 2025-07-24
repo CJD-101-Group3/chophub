@@ -8,6 +8,6 @@
 <script setup>
     import { ref } from 'vue';
     // 1. 引入 Card 元件
-    import Card from '../components/Card.vue'
+    import Card from '../components/PostCard.vue'
 
 </script>
