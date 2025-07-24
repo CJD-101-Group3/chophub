@@ -7,6 +7,7 @@ import Weaponslist from '../views/Weaponslist.vue'
 import Login from '../views/Login.vue'
 import events from '../views/events.vue'
 import EventPayment from '../views/EventPayment.vue'
+import Register from '../views/Register.vue'
 
 
 
@@ -18,6 +19,7 @@ const routes = [
     { path: '/Login', component: Login },
     { path: '/events', component: events},
     { path: '/EventPayment', component: EventPayment},
+    { path: '/Register', component: Register},
 ]
 
 const router = createRouter({
