@@ -52,14 +52,9 @@ function toggleStar() {
 </script>
 
 <template>
-  <!-- 
-    【RWD 優化】
-    - 移除了固定的 h-[685px]，讓卡片高度可以自適應內容。
-    - w-full md:w-[387px] 的設定保持不變，確保了寬度的響應式。
-  -->
   <div class="flex flex-col w-full md:w-[387px] bg-[#FEFEFE] rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2">
     
-    <!-- 圖片區塊 (維持不變) -->
+    <!-- 圖片區塊 -->
     <div class="relative">
       <img :src="postImage" alt="Post Image" class="w-full h-[280px] object-cover" />
       <img
@@ -78,69 +73,52 @@ function toggleStar() {
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-x-3">
           <img :src="smallUserIcon" alt="User" class="w-8 h-8" />
-          <!-- 
-            【Figma 樣式修改】使用者名稱
-            - color: #F2B94C
-            - font-size: 20px (text-xl)
-            - line-height: 28px (leading-7)
-            - letter-spacing: 0.8px
-          -->
           <span class="text-[#F2B94C] text-xl font-normal leading-7 tracking-[0.8px]">{{ userName }}</span>
         </div>
-        <button class="text-gray-400">
+        <!-- 
+          【終極萬用方案】移除所有 focus 和 hover 的預設視覺效果
+        -->
+        <button class="text-gray-400 
+          focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none 
+          hover:outline-none hover:ring-0 hover:border-transparent hover:shadow-none"
+        >
           <img :src="moreIcon" alt="More options" class="w-6 h-6" />
         </button>
       </div>
 
       <!-- 貼文標題 -->
       <div class="flex items-center gap-x-2 mb-3">
-        <!-- 
-          【Figma 樣式修改】主標題
-          - color: #F2994A
-          - font-size: 28px
-          - font-weight: 500 (font-medium)
-          - line-height: 39.2px
-          - letter-spacing: 1.12px
-        -->
         <h2 class="text-[#F2994A] text-[28px] font-medium leading-[39.2px] tracking-[1.12px]">{{ postTitle }}</h2>
         <img v-if="isHot" :src="fireIcon" alt="Hot Post" class="w-6 h-6" />
       </div>
      
       <!-- 貼文描述 -->
-      <!-- 
-        【Figma 樣式修改】內文
-        - color: #4F4F4F
-        - font-size: 16px (text-base)
-        - line-height: 22.4px
-        - letter-spacing: 0.64px
-      -->
       <p class="text-[#4F4F4F] text-base font-normal leading-[22.4px] tracking-[0.64px] mb-6">
         {{ description }}
       </p>
 
-      <!-- 撐開剩餘空間，讓後續的元素固定在底部 -->
+      <!-- 撐開剩餘空間 -->
       <div class="flex-grow"></div>
 
-      <!-- 按讚與收藏數 (維持不變) -->
+      <!-- 按讚與收藏數 -->
       <div class="flex justify-end items-center gap-x-6 mb-4 text-gray-500">
         <div class="flex items-center gap-x-2 cursor-pointer" @click="toggleLike">
           <img :src="smallLikeSrc" alt="Likes" class="w-6 h-6" />
-          <span>{{ localLikes }}</span>
+          <span class="w-8 text-left">{{ localLikes }}</span>
         </div>
         <div class="flex items-center gap-x-2 cursor-pointer" @click="toggleStar">
           <img :src="smallStarSrc" alt="Stars" class="w-6 h-6" />
-          <span>{{ localStars }}</span>
+          <span class="w-8 text-left">{{ localStars }}</span>
         </div>
       </div>
      
-      <!-- 查看更多按鈕 -->
       <!-- 
-        【Figma 樣式修改】按鈕
-        - background: #F2994A
-        - height: 65.5px (接近 65.492px)
-        - 移除 py-3.5，改用 flex + items-center + justify-center 來置中文字
+        【終極萬用方案】移除所有 focus 和 hover 的預設視覺效果
       -->
-      <button class="w-full bg-[#F2994A] text-[#ffffff] font-semibold rounded-lg text-lg h-[65.5px] flex items-center justify-center">
+      <button class="w-full bg-[#F2994A] text-[#ffffff] font-semibold rounded-lg text-lg h-[65.5px] flex items-center justify-center 
+        focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none 
+        hover:outline-none hover:ring-0 hover:border-transparent hover:shadow-none"
+      >
         查看更多
       </button>
 
