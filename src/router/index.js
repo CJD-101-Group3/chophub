@@ -9,6 +9,8 @@ import events from '../views/events.vue'
 import EventPayment from '../views/EventPayment.vue'
 import Register from '../views/Register.vue'
 import MainPage from '@/views/MainPage.vue'
+import PaymentSuccess from '@/views/PaymentSuccess.vue'
+import EventReview from '@/views/EventReview.vue'
 
 
 
@@ -22,6 +24,10 @@ const routes = [
     { path: '/EventPayment', component: EventPayment},
     { path: '/Register', component: Register},
     { path: '/MainPage', component: MainPage},
+    { path: '/PaymentSuccess', component: PaymentSuccess},
+    { path: '/EventReview', component: EventReview},
+
+
 ]
 
 const router = createRouter({
