@@ -17,6 +17,11 @@ import OtherSettings from '@/views/OtherSettings.vue'
 import EditProfile from '@/views/EditProfile.vue'
 import UserCollections from '@/views/UserCollections.vue'
 import MyActivities from '@/views/MyActivities.vue'
+import MyEvents from '../views/MyEvents.vue'
+import EventDetail from '../views/EventDetail.vue'
+import EventDetailRegistered from '../views/EventDetailRegistered.vue'
+import EventHomePage from '../views/EventHomePage.vue'
+import EventReviewsOverview from '../views/EventReviewsOverview.vue'
 
 
 
@@ -39,7 +44,11 @@ const routes = [
     { path: '/EditProfile', component: EditProfile},
     { path: '/UserCollections', component: UserCollections},
     { path: '/MyActivities', component: MyActivities},
-
+    { path: '/MyEvents', component: MyEvents},
+    { path: '/EventDetail', component: EventDetail},
+    { path: '/EventDetailRegistered', component: EventDetailRegistered},
+    { path: '/EventHomePage', component: EventHomePage},
+    { path: '/EventReviewsOverview', component: EventReviewsOverview},
 
 ]
 

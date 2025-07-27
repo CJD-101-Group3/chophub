@@ -1,6 +1,6 @@
 <template>
   <div class="bg-[#282828] text-white p-8 shadow-2xl">
-    <h2 class="h3 font-bold text-center mb-8 md:h2">活動回饋評論填寫</h2>
+    <h2 class="h3 font-bold text-center mt-8 mb-8 md:h2">活動回饋評論填寫</h2>
     
     <form @submit.prevent="handleSubmit" class="space-y-8">
       
@@ -28,7 +28,7 @@
       <!-- 2. 內容符合期待 -->
       <div class="space-y-3">
         <label class="text-lg font-medium text-white">活動內容是否符合期待</label>
-        <div class="flex flex-wrap gap-x-6 gap-y-2">
+        <div class="flex flex-col md:flex-row flex-wrap gap-x-6 gap-y-2">
           <label class="flex items-center space-x-2 cursor-pointer">
             <input type="radio" v-model="expectations" value="very-satisfied" name="expectations" class="hidden peer">
             <span class="w-5 h-5 border-2 border-gray-500 rounded-full peer-checked:bg-orange-500 peer-checked:border-orange-500 transition-all"></span>
@@ -60,7 +60,7 @@
       <!-- 3. 流程順暢度 -->
       <div class="space-y-3">
         <label class="text-lg font-medium text-white">活動流程順暢度 (1為最低分, 5為最高分)</label>
-        <div class="flex flex-wrap gap-x-6 gap-y-2">
+        <div class="flex flex-col md:flex-row flex-wrap gap-x-6 gap-y-2">
             <label class="flex items-center space-x-2 cursor-pointer">
               <input type="radio" v-model="flow" value="5" name="flow" class="hidden peer">
               <span class="w-5 h-5 border-2 border-gray-500 rounded-full peer-checked:bg-orange-500 peer-checked:border-orange-500 transition-all"></span>
@@ -92,7 +92,7 @@
       <!-- 4. 講師表現 -->
       <div class="space-y-3">
         <label class="text-lg font-medium text-white">對講師/刀匠表現的評價 (1為最低分, 5為最高分)</label>
-        <div class="flex flex-wrap gap-x-6 gap-y-2">
+        <div class="flex flex-col md:flex-row flex-wrap gap-x-6 gap-y-2">
             <label class="flex items-center space-x-2 cursor-pointer">
               <input type="radio" v-model="speakerPerformance" value="5" name="speaker" class="hidden peer">
               <span class="w-5 h-5 border-2 border-gray-500 rounded-full peer-checked:bg-orange-500 peer-checked:border-orange-500 transition-all"></span>
@@ -176,12 +176,12 @@
 
       <!-- 提交按鈕 -->
         <div class="flex items-center justify-center py-5">
-          <basebutton class="w-36">提交評論</basebutton>
+          <basebutton class="w-[150px]">提交評論</basebutton>
       </div>
 
       
       <!-- 免責聲明 -->
-      <p class="text-left pt-2">
+      <p class="text-left flex justify-center pt-2">
         感謝您參加本次活動！<br>本問卷僅用於活動內容優化與品質提升，不會對外公開您的個人資料或評論內容。<br>您的意見將幫助我們設計更適合您的活動與體驗，謝謝支持！
       </p>
 
@@ -225,7 +225,6 @@ const handleSubmit = () => {
   
   alert('感謝您的回饋！');
   
-  // 在這裡，您可以將 formData 發送到您的後端伺服器
-  // 例如使用 fetch() 或 axios
+  // 使用 fetch() 或 axios可將 formData 發送到您的後端伺服器
 };
 </script>
