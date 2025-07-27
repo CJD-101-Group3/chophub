@@ -12,6 +12,7 @@ import MainPage from '@/views/MainPage.vue'
 import PaymentSuccess from '@/views/PaymentSuccess.vue'
 import EventReview from '@/views/EventReview.vue'
 import UserProfile from '@/views/UserProfile.vue'
+import ApplicationGuide from '@/views/ApplicationGuide.vue'
 
 
 
@@ -29,6 +30,7 @@ const routes = [
     { path: '/PaymentSuccess', component: PaymentSuccess},
     { path: '/EventReview', component: EventReview},
     { path: '/UserProfile', component: UserProfile},
+    { path: '/ApplicationGuide', component: ApplicationGuide},
 
 
 ]
