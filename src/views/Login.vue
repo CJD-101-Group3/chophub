@@ -2,12 +2,8 @@
 // 引入其他組件
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
-import basebutton from '../components/Basebutton.vue';
+import Basebutton from '../components/Basebutton.vue';
 
-
-
-
-// Script 部分完全不需要修改，因為它只處理邏輯，與樣式無關
 import { ref } from 'vue';
 
 const emit = defineEmits(['submit']);
@@ -26,36 +22,19 @@ function handleSubmit() {
   emit('submit', credentials);
   console.log('表單已提交:', credentials);
 }
-
-
-
-
 </script>
-
-
-
-
 
 <template>
   <div class="flex flex-col min-h-screen bg-gray-50">
     <Theheader />
 
-    <!-- 內容區塊 flex-1，讓內容自動填滿剩餘空間 -->
     <div class="flex-1 flex items-center justify-center">
-      <div class="w-full p-4 text-center lg:max-w-sm lg:p-8">
-        
-        <!-- Logo: 手機上較小，電腦上較大 -->
+      <div class="w-11/12 max-w-xs p-4 text-center lg:max-w-sm lg:p-8">
         <div class="mx-auto mb-4">
-          <!--
-            手機 (預設): 寬高設為 180px
-            電腦 (lg): 寬高恢復到 250px
-          -->
-          <img src="/src/assets/blackLogo.png" alt="ChopHub Logo" class="w-[200px] h-[200px] mx-auto 
-                                                                      lg:w-[250px] lg:h-[250px]">
+          <img src="/src/assets/blackLogo.png" alt="ChopHub Logo" class="w-[200px] h-[200px] mx-auto lg:w-[250px] lg:h-[250px]">
         </div>
 
         <form @submit.prevent="handleSubmit" class="space-y-4">
-          <!-- 帳號輸入欄: 這類輸入框的樣式通常在手機和電腦上通用，不需修改 -->
           <div>
             <input 
               v-model="account" 
@@ -65,8 +44,6 @@ function handleSubmit() {
                      focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"
             >
           </div>
-          
-          <!-- 密碼輸入欄: 同上，通用樣式不需修改 -->
           <div class="relative">
             <input 
               v-model="password" 
@@ -82,32 +59,13 @@ function handleSubmit() {
               </svg>
             </button>
           </div>
-          
-          <!-- 忘記密碼連結: 手機上置中，電腦上靠左 -->
-          <!--
-            手機 (預設): 繼承父層的 text-center
-            電腦 (lg): 明確指定為 text-left
-          -->
           <div class="text-center lg:text-left">
-              <a href="#" class="text-sm text-gray-600 hover:text-orange-500 transition-colors">忘記密碼？</a>
+            <a href="#" class="text-sm text-gray-600 hover:text-orange-500 transition-colors">忘記密碼？</a>
           </div>
 
-          <!-- 登入按鈕: 通用樣式不需修改 -->
-          <button 
-            type="submit" 
-            class="w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-4 rounded-md 
-                   transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E87A3A]"
-          >
-            登入
-          </button>
-
-          <!-- 立即註冊按鈕: 通用樣式不需修改 -->
-          <button
-            type="button"
-            class="w-full bg-white border border-[#F2994A] text-[#F2994A] hover:border-[#e87a3a] hover:bg-[#E88C3A] hover:text-[#FFFFFF] font-bold py-3 px-4 rounded-md transition-colors duration-300 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
-          >
-            立即註冊
-          </button>
+          <!-- 用 Basebutton -->
+          <Basebutton type="submit">登入</Basebutton>
+          <Basebutton type="button" @click="$router.push('/register')">立即註冊</Basebutton>
         </form>
       </div>
     </div>
