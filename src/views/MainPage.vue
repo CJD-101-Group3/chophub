@@ -3,6 +3,7 @@ import Theheader from '@/components/Theheader.vue'
 import Thefooter from '@/components/Thefooter.vue'
 import PageButton from '@/components/PageButton.vue'
 import { ref } from 'vue'
+import DropDown from '../components/DropDown.vue'
 
 const currentPage = ref(1)
 
@@ -22,5 +23,6 @@ const goToPage = (page) => {
             :isActive="currentPage === page"
             @click="goToPage(page)" />
     </div>
+    <DropDown/>
     <Thefooter />
 </template>
