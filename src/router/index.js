@@ -24,6 +24,7 @@ import EventHomePage from '../views/EventHomePage.vue'
 import EventReviewsOverview from '../views/EventReviewsOverview.vue'
 import EditArtisanProfile from '../views/EditArtisanProfile.vue'
 import ArtisanShowcase from '../views/ArtisanShowcase.vue'
+import PostActivity from '../views/PostActivity.vue'
 
 
 
@@ -53,6 +54,7 @@ const routes = [
     { path: '/EventReviewsOverview', component: EventReviewsOverview},
     { path: '/EditArtisanProfile', component: EditArtisanProfile},
     { path: '/ArtisanShowcase', component: ArtisanShowcase},
+    { path: '/PostActivity', component: PostActivity},
 
 ]
 
