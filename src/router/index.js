@@ -22,6 +22,8 @@ import EventDetail from '../views/EventDetail.vue'
 import EventDetailRegistered from '../views/EventDetailRegistered.vue'
 import EventHomePage from '../views/EventHomePage.vue'
 import EventReviewsOverview from '../views/EventReviewsOverview.vue'
+import EditArtisanProfile from '../views/EditArtisanProfile.vue'
+import ArtisanShowcase from '../views/ArtisanShowcase.vue'
 
 
 
@@ -49,6 +51,8 @@ const routes = [
     { path: '/EventDetailRegistered', component: EventDetailRegistered},
     { path: '/EventHomePage', component: EventHomePage},
     { path: '/EventReviewsOverview', component: EventReviewsOverview},
+    { path: '/EditArtisanProfile', component: EditArtisanProfile},
+    { path: '/ArtisanShowcase', component: ArtisanShowcase},
 
 ]
 

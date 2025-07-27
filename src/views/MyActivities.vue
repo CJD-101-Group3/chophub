@@ -2,12 +2,13 @@
 import { ref, computed } from 'vue';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
+import activity1 from '@/assets/activities/activities1.png'; // 這行是關鍵
 
 // --- Layout State ---
 const isDropdownOpen = ref(false);
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
 
-const activeTab = ref('我的活動'); // Set sidebar active tab
+const activeTab = ref('我的活動');
 const menuItems = ref([
   { name: '會員資訊', href: '#' },
   { name: '貼文相關', href: '#' },
@@ -23,25 +24,24 @@ const memberInfo = ref({
 
 // --- Page-specific State & Logic ---
 
-// 1. Content Tabs
 const contentTabs = ['已報名', '未完成', '已取消', '收藏'];
-const activeContentTab = ref('已報名'); // Default content tab
+const activeContentTab = ref('已報名');
 
-// 2. All Activities Data (Simulated)
+// ** 修改點 3: 統一所有活動的圖片路徑 **
 const allActivities = ref([
-  { id: 1, title: '【鍛造群俠會】刀匠線上交流', type: '線上活動', date: '2025/7/23(三) 10:00am', imageUrl: '/src/assets/activities/activity1.jpg', status: '已報名' },
-  { id: 2, title: '【古兵器講座】羅馬短劍的歷史', type: '線上活動', date: '2025/8/15(五) 19:30pm', imageUrl: '/src/assets/activities/activity2.jpg', status: '已報名' },
-  { id: 3, title: '【新手入門】保養你的第一把刀', type: '線下活動', date: '2025/6/10(二) 14:00pm', imageUrl: '/src/assets/activities/activity3.jpg', status: '已完成' },
-  { id: 4, title: '【年度拍賣會】稀有藏品預覽', type: '線上活動', date: '2025/4/01(一) 09:00am', imageUrl: '/src/assets/activities/activity4.jpg', status: '已取消' },
-  { id: 5, title: '【鍛造群俠會】刀匠線上交流', type: '線上活動', date: '2025/7/23(三) 10:00am', imageUrl: '/src/assets/activities/activity1.jpg', status: '收藏' },
+  { id: 1, title: '【鍛造群俠會】刀匠線上交流', type: '線上活動', date: '2025/7/23(三) 10:00am', imageUrl: activity1, status: '已報名' },
+  { id: 2, title: '【古兵器講座】羅馬短劍的歷史', type: '線上活動', date: '2025/8/15(五) 19:30pm', imageUrl: activity1, status: '已報名' },
+  { id: 3, title: '【新手入門】保養你的第一把刀', type: '線下活動', date: '2025/6/10(二) 14:00pm', imageUrl: activity1, status: '已完成' },
+  { id: 4, title: '【年度拍賣會】稀有藏品預覽', type: '線上活動', date: '2025/4/01(一) 09:00am', imageUrl: activity1, status: '已取消' },
+  { id: 5, title: '【鍛造群俠會】刀匠線上交流', type: '線上活動', date: '2025/7/23(三) 10:00am', imageUrl: activity1, status: '收藏' },
 ]);
 
-// 3. Computed property to filter activities based on the active content tab
 const filteredActivities = computed(() => {
-  return allActivities.value.filter(activity => activity.status === activeContentTab.value);
+  // 當 activeContentTab 是 '未完成' 時，我們假設它對應 '已報名' 的狀態
+  const statusToFilter = activeContentTab.value === '未完成' ? '已報名' : activeContentTab.value;
+  return allActivities.value.filter(activity => activity.status === statusToFilter);
 });
 
-// 4. Modal Logic
 const isModalVisible = ref(false);
 const activityToCancel = ref(null);
 
@@ -54,7 +54,7 @@ const confirmCancellation = () => {
   if (activityToCancel.value) {
     const activity = allActivities.value.find(a => a.id === activityToCancel.value.id);
     if (activity) {
-      activity.status = '已取消'; // Change status
+      activity.status = '已取消';
       alert(`已成功取消報名：${activity.title}`);
     }
   }
@@ -65,7 +65,6 @@ const closeModal = () => {
   isModalVisible.value = false;
   activityToCancel.value = null;
 };
-
 </script>
 
 <template>
@@ -73,7 +72,7 @@ const closeModal = () => {
     <Theheader />
 
     <div class="flex-1 container mx-auto p-4 lg:flex lg:gap-8 lg:p-8">
-      <!-- 左側邊欄 (電腦版顯示) - 結構與您提供的一致 -->
+      <!-- 左側邊欄 -->
       <aside class="hidden lg:block lg:w-72 flex-shrink-0">
         <div class="bg-white p-4 rounded-lg shadow-md sticky top-24">
           <div class="flex flex-col items-center text-center border-b pb-4 mb-4">
@@ -111,25 +110,26 @@ const closeModal = () => {
           </transition>
         </div>
 
-        <!-- ============================================= -->
-        <!-- ==        這裡是此頁面全新的內容          == -->
-        <!-- ============================================= -->
         <div class="space-y-8">
           
           <!-- 內容頁籤導覽列 -->
-          <nav class="flex space-x-4 border-b">
+          <nav class="flex space-x-2 lg:space-x-4 border-b">
+            <!-- ** 修改點 2: 美化頁籤的點擊外框 ** -->
             <button v-for="tab in contentTabs" :key="tab" @click="activeContentTab = tab"
-              class="px-3 py-2 font-semibold transition-colors duration-200"
-              :class="activeContentTab === tab ? 'border-b-2 border-[#F2994A] text-[#F2994A]' : 'text-gray-500 hover:text-gray-800'">
+              class="px-3 py-2 font-semibold transition-colors duration-200 rounded-t-md focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#F2994A]"
+              :class="{
+  'border-b-2 border-[#F2994A] text-[#F2994A]': activeContentTab === tab,
+  'text-gray-500 hover:text-gray-800': activeContentTab !== tab,
+  'text-[#F2994A]': tab === '未完成' && activeContentTab !== tab
+}">
               {{ tab }}
             </button>
           </nav>
 
           <!-- 活動列表 -->
           <div class="space-y-6">
-            <!-- 顯示篩選後的活動 -->
             <div v-for="activity in filteredActivities" :key="activity.id" class="bg-[#E2E9EF] p-4 rounded-lg shadow-sm flex flex-col md:flex-row gap-4 items-center">
-              <img :src="activity.imageUrl" alt="Activity Image" class="w-full md:w-48 h-32 object-cover rounded-md">
+              <img :src="activity.imageUrl" alt="Activity Image" class="w-full md:w-48 h-56 object-cover rounded-md">
               <div class="flex-1">
                 <h3 class="font-bold text-lg text-gray-800">{{ activity.title }}</h3>
                 <p class="text-gray-600 text-sm">{{ activity.type }}</p>
@@ -137,16 +137,14 @@ const closeModal = () => {
               </div>
               <div class="flex flex-row md:flex-col gap-3 w-full md:w-auto">
                 <button class="flex-1 bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-md transition-colors">查看詳情</button>
-                <button v-if="activity.status === '已報名'" @click="handleCancelClick(activity)" class="flex-1 bg-white hover:bg-gray-200 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-md transition-colors">退票</button>
+                <button v-if="activity.status === '已報名'" @click="handleCancelClick(activity)" class="flex-1 bg-white hover:bg-[#D96570] text-[#F2994A] border hover:text-white border-[#F2994A] font-bold py-2 px-4 rounded-md transition-colors">退票</button>
               </div>
             </div>
-            <!-- 如果沒有活動，顯示提示訊息 -->
             <div v-if="filteredActivities.length === 0" class="text-center py-10 text-gray-500">
               <p>此類別目前沒有任何活動。</p>
             </div>
           </div>
 
-          <!-- 電腦版活動回饋區按鈕 -->
           <div class="hidden lg:flex justify-center">
             <button class="bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-10 rounded-md transition-colors">
               活動回饋區
@@ -159,7 +157,8 @@ const closeModal = () => {
 
     <!-- 退票確認彈窗 -->
     <transition name="modal-fade">
-      <div v-if="isModalVisible" class="fixed inset-0 bg-black bg-opacity-30 flex items-end justify-end p-4 lg:p-8">
+      <!-- ** 修改點 1: 彈窗置中 ** -->
+      <div v-if="isModalVisible" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
           <p class="font-bold text-yellow-600 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" /></svg>
@@ -171,7 +170,7 @@ const closeModal = () => {
           </div>
           <p class="mt-4 text-xs text-gray-500">取消後將無法再次參加本次活動，因您已過報名截止日取消，本次收費將無法退款，謝謝您。</p>
           <div class="mt-6 flex gap-4">
-            <button @click="confirmCancellation" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md transition-colors">確認退票</button>
+            <button @click="confirmCancellation" class="flex-1 bg-[#D96570] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md transition-colors">確認退票</button>
             <button @click="closeModal" class="flex-1 bg-white hover:bg-gray-200 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-md transition-colors">返回</button>
           </div>
         </div>

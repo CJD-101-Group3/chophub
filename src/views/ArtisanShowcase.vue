@@ -1,0 +1,212 @@
+<script setup>
+import { ref } from 'vue';
+import Theheader from '../components/Theheader.vue';
+import Thefooter from '../components/Thefooter.vue';
+// 引入所有需要的圖片資源，請確保您的路徑和檔名正確
+import artisanAvatar from '../assets/users/userp.png';
+import artisanCardBg from '../assets/users/artisan-card-bg.png';
+import weapon1 from '../assets/weapons/weapon1.png';
+import weapon2 from '../assets/weapons/weapon2.png';
+import weapon3 from '../assets/weapons/weapon3.png';
+import weapon4 from '../assets/weapons/weapon4.png';
+import weapon5 from '../assets/weapons/weapon5.png';
+import badge1 from '../assets/badges/badge1.png';
+import badge2 from '../assets/badges/badge2.png';
+import badge3 from '../assets/badges/badge3.png';
+import badge4 from '../assets/badges/badge4.png';
+// import badge5 from '../assets/badges/badge5.png'; // 根據您的 Figma 截圖，補回 badge5-10
+// import badge6 from '../assets/badges/badge6.png';
+// import badge7 from '../assets/badges/badge7.png';
+// import badge8 from '../assets/badges/badge8.png';
+// import badge9 from '../assets/badges/badge9.png';
+// import badge10 from '../assets/badges/badge10.png';
+
+// --- 刀匠的所有展示資料都集中管理 ---
+const artisanProfile = ref({
+  name: 'Hattori Hanzo',
+  avatarUrl: artisanAvatar,
+  mainBadge: {
+    name: '黑鐵級刀匠',
+    iconUrl: badge2,
+  },
+  joinDate: '2024/03/01',
+  location: '日本・伊賀',
+  intro: '千錘百鍊，鋼魂不滅。\n服部半藏，專精於日式直刃鍛造，擁有超過 20 年工藝經驗，致力於融合古法鍛造與現代力學美學。擅長使用玉鋼、反覆摺疊鍛打與水冷退火技法。其作品曾於《冷鋼祭》奪下優勝，並被多位收藏家收藏。',
+  card: {
+    imageUrl: artisanCardBg,
+    quote: '「火不熄，我不止」',
+    details: '鍛造資歷 20 年\n專長：摺疊鋼 / 日式直刃 / 劈砍雕刻\n常用鋼材：白紙鋼、玉鋼\n流派：伊賀古法流',
+  },
+  socialLinks: [
+    { id: 1, platform: 'YOUTUBE', handle: '@Hattori_Hanzo5777', link: '#' },
+    { id: 2, platform: 'Instagram', handle: '@Hattori_Hanzo5777', link: '#' },
+    { id: 3, platform: 'X', handle: '@Hattori_Hanzo5777', link: '#' },
+    { id: 4, platform: 'Gmail', handle: 'Hattori5777@gmail.com', link: 'mailto:Hattori5777@gmail.com' },
+    { id: 5, platform: 'Podcast', handle: '專訪：聽見火光的聲音', link: '#' },
+  ],
+  featuredWorks: [
+    { id: 1, imageUrl: weapon1, link: '#' },
+    { id: 2, imageUrl: weapon2, link: '#' },
+    { id: 3, imageUrl: weapon3, link: '#' },
+    { id: 4, imageUrl: weapon4, link: '#' },
+    { id: 5, imageUrl: weapon5, link: '#' },
+  ],
+  featuredPosts: [
+    { id: 1, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
+    { id: 2, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
+    { id: 3, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
+    { id: 4, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
+    { id: 5, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
+    { id: 6, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
+  ],
+  achievements: [
+    { id: 1, name: '百鍊成鋒', imageUrl: badge1 },
+    { id: 2, name: '黑鐵級刀匠', imageUrl: badge2 },
+    { id: 3, name: '赤火初煉者', imageUrl: badge3 },
+    { id: 4, name: '登入王', imageUrl: badge4 },
+    // { id: 5, name: '百戰百勝', imageUrl: badge5 },
+    // { id: 6, name: '玉鋼砥魂', imageUrl: badge6 },
+    // { id: 7, name: '赤火初煉者', imageUrl: badge7 },
+    // { id: 8, name: '登入王', imageUrl: badge8 },
+    // { id: 9, name: '玉鋼砥魂', imageUrl: badge9 },
+    // { id: 10, name: '百鍊成鋒', imageUrl: badge10 },
+  ],
+});
+</script>
+
+<template>
+  <div class="flex flex-col min-h-screen bg-gray-50">
+    <Theheader />
+
+    <main class="flex-1 p-4 lg:p-12">
+      <div class="max-w-2xl lg:max-w-5xl mx-auto space-y-10 lg:space-y-12">
+
+        <!-- 頂部個人資訊 -->
+        <section class="text-center space-y-4 lg:flex lg:gap-8 lg:text-left lg:items-center">
+          <img :src="artisanProfile.avatarUrl" alt="Artisan Avatar" 
+            class="w-full max-w-sm mx-auto rounded-lg shadow-lg lg:w-60 lg:h-60 lg:mx-0 lg:flex-shrink-0 object-cover">
+          <div class="space-y-3">
+            <h1 class="text-4xl lg:text-5xl font-bold text-gray-800">{{ artisanProfile.name }}</h1>
+            <div class="flex items-center justify-center lg:justify-start gap-2 text-xl font-semibold text-gray-700">
+              {{ artisanProfile.mainBadge.name }}
+              <img :src="artisanProfile.mainBadge.iconUrl" alt="Badge Icon" class="w-8 h-8">
+            </div>
+            <div class="text-gray-500">
+              <p>加入時間：{{ artisanProfile.joinDate }}</p>
+              <p>所在地：{{ artisanProfile.location }}</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 刀匠簡介 -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-800 mb-3">刀匠簡介：</h2>
+          <p class="text-gray-600 whitespace-pre-line leading-relaxed">{{ artisanProfile.intro }}</p>
+        </section>
+
+        <!-- 刀匠卡片 -->
+        <section class="relative rounded-lg overflow-hidden shadow-lg">
+          <img :src="artisanProfile.card.imageUrl" alt="Artisan at work" class="w-full h-56 md:h-72 object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 lg:p-8 text-white">
+            <p class="text-3xl lg:text-4xl font-bold mb-4">{{ artisanProfile.card.quote }}</p>
+            <p class="text-sm lg:text-base whitespace-pre-line leading-snug">{{ artisanProfile.card.details }}</p>
+          </div>
+        </section>
+
+        <!-- 社群連結 -->
+        <section class="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
+          <a v-for="link in artisanProfile.socialLinks" :key="link.id" :href="link.link" target="_blank"
+             class="flex items-center gap-4 bg-[#E2E9EF] p-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors duration-200">
+            <div class="w-10 h-10 bg-white rounded-md flex items-center justify-center font-bold text-gray-400 text-xs">ICON</div>
+            <div>
+              <p class="font-bold text-gray-800">{{ link.platform }}</p>
+              <p class="text-sm text-gray-600">{{ link.handle }}</p>
+            </div>
+          </a>
+        </section>
+
+        <!-- 刀匠精選作品 -->
+        <section class="bg-[#E2E9EF] p-6 lg:p-8 rounded-lg shadow-sm">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選作品</h2>
+          <!-- 主要修正點：基礎樣式是 flex + overflow，lg:* 才是 grid -->
+          <div class="flex space-x-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-5 lg:gap-6 lg:space-x-0 lg:pb-0">
+            <!-- 主要修正點：手機版寬度設為 w-56 -->
+            <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="work.link" class="flex-shrink-0 group w-56 lg:w-full">
+              <div class="bg-white p-2 rounded-lg shadow-md overflow-hidden">
+                <img :src="work.imageUrl" :alt="'作品 ' + work.id" class="w-full h-48 lg:h-40 object-contain transition-transform duration-300 group-hover:scale-105">
+              </div>
+              <button class="mt-3 w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-md transition-colors text-sm">
+                查看更多
+              </button>
+            </a>
+          </div>
+        </section>
+
+        <!-- 刀匠精選貼文 -->
+        <section class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選貼文</h2>
+          <!-- 主要修正點：手機版用 div 堆疊，電腦版用 table -->
+          <!-- 手機版卡片列表 -->
+          <div class="space-y-4 lg:hidden">
+            <a v-for="post in artisanProfile.featuredPosts" :key="post.id" :href="post.link" class="block bg-[#E2E9EF] p-4 rounded-lg hover:bg-gray-300 transition-colors">
+              <p class="font-semibold text-gray-800">{{ post.category }} {{ post.title }}</p>
+              <p class="text-sm text-gray-500 mt-2">發表日期：{{ post.date }}</p>
+            </a>
+          </div>
+          <!-- 電腦版表格 -->
+          <table class="w-full text-left hidden lg:table">
+            <thead>
+              <tr class="border-b-2">
+                <th class="py-2 font-semibold">文章標題</th>
+                <th class="py-2 font-semibold text-right">發表日期</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="post in artisanProfile.featuredPosts" :key="post.id" class="border-b last:border-b-0">
+                <td class="py-4">
+                  <a :href="post.link" class="text-gray-800 hover:text-[#F2994A] transition-colors">
+                    <span class="text-gray-500">{{ post.category }}</span> {{ post.title }}
+                  </a>
+                </td>
+                <td class="py-4 text-right text-gray-500">{{ post.date }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 成就徽章 -->
+        <section class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">成就徽章 (可滑動)</h2>
+          <!-- 主要修正點：基礎樣式是 flex + overflow，lg:* 才是換行+置中 -->
+          <div class="flex space-x-6 overflow-x-auto pb-4 lg:flex-wrap lg:justify-center lg:gap-x-4 lg:gap-y-6 lg:space-x-0">
+            <!-- 主要修正點：手機版寬度設為 w-32 -->
+            <div v-for="achievement in artisanProfile.achievements" :key="achievement.id" class="flex flex-col items-center flex-shrink-0 w-32 lg:w-24">
+              <img :src="achievement.imageUrl" :alt="achievement.name" class="w-28 lg:w-24 h-auto object-contain">
+              <span class="mt-2 text-sm font-semibold text-gray-700 text-center">{{ achievement.name }}</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <Thefooter />
+  </div>
+</template>
+
+<style scoped>
+/* 美化滾動條 (可選) */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
+}
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background-color: #bdc3c7;
+  border-radius: 10px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background-color: #95a5a6;
+}
+</style>
