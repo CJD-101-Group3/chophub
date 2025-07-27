@@ -47,13 +47,13 @@ const settings = ref({
 
     <div class="flex-1 container mx-auto p-4 lg:flex lg:gap-8 lg:p-8">
       <!-- 左側邊欄 (電腦版顯示) - 結構完全重用 -->
-      <aside class="hidden lg:block lg:w-64 flex-shrink-0">
+      <aside class="hidden lg:block lg:w-72 flex-shrink-0">
         <div class="bg-white p-4 rounded-lg shadow-md sticky top-24">
           <div class="flex flex-col items-center text-center border-b pb-4 mb-4">
             <img 
               :src="memberInfo.avatarUrl" 
               alt="Avatar" 
-              class="w-24 h-24 rounded-full object-cover mb-3"
+              class="w-40 h-40 rounded-full object-cover mb-3"
             />
             <h2 class="text-xl font-bold text-gray-800">{{ memberInfo.name }}</h2>
           </div>
@@ -77,7 +77,6 @@ const settings = ref({
 
       <!-- 右側主內容區 -->
       <main class="flex-1">
-        
         <!-- 手機版下拉式選單 (在電腦版上會隱藏) - 結構完全重用 -->
         <div class="relative lg:hidden mb-6">
           <button @click="toggleDropdown" class="w-full flex items-center justify-between p-3 bg-white border border-gray-300 rounded-md shadow-sm">
@@ -96,11 +95,7 @@ const settings = ref({
           </transition>
         </div>
 
-        <!-- ============================================= -->
-        <!-- ==        這裡是此頁面全新的內容          == -->
-        <!-- ============================================= -->
-        <div class="space-y-8">
-          
+        <div class="max-w-xl mx-auto space-y-8">
           <!-- 通知與提醒 卡片 -->
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-6">通知與提醒</h2>

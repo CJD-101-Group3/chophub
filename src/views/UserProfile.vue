@@ -40,7 +40,7 @@ const memberInfo = ref({
 
     <div class="flex-1 container mx-auto p-4 lg:flex lg:gap-8 lg:p-8">
       <!-- 左側邊欄 (電腦版顯示) -->
-      <aside class="hidden lg:block lg:w-64 flex-shrink-0">
+      <aside class="hidden lg:block lg:w-72 flex-shrink-0">
         <div class="bg-white p-4 rounded-lg shadow-md sticky top-24">
           <div class="flex flex-col items-center text-center border-b pb-4 mb-4">
             <img 
@@ -94,7 +94,7 @@ const memberInfo = ref({
           <img 
             :src="memberInfo.avatarUrl" 
             alt="User Avatar" 
-            class="w-64 h-80 lg:w-100 lg:h-120 object-cover rounded-xl shadow-lg"
+            class="w-64 h-80 lg:w-80 lg:h-96 object-cover rounded-xl shadow-lg"
           >
         </div>
 
