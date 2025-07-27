@@ -10,7 +10,7 @@ const toggleDropdown = () => {
 };
 
 // (電腦版) 側邊欄狀態
-const activeTab = ref('收藏相關'); // 主要改動點：預設高亮 '收藏相關'
+const activeTab = ref('收藏相關');
 const menuItems = ref([
   { name: '會員資訊', href: '#' },
   { name: '貼文相關', href: '#' },
@@ -19,37 +19,58 @@ const menuItems = ref([
   { name: '其他設定', href: '#' },
 ]);
 
-// 會員資料 (僅保留側邊欄和下拉選單需要的部分)
+// 會員資料
 const memberInfo = ref({
   name: '露比匠',
   avatarUrl: '/src/assets/users/userp.png',
 });
 
-// --- 主要改動點：模擬的收藏資料 ---
-
-// 收藏的武器資料 (請將圖片路徑和連結替換為真實資料)
+// 收藏的武器資料
 const collectedWeapons = ref([
   { id: 1, imageUrl: '/src/assets/weapons/weapon1.png', link: '/weapon/1' },
   { id: 2, imageUrl: '/src/assets/weapons/weapon2.png', link: '/weapon/2' },
   { id: 3, imageUrl: '/src/assets/weapons/weapon3.png', link: '/weapon/3' },
   { id: 4, imageUrl: '/src/assets/weapons/weapon4.png', link: '/weapon/4' },
   { id: 5, imageUrl: '/src/assets/weapons/weapon5.png', link: '/weapon/5' },
+//   { id: 6, imageUrl: '/src/assets/weapons/weapon6.png', link: '/weapon/6' },
 ]);
 
-// 收藏的徽章資料 (請將圖片路徑替換為真實資料)
+// 收藏的徽章資料
 const collectedBadges = ref([
   { id: 1, imageUrl: '/src/assets/badges/badge1.png', name: '黑鐵級刀匠', isEquipped: true },
   { id: 2, imageUrl: '/src/assets/badges/badge2.png', name: '赤火初煉者', isEquipped: true },
   { id: 3, imageUrl: '/src/assets/badges/badge3.png', name: '登入王', isEquipped: true },
   { id: 4, imageUrl: '/src/assets/badges/badge4.png', name: '社群新星', isEquipped: false },
+  { id: 5, imageUrl: '/src/assets/badges/badge5.png', name: '新手村村民', isEquipped: false },
+//   { id: 6, imageUrl: '/src/assets/badges/badge6.png', name: '社群新星', isEquipped: false },
 ]);
 
-// 切換徽章配戴狀態的函數
+
+// =============================================
+// ==        主要修改點：更新的徽章切換函數      ==
+// =============================================
 const toggleEquip = (badgeId) => {
-  const badge = collectedBadges.value.find(b => b.id === badgeId);
-  if (badge) {
-    badge.isEquipped = !badge.isEquipped;
+  // 找到使用者點擊的那個徽章
+  const badgeToToggle = collectedBadges.value.find(b => b.id === badgeId);
+  if (!badgeToToggle) return; // 如果沒找到就直接結束
+
+  // 檢查使用者是否想要 "配戴" 一個新的徽章
+  // 如果 isEquipped 是 false，表示使用者正要將它變成 true
+  if (badgeToToggle.isEquipped === false) {
+    
+    // 計算當前已經配戴了幾個徽章
+    const equippedCount = collectedBadges.value.filter(b => b.isEquipped).length;
+
+    // 如果已經配戴了 3 個或更多，就跳出警告並且停止後續動作
+    if (equippedCount >= 3) {
+      alert('最多只能配戴三個徽章！');
+      return;
+    }
   }
+
+  // 如果檢查通過 ( entweder war die Anzahl < 3 oder der Benutzer hat deaktiviert )
+  // 就正常切換該徽章的配戴狀態
+  badgeToToggle.isEquipped = !badgeToToggle.isEquipped;
 };
 
 </script>
@@ -59,7 +80,7 @@ const toggleEquip = (badgeId) => {
     <Theheader />
 
     <div class="flex-1 container mx-auto p-4 lg:flex lg:gap-8 lg:p-8">
-      <!-- 左側邊欄 (電腦版顯示) - 結構與您提供的一致 -->
+      <!-- 左側邊欄 (電腦版顯示) -->
       <aside class="hidden lg:block lg:w-72 flex-shrink-0">
         <div class="bg-white p-4 rounded-lg shadow-md sticky top-24">
           <div class="flex flex-col items-center text-center border-b pb-4 mb-4">
@@ -91,7 +112,7 @@ const toggleEquip = (badgeId) => {
       <!-- 右側主內容區 -->
       <main class="flex-1">
         
-        <!-- 手機版下拉式選單 (在電腦版上會隱藏) -->
+        <!-- 手機版下拉式選單 -->
         <div class="relative lg:hidden mb-6">
           <button @click="toggleDropdown" class="w-full flex items-center justify-between p-3 bg-white border border-gray-300 rounded-md shadow-sm">
             <div class="flex items-center">
@@ -109,17 +130,13 @@ const toggleEquip = (badgeId) => {
           </transition>
         </div>
         
-        <!-- ============================================= -->
-        <!-- ==        這裡是此頁面全新的內容          == -->
-        <!-- ============================================= -->
+        <!-- 主內容 -->
         <div class="space-y-8">
 
           <!-- 我收藏的武器 -->
           <div class="bg-[#E2E9EF] p-6 lg:p-8 rounded-lg shadow-sm">
             <h2 class="text-xl font-bold text-gray-800 mb-6">我收藏的武器</h2>
-            <!-- 水平滾動容器 -->
             <div class="flex space-x-6 overflow-x-auto pb-4">
-              <!-- 單一武器項目 -->
               <a v-for="weapon in collectedWeapons" :key="weapon.id" :href="weapon.link" class="flex-shrink-0 group">
                 <div class="w-48 h-48 lg:w-56 lg:h-56 bg-white p-2 rounded-lg shadow-md overflow-hidden transform transition-transform duration-300 group-hover:scale-105">
                   <img :src="weapon.imageUrl" :alt="'武器 ' + weapon.id" class="w-full h-full object-contain">
@@ -131,9 +148,7 @@ const toggleEquip = (badgeId) => {
           <!-- 我收藏的徽章 -->
           <div class="bg-[#E2E9EF] p-6 lg:p-8 rounded-lg shadow-sm">
             <h2 class="text-xl font-bold text-gray-800 mb-6">我收藏的徽章</h2>
-            <!-- 水平滾動容器 -->
             <div class="flex space-x-6 overflow-x-auto pb-4">
-              <!-- 單一徽章項目 -->
               <div v-for="badge in collectedBadges" :key="badge.id" class="flex flex-col items-center space-y-3 flex-shrink-0">
                 <div class="w-40 h-40 lg:w-48 lg:h-48 bg-gray-800/20 p-2 rounded-lg shadow-md overflow-hidden">
                   <img :src="badge.imageUrl" :alt="badge.name" class="w-full h-full object-contain">
@@ -150,7 +165,7 @@ const toggleEquip = (badgeId) => {
             </div>
             <!-- 儲存按鈕 -->
             <div class="mt-6 text-center">
-              <button class="w-full lg:w-auto bg-[#8A9BCE] hover:bg-[#7385b7] text-white font-bold py-3 px-16 rounded-md transition-colors duration-300">
+              <button class="w-full lg:w-auto bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-16 rounded-md transition-colors duration-300">
                 儲存
               </button>
             </div>
@@ -184,7 +199,6 @@ const toggleEquip = (badgeId) => {
 }
 
 /* 美化滾動條 (可選) */
-/* For Webkit-based browsers (Chrome, Safari) */
 .overflow-x-auto::-webkit-scrollbar {
   height: 8px;
 }

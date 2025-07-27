@@ -16,6 +16,7 @@ import ApplicationGuide from '@/views/ApplicationGuide.vue'
 import OtherSettings from '@/views/OtherSettings.vue'
 import EditProfile from '@/views/EditProfile.vue'
 import UserCollections from '@/views/UserCollections.vue'
+import MyActivities from '@/views/MyActivities.vue'
 
 
 
@@ -37,6 +38,7 @@ const routes = [
     { path: '/OtherSettings', component: OtherSettings},
     { path: '/EditProfile', component: EditProfile},
     { path: '/UserCollections', component: UserCollections},
+    { path: '/MyActivities', component: MyActivities},
 
 
 ]
