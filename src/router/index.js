@@ -13,6 +13,7 @@ import PaymentSuccess from '@/views/PaymentSuccess.vue'
 import EventReview from '@/views/EventReview.vue'
 import UserProfile from '@/views/UserProfile.vue'
 import ApplicationGuide from '@/views/ApplicationGuide.vue'
+import OtherSettings from '@/views/OtherSettings.vue'
 
 
 
@@ -31,6 +32,7 @@ const routes = [
     { path: '/EventReview', component: EventReview},
     { path: '/UserProfile', component: UserProfile},
     { path: '/ApplicationGuide', component: ApplicationGuide},
+    { path: '/OtherSettings', component: OtherSettings},
 
 
 ]

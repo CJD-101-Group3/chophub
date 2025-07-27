@@ -27,22 +27,17 @@ const goBack = () => {
     <main class="flex-1 flex items-center justify-center p-4">
       
       <!-- 內容資訊卡片 -->
-      <div class="w-full max-w-2xl mx-auto bg-[#F0F4F8] p-6 lg:p-10 rounded-xl shadow-sm">
+      <div class="w-full max-w-2xl mx-auto  bg-[#E2E9EF] p-6 lg:p-10 rounded-xl shadow-sm">
         
-        <!-- 標題 -->
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-800 flex items-center gap-3 mb-6 lg:mb-8">
+        <!-- 標題：新增 justify-center 來讓內容水平置中 -->
+        <h1 class="text-2xl lg:text-3xl font-bold text-gray-800 flex items-center justify-center gap-3 mb-6 lg:mb-8">
           刀匠申請須知
-          <!-- 小鎚子 SVG 圖標 -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600">
-            <path d="m15 12-8.373 8.373a1 1 0 1 1-1.414-1.414L12.172 12 5.213 5.043a1 1 0 1 1 1.414-1.414L15 10.2Z"/>
-            <path d="M9.832 5.043 8.418 3.63a1 1 0 1 1 1.414-1.414l1.414 1.414"/>
-            <path d="M14.172 19.557 12.758 21a1 1 0 1 1-1.414-1.414l1.414-1.414"/>
-            <path d="M15 12h5.957a1 1 0 0 1 .957 1.288l-1.072 4.288a1 1 0 0 1-.957.712H13"/>
-          </svg>
+          <!-- 小鎚子 圖標 -->
+          <img src="@/assets/users/hammericon.png" alt="鎚子圖標" class="w-10 h-10">
         </h1>
         
         <!-- 說明文字 -->
-        <div class="space-y-5 text-gray-700 leading-relaxed">
+        <div class="space-y-5 text-gray-700 leading-relaxed text-lg">
           <p>親愛的使用者您好：</p>
           
           <p>若您為冷兵器創作者、鍛造職人，並希望於本平台申請刀匠認證，</p>
