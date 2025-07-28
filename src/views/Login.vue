@@ -5,7 +5,9 @@ import Thefooter from '../components/Thefooter.vue';
 import Basebutton from '../components/Basebutton.vue';
 
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const emit = defineEmits(['submit']);
 const account = ref('');
 const password = ref('');
@@ -22,6 +24,10 @@ function handleSubmit() {
   emit('submit', credentials);
   console.log('表單已提交:', credentials);
 }
+
+function goToRegister() {
+  router.push('/register');
+}
 </script>
 
 <template>
@@ -36,19 +42,19 @@ function handleSubmit() {
 
         <form @submit.prevent="handleSubmit" class="space-y-4">
           <div>
-            <input 
-              v-model="account" 
-              type="text" 
-              placeholder="帳號" 
+            <input
+              v-model="account"
+              type="text"
+              placeholder="帳號"
               class="w-full px-4 py-3 bg-[#F8F9FA] border border-gray-300 rounded-md transition-colors
                      focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"
             >
           </div>
           <div class="relative">
-            <input 
-              v-model="password" 
-              type="password" 
-              placeholder="密碼" 
+            <input
+              v-model="password"
+              type="password"
+              placeholder="密碼"
               class="w-full px-4 py-3 bg-[#F8F9FA] border border-gray-300 rounded-md transition-colors
                      focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"
             >
@@ -63,9 +69,14 @@ function handleSubmit() {
             <a href="#" class="text-sm text-gray-600 hover:text-orange-500 transition-colors">忘記密碼？</a>
           </div>
 
-          <!-- 用 Basebutton -->
-          <Basebutton type="submit">登入</Basebutton>
-          <Basebutton type="button" @click="$router.push('/register')">立即註冊</Basebutton>
+          <!--
+            修改後的按鈕區塊:
+            我們移除了外層的 div 容器，讓 form 的 space-y-4 生效，
+            使按鈕能夠垂直堆疊並帶有間距。
+            因為 Basebutton 內部有固定寬度，按鈕會保持原寬度並在表單中置中。
+           -->
+          <Basebutton type="submit" variant="primary" class="w-full">登入</Basebutton>
+          <Basebutton type="button" variant="outline" class="w-full" @click="goToRegister">立即註冊</Basebutton>
         </form>
       </div>
     </div>
