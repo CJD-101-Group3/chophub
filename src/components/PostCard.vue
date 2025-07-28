@@ -1,5 +1,4 @@
 <script setup>
-// --- Script 區塊維持原樣，無需更動 ---
 import { defineProps, ref, computed } from 'vue';
 
 // 匯入所有需要的圖示
@@ -13,8 +12,9 @@ import smallUserIcon from '@/assets/icon/smalluser.svg';
 import smallStarIcon from '@/assets/icon/smallstar.svg';
 import smallStarActiveIcon from '@/assets/icon/smallstar_h.svg';
 
-// 定義 props
+// 【關鍵修改】在 defineProps 中接收從 Post.vue 傳來的 id
 const props = defineProps({
+  id: { type: Number, required: true }, // 新增 id prop，並設為必填
   postImage: { type: String, required: true },
   isFeatured: { type: Boolean, default: false },
   userName: { type: String, default: '使用者名稱' },
@@ -75,13 +75,9 @@ function toggleStar() {
           <img :src="smallUserIcon" alt="User" class="w-8 h-8" />
           <span class="text-[#F2B94C] text-xl font-normal leading-7 tracking-[0.8px]">{{ userName }}</span>
         </div>
-        <!-- 
-          【終極萬用方案】移除所有 focus 和 hover 的預設視覺效果
-        -->
         <button class="text-gray-400 
           focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none 
-          hover:outline-none hover:ring-0 hover:border-transparent hover:shadow-none"
-        >
+          hover:outline-none hover:ring-0 hover:border-transparent hover:shadow-none">
           <img :src="moreIcon" alt="More options" class="w-6 h-6" />
         </button>
       </div>
@@ -113,14 +109,18 @@ function toggleStar() {
       </div>
      
       <!-- 
-        【終極萬用方案】移除所有 focus 和 hover 的預設視覺效果
+        【關鍵修改】將 <button> 替換為 <router-link>
+        - :to 屬性會動態生成連結，例如 /post/1, /post/2 ...
+        - 原本的 class 樣式可以直接套用在 <router-link> 上，外觀不會改變。
       -->
-      <button class="w-full bg-[#F2994A] text-[#ffffff] font-semibold rounded-lg text-lg h-[65.5px] flex items-center justify-center 
-        focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none 
-        hover:outline-none hover:ring-0 hover:border-transparent hover:shadow-none"
+      <router-link 
+        :to="`/post/${id}`"
+        class="w-full bg-[#F2994A] text-[#ffffff] font-semibold rounded-lg text-lg h-[65.5px] flex items-center justify-center 
+          focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none 
+          hover:outline-none hover:ring-0 hover:border-transparent hover:shadow-none"
       >
         查看更多
-      </button>
+      </router-link>
 
     </div>
   </div>

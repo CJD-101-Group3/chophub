@@ -55,7 +55,7 @@ const routes = [
     { path: '/EditArtisanProfile', component: EditArtisanProfile},
     { path: '/ArtisanShowcase', component: ArtisanShowcase},
     { path: '/PostActivity', component: PostActivity},
-    { path: '/PostDetail', component: PostDetail},
+    { path: '/post/:id', component: PostDetail },
 
 ]
 
