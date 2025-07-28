@@ -62,10 +62,10 @@ const handleClick = (item) => {
 import DropDown from '@/components/DropDown.vue'
 
 const menuItems = [
-  { label: '貼文相關', path: '/UserProfile' },
-  { label: '收藏相關', path: '/UserCollections' },
-  { label: '我的活動', path: '/MyActivities' },
-  { label: '其他設定', path: '/OtherSettings' }
+  { label: '貼文相關', path: '' },
+  { label: '收藏相關', path: '' },
+  { label: '我的活動', path: '' },
+  { label: '其他設定', path: '' }
 ]
 
 const handleSelect = (item) => {

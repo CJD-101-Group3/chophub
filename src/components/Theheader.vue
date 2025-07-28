@@ -11,7 +11,7 @@ const isOpen = ref(false)
 </script>
 
 <template>
-    <header class="w-full h-[74px] bg-[#282828] flex items-center justify-between px-6">
+    <header class="w-full h-[74px] bg-[#282828] flex items-center justify-between px-6 border-b-[0.5px] border-gray-700">
         <!-- Logo -->
         <RouterLink to="/MainPage">
         <div class="flex items-center space-x-2">
@@ -21,7 +21,7 @@ const isOpen = ref(false)
         <!-- 漢堡選單 -->
         <button @click="isOpen = true" class="h2 text-white md:hidden">≡</button>
         <!-- 電腦版導覽連結 -->
-        <nav class="hidden md:flex items-center space-x-6 text-white text-sm">
+        <nav class="hidden md:flex h5 items-center space-x-6 text-white ">
             <RouterLink to="/post" class="h5 hover:text-orange-400 transition">貼文區</RouterLink>
             <RouterLink to="/weaponlist" class="h5 hover:text-orange-400 transition">武器展示區</RouterLink>
             <RouterLink to="/EventHomePage" class="h5 hover:text-orange-400 transition">活動專區</RouterLink>
