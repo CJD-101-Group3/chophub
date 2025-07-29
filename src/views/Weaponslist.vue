@@ -61,17 +61,17 @@
   <hr class="w-[712px] md:ml-[300px] border-t-2 border-[#FFFFFF] my-6" />
 
 
-    <div class="flex flex-wrap justify-center gap-4 p-4 bg-gray-100">
-    <div class=" w-[500px] h-[800px] md:w-1/3  lg:w-1/4  bg-blue-400 text-white p-4 rounded text-center">Box 1</div>
-    <div class=" w-[500px] h-[800px] md:w-1/3  lg:w-1/4  bg-green-400 text-white p-4 rounded text-center">Box 2</div>
-    <div class=" w-[500px] h-[800px] md:w-1/3  lg:w-1/4  bg-red-400 text-white p-4 rounded text-center">Box 3</div>
-    <div class=" w-[500px] h-[800px] md:w-1/3  lg:w-1/4  bg-purple-400 text-white p-4 rounded text-center">Box 4</div>
-    <div class=" w-[500px] h-[800px] md:w-1/3  lg:w-1/4  bg-yellow-400 text-white p-4 rounded text-center">Box 5</div>
-    <div class=" w-[500px] h-[800px] md:w-1/3  lg:w-1/4  bg-pink-400 text-white p-4 rounded text-center">Box 6</div>
 
+  <div class="container mx-auto max-w-7xl">
+    <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+       <WeaponCard 
+            v-for="post in posts" 
+            :key="post.id" 
+            v-bind="post" 
+          />
     
+    </div>
 </div>
-
     
 
 
@@ -84,6 +84,19 @@
 import { ref } from 'vue'
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
+import WeaponCard from '../components/WeaponCard.vue';
+
+const posts = ref(Array.from({ length: 9 }, (_, index) => ({
+  id: index + 1, // 新增 id，從 1 開始
+  postImage: `https://picsum.photos/400/280?random=${index + 1}`, // 讓每張圖片都不同
+  isFeatured: true,
+  userName: '使用者名稱',
+  postTitle: '手裡劍',
+  isHot: Math.random() > 0.5,
+  description: '四爪對稱手裡劍，結構精準銳利，中心圓孔設計，兼具工藝美感與穩定投擲性能。',
+  likes: Math.floor(Math.random() * 200),
+  stars: Math.floor(Math.random() * 50),
+})));
 
 const colors = [
   'bg-red-500',
