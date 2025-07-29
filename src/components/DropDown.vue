@@ -68,9 +68,6 @@ const menuItems = [
   { label: '其他設定', path: '' }
 ]
 
-const handleSelect = (item) => {
-  console.log('test', item.label)
-}
 </script>
 
 <template>
