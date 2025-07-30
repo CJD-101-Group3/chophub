@@ -32,7 +32,6 @@ const collectedWeapons = ref([
   { id: 3, imageUrl: '/src/assets/weapons/weapon3.png', link: '/weapon/3' },
   { id: 4, imageUrl: '/src/assets/weapons/weapon4.png', link: '/weapon/4' },
   { id: 5, imageUrl: '/src/assets/weapons/weapon5.png', link: '/weapon/5' },
-//   { id: 6, imageUrl: '/src/assets/weapons/weapon6.png', link: '/weapon/6' },
 ]);
 
 // 收藏的徽章資料
@@ -42,34 +41,19 @@ const collectedBadges = ref([
   { id: 3, imageUrl: '/src/assets/badges/badge3.png', name: '登入王', isEquipped: true },
   { id: 4, imageUrl: '/src/assets/badges/badge4.png', name: '社群新星', isEquipped: false },
   { id: 5, imageUrl: '/src/assets/badges/badge5.png', name: '新手村村民', isEquipped: false },
-//   { id: 6, imageUrl: '/src/assets/badges/badge6.png', name: '社群新星', isEquipped: false },
 ]);
 
-
-// =============================================
-// ==        主要修改點：更新的徽章切換函數      ==
-// =============================================
 const toggleEquip = (badgeId) => {
-  // 找到使用者點擊的那個徽章
   const badgeToToggle = collectedBadges.value.find(b => b.id === badgeId);
-  if (!badgeToToggle) return; // 如果沒找到就直接結束
+  if (!badgeToToggle) return;
 
-  // 檢查使用者是否想要 "配戴" 一個新的徽章
-  // 如果 isEquipped 是 false，表示使用者正要將它變成 true
   if (badgeToToggle.isEquipped === false) {
-    
-    // 計算當前已經配戴了幾個徽章
     const equippedCount = collectedBadges.value.filter(b => b.isEquipped).length;
-
-    // 如果已經配戴了 3 個或更多，就跳出警告並且停止後續動作
     if (equippedCount >= 3) {
       alert('最多只能配戴三個徽章！');
       return;
     }
   }
-
-  // 如果檢查通過 ( entweder war die Anzahl < 3 oder der Benutzer hat deaktiviert )
-  // 就正常切換該徽章的配戴狀態
   badgeToToggle.isEquipped = !badgeToToggle.isEquipped;
 };
 
@@ -99,8 +83,9 @@ const toggleEquip = (badgeId) => {
               @click.prevent="activeTab = item.name"
               class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
               :class="{
-                'bg-[#F2994A] text-white': activeTab === item.name,
-                'text-gray-600 hover:bg-gray-100': activeTab !== item.name
+                /* 【修改處】修正了 active 和 inactive 狀態的 hover 樣式 */
+                'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
+                'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
               }"
             >
               {{ item.name }}
