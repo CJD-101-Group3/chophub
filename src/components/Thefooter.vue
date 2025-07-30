@@ -6,13 +6,13 @@ import logo from '@/assets/icon/LOGO.png'
 </script>
 
 <template>
-    <footer class="w-full h-[74px] bg-[#282828] flex items-center justify-between px-6 text-white text-sm">
+    <footer class="w-full h-[74px] bg-[#282828] flex items-center justify-between px-6 text-white border-t-[0.5px] border-gray-700">
         <!-- 左邊區塊 -->
         <div class="flex items-center space-x-4">
             <img :src="logo" alt="logo" class="w-[70px] h-[70px]" />
-            <span class="text-white text-sm">© 2025 Chophub</span>
+            <span class="text-white h6">© 2025 Chophub</span>
             <span>—</span>
-            <a href="#" class="hover:text-orange-400 transition">About</a>
+            <a href="#" class="hover:text-orange-400 transition h6">About</a>
         </div>
 
         <!-- 右邊社群圖示 -->
