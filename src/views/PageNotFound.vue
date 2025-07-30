@@ -1,9 +1,60 @@
+<script>
+export default {
+    data(){
+        return {
+            ironImages: [
+                '/img/4.png',
+                '/img/40.png',
+                '/img/404.png'
+            ],
+            currentIndex: 0,
+            halfTimer: null,
+            swingDuration: 2000,
+            ironScales:[
+                1.4,
+                1.4,
+                1.4
+            ],
+            irondx:[
+                50,
+                50,
+                50
+            ]
+        }
+    },
+    computed: {
+        ironSrc(){
+            return this.ironImages[this.currentIndex]
+        },
+        ironStyle(){
+            const s = this.ironScales[this.currentIndex] || 1;
+            const d = this.irondx[this.currentIndex] || 0;
+            return {
+                transform: `scale(${s}) translateY(-20px) translateX(${d}px)`
+            }
+        }
+    },
+    methods: {
+        onSwingCycleStart(){
+            if (this.halfTimer) clearTimeout(this.halfTimer);
 
+            this.halfTimer = setTimeout(()=>{
+                if (this.currentIndex < this.ironImages.length -1){
+                    this.currentIndex++;
+                }
+            }, this.swingDuration / 2)
+        }
+    },
+    beforeUnmount() {
+        if (this.halfTimer) clearTimeout(this.halfTimer);
+    },
+}
+</script>
 <template>
     <!-- 鐵匠敲鐵塊 -->
     <div class="forge">
         <img src="/img/body.png" alt="" id="body">
-        <img src="/img/arm.png" alt="" id="arm">
+        <img src="/img/arm.png" alt="" id="arm" @animationiteration="onSwingCycleStart" @animationstart="onSwingCycleStart">
         <div class="sparks">
         <!-- 5 颗火花，各自飞散方向不同 -->
             <span style="--dx: 40px; --dy: -20px;"></span>
@@ -18,9 +69,18 @@
             <span style="--dx: 55px; --dy:   7px;"></span>
             <span style="--dx: 55px; --dy:   8px;"></span>
             <span style="--dx: 55px; --dy:   2px;"></span>
-
         </div>
+        <img :src="ironSrc" alt="" id="iron" :style="ironStyle">
     </div>
+
+    <div id="slogan">
+        <h1>Looks like You're Lost Here</h1>
+    </div>
+    <router-link to="/post">
+            <div id="returnBtn">
+                <h6>Let Me Take You Home</h6>
+            </div>
+    </router-link>
 </template>
 
 <style scoped>
@@ -28,6 +88,18 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        transform: translateX(-350px) translateY(-70px) scale(1.2);
+    }
+    .forge::after{
+        content: "";
+        display: block;
+        background-color: #313131;
+        width: 1000px;
+        height: 75px;
+        border-radius: 100%;
+        transform: translateY(110px) translateX(350px);
+        z-index: -1;
+
     }
     #body{
         position: absolute;
@@ -59,7 +131,6 @@
         background: rgb(249, 174, 0);
         /* border-radius: 50%; */
         opacity: 0;
-        /* 同步用 2s 无限循环 */
         animation: spark 2s ease infinite;
     }
 
@@ -69,10 +140,13 @@
         background: rgb(255, 221, 0);
         /* border-radius: 50%; */
         opacity: 0;
-        /* 同步用 2s 无限循环 */
         animation: spark 2s ease infinite;
     }
-        
+
+    #iron{
+        position: absolute;
+        right: 14%;
+    }
     @keyframes spark {
         0%, 34%, 51%, 70%, 100% {
             opacity: 0;
@@ -105,5 +179,55 @@
         }
     }
 
+    @keyframes awray {
+        0%{
+            opacity: 0;
+        }
+        100%{
+            opacity: 1;
+        }
+    }
 
+    #slogan{
+        position: absolute;
+        right: 30%;
+        top: 68%;
+        font-weight: 600;
+        animation: awray 2s ease;
+    }
+
+    #returnBtn {
+        position: absolute;
+        top: 80%;
+        right: 38%;
+        display: inline-block;
+        padding: 30px 60px;
+        background-color: #ff8b4c;
+        border-radius: 40px;
+        box-shadow: 0 12px 0 #979797;
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+        cursor: pointer;
+        user-select: none;
+        width: auto;
+        height: auto;
+    }
+
+    
+    #returnBtn h6 {
+        margin: 0;
+        /* font-size: 1rem; */
+        color: #fff;
+        text-align: center;
+        font-size: 28px;
+    }
+
+    #returnBtn:hover {
+        transform: translateY(2px);
+        box-shadow: 0 6px 0 #909090;
+    }
+
+    #returnBtn:active {
+        transform: translateY(8px);
+        box-shadow: 0 0 0 #707070;
+    }
 </style>

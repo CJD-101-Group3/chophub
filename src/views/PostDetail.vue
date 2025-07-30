@@ -1,41 +1,49 @@
 <script setup>
-// --- Script 區塊完全维持不变 ---
-import { ref, computed } from 'vue';
+// --- Script 區塊完全維持不變 ---
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 import TheHeader from '@/components/Theheader.vue';
 import TheFooter from '@/components/Thefooter.vue';
-import PostCard from '@/components/PostCard.vue';
-import searchIcon from '@/assets/icon/search.svg';
 
-const isDropdownOpen = ref(false);
-const selectedSort = ref('最熱門');
-const sortOptions = ref(['最熱門', '評價最高', '最新發布', '最多留言']); 
-const searchTerm = ref('');
-const currentPage = ref(1);
-const totalPages = ref(3);
+import userIcon from '@/assets/icon/user.svg';
+import fireIcon from '@/assets/icon/smallstar.svg';
+import backIcon from '@/assets/icon/smallstar.svg';
+import likeIcon from '@/assets/icon/smallstar.svg';
+import saveIcon from '@/assets/icon/smallstar.svg';
+import shareIcon from '@/assets/icon/smallstar.svg';
+import sendIcon from '@/assets/icon/smallstar.svg';
+import postImageFile from '@/assets/icon/smallstar.svg';
+// import postImageFile from '@/assets/images/post-detail-image.jpg';
 
-const posts = ref(Array.from({ length: 9 }, (_, index) => ({
-  id: index + 1,
-  postImage: `https://picsum.photos/400/280?random=${index + 1}`,
-  isFeatured: true,
-  userName: '使用者名稱',
-  postTitle: '手裡劍',
-  isHot: Math.random() > 0.5,
-  description: '四爪對稱手裡劍，結構精準銳利，中心圓孔設計，兼具工藝美感與穩定投擲性能。',
-  likes: Math.floor(Math.random() * 200),
-  stars: Math.floor(Math.random() * 50),
-})));
+const router = useRouter();
+const isLiked = ref(false);
+const isSaved = ref(false);
+const newComment = ref('');
 
-function selectSort(option) {
-  selectedSort.value = option;
-  isDropdownOpen.value = false;
+const post = ref({
+  author: '使用者名稱',
+  title: '【致命冷兵器】',
+  content: '冷兵器自古以來就是戰場上的殺戮利器...',
+  image: postImageFile,
+  likes: 82,
+  saves: 24,
+});
+
+const comments = ref([
+  { id: 1, author: '中壢彭于晏', text: '武器評價文字...', time: '23週', likes: 82 },
+  { id: 2, author: '中壢彭于晏', text: '武器評價文字...', time: '23週', likes: 82 },
+  { id: 3, author: '中壢彭于晏', text: '武器評價文字...', time: '23週', likes: 82 },
+]);
+
+function goBack() {
+  router.back();
 }
-function goToPage(page) {
-  if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page;
-  }
-}
-function performSearch() {
-  alert(`正在搜尋：${searchTerm.value}`);
+
+function postComment() {
+  if (!newComment.value.trim()) return;
+  alert(`留言已送出：${newComment.value}`);
+  newComment.value = '';
 }
 </script>
 
@@ -43,63 +51,128 @@ function performSearch() {
   <div class="flex flex-col min-h-screen bg-[#282828]">
     <TheHeader />
 
-    <!-- 【修改】让 main 元素用 flex 来将内部的 grid 容器居中 -->
-    <main class="flex-grow w-full px-4 py-8 flex justify-center">
-      
+    <main class="flex-grow w-full py-4 md:py-12">
       <!-- 
-        【终极方案】
-        1. 移除所有外部容器 (如 mx-auto, w-fit, max-w-...)
-        2. 将这个 div 直接变成我们页面的“主网格骨架”。
-        3. 它负责定义所有内容的布局和对齐。
+        【關鍵修改】
+        - 移除所有 md: 前綴的 class。
+        - 加上我們自訂的 'desktop-container' class。
       -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl">
+      <div class="relative w-full bg-white desktop-container">
         
-        <!-- 
-          【修改】白色搜索栏现在是 Grid 的第一个子项目。
-          - col-span-full: 这个 class 会命令此元素横跨所有可用的栏位。
-            (手机上跨1栏, 平板上跨2栏, 桌机上跨3栏)
-        -->
-        <div class="bg-white rounded-lg shadow-md p-4 col-span-full">
-          <div class="flex items-center gap-2 md:gap-4">
-            <div class="relative flex-shrink-0">
-              <button @click="isDropdownOpen = !isDropdownOpen" class="flex items-center justify-between bg-[#F2994A] text-[#F8F9FA] px-3 py-2 rounded-lg font-semibold text-sm md:text-base md:w-40">
-                <span>{{ selectedSort }}</span>
-                <svg class="w-4 h-4 ml-1 transition-transform" :class="{'rotate-180': isDropdownOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-              </button>
-              <div v-if="isDropdownOpen" class="absolute top-full left-0 mt-2 w-40 bg-black/50 backdrop-blur-md border border-white/10 rounded-lg shadow-lg z-10 p-2 flex flex-col gap-2">
-                <a v-for="option in sortOptions" :key="option" @click="selectSort(option)" href="#" class="w-full bg-transparent text-[#F8F9FA] font-semibold border-2 border-[#F2994A] rounded-lg h-[35.67px] flex items-center justify-center transition-colors hover:bg-[#F2994A]/20">
-                  {{ option }}
-                </a>
+        <button @click="goBack" class="absolute top-4 left-4 p-2">
+          <img :src="backIcon" alt="Back" class="w-6 h-6">
+        </button>
+        <!-- 【關鍵修改】使用自訂的 'desktop-close-btn' class -->
+        <button @click="goBack" class="desktop-close-btn">
+          <span class="text-white text-2xl font-bold">×</span>
+        </button>
+
+        <div class="px-4 pt-16 desktop-content-padding">
+          <!-- ... 貼文核心內容 (維持不變) ... -->
+          <div class="flex items-center gap-x-3 mb-4">
+            <img :src="userIcon" alt="User" class="w-12 h-12">
+            <div class="flex items-center gap-x-2">
+              <span class="text-xl font-bold">{{ post.author }}</span>
+              <img :src="fireIcon" alt="Hot" class="w-6 h-6">
+            </div>
+          </div>
+          <div class="space-y-4 mb-6">
+            <h2 class="text-lg font-bold">{{ post.title }}</h2>
+            <p class="text-gray-600 leading-relaxed">{{ post.content }}</p>
+          </div>
+          <img :src="post.image" alt="Post Image" class="w-full rounded-lg object-cover mb-4">
+          <div class="flex items-center gap-x-6 text-gray-500 mb-4">
+            <div class="flex items-center gap-x-2"><img :src="likeIcon" alt="Likes" class="w-6 h-6"><span>{{ post.likes }}</span></div>
+            <div class="flex items-center gap-x-2"><img :src="saveIcon" alt="Saves" class="w-6 h-6"><span>{{ post.saves }}</span></div>
+          </div>
+          <hr class="my-4">
+          <div class="flex justify-around items-center text-gray-600 font-semibold">
+            <button @click="isLiked = !isLiked" :class="['flex items-center gap-x-2 p-2 rounded-lg', isLiked ? 'text-orange-500' : '']"><img :src="likeIcon" alt="Like" class="w-6 h-6"><span>讚</span></button>
+            <button @click="isSaved = !isSaved" :class="['flex items-center gap-x-2 p-2 rounded-lg', isSaved ? 'text-orange-500' : '']"><img :src="saveIcon" alt="Save" class="w-6 h-6"><span>收藏</span></button>
+            <button class="flex items-center gap-x-2 p-2 rounded-lg"><img :src="shareIcon" alt="Share" class="w-6 h-6"><span>分享</span></button>
+          </div>
+          <hr class="my-4">
+          <div class="space-y-6">
+            <div class="flex justify-between items-center"><h3 class="font-bold">留言</h3><a href="#" class="text-sm text-gray-500 hover:text-orange-500">顯示全部</a></div>
+            <div class="space-y-6">
+              <div v-for="comment in comments" :key="comment.id" class="flex items-start gap-x-3">
+                <img :src="userIcon" alt="Commenter" class="w-10 h-10 mt-1">
+                <div class="flex-grow">
+                  <div class="bg-gray-100 rounded-lg p-3"><p class="font-bold">{{ comment.author }}</p><p class="text-gray-700">{{ comment.text }}</p></div>
+                  <div class="flex items-center gap-x-4 text-sm text-gray-500 mt-1 px-3"><span>{{ comment.time }}</span><a href="#" class="font-semibold hover:text-orange-500">檢舉</a><div class="flex items-center gap-x-1 ml-auto"><span>{{ comment.likes }}</span><img :src="likeIcon" alt="Like comment" class="w-5 h-5"></div></div>
+                </div>
               </div>
             </div>
-            <div class="relative flex-grow border-2 border-[#F2994A] rounded-lg">
-              <input v-model="searchTerm" type="text" placeholder="搜尋貼文" class="w-full bg-transparent py-2 pl-4 pr-10 text-gray-800 text-sm md:text-base focus:outline-none">
-              <button @click="performSearch" class="absolute right-2 top-1/2 -translate-y-1/2 p-1"><img :src="searchIcon" alt="Search" class="w-5 h-5"></button>
-            </div>
-            <button class="flex-shrink-0 border-2 border-[#F2994A] text-[#F2994A] bg-transparent rounded-lg flex items-center justify-center gap-2 font-semibold hover:bg-[#F2994A] hover:text-white transition-colors p-2 md:px-4">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-              <span class="hidden md:inline">Post</span>
-            </button>
           </div>
         </div>
-
-        <!-- 卡片现在是 Grid 的子项目，会自动排列 -->
-        <PostCard 
-          v-for="post in posts" 
-          :key="post.id" 
-          v-bind="post" 
-        />
-
-        <!-- 【修改】页码也需要横跨所有栏位，以确保它在网格的正下方居中 -->
-        <div class="flex justify-center items-center mt-8 space-x-2 col-span-full">
-          <button v-for="page in totalPages" :key="page" @click="goToPage(page)" :class="['w-10 h-10 rounded-lg font-bold transition-colors', currentPage === page ? 'bg-[#F2994A] text-white' : 'bg-[#282828] text-gray-400 hover:bg-gray-600']">
-            {{ page }}
-          </button>
-        </div>
-
       </div>
     </main>
+    
+    <!-- 【關鍵修改】使用自訂的 'comment-input-container' class -->
+    <div class="sticky bottom-0 w-full bg-white p-3 border-t comment-input-container">
+      <div class="comment-input-inner">
+        <div class="flex items-center gap-x-3">
+          <img :src="userIcon" alt="Your avatar" class="w-10 h-10">
+          <div class="relative flex-grow">
+            <input v-model="newComment" type="text" placeholder="輸入文字" class="w-full bg-gray-100 rounded-full py-2 pl-4 pr-12">
+            <button @click="postComment" class="absolute top-1/2 right-2 -translate-y-1/2 p-1"><img :src="sendIcon" alt="Send" class="w-6 h-6"></button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <TheFooter />
   </div>
 </template>
+
+<!-- ====================================================== -->
+<!-- 【關鍵修改】新增 <style scoped> 區塊來手動實現響應式 -->
+<!-- ====================================================== -->
+<style scoped>
+/* 
+  @media (min-width: 768px) 的意思是：
+  以下的 CSS 規則，只在螢幕寬度為 768px 或更寬時才生效。
+  768px 是 Tailwind 中 'md' 斷點的預設值。
+*/
+@media (min-width: 768px) {
+  .desktop-container {
+    max-width: 1280px; /* 等同於 max-w-4xl */
+    margin-left: auto;
+    margin-right: auto; /* 等同於 mx-auto */
+    border-radius: 0.5rem; /* 等同於 rounded-lg */
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* 等同於 shadow-lg */
+    padding: 2rem; /* 等同於 p-8 */
+  }
+
+  .desktop-close-btn {
+    display: block; /* 等同於 md:block */
+    position: absolute;
+    top: -1.25rem; /* -top-5 */
+    left: -1.25rem; /* -left-5 */
+    background-color: #f97316; /* bg-orange-500 */
+    border-radius: 9999px; /* rounded-full */
+    padding: 0.5rem; /* p-2 */
+  }
+
+  .desktop-content-padding {
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0; /* 等同於 md:px-0 md:pt-0 */
+  }
+
+  .comment-input-container {
+    position: static; /* 等同於 md:static */
+    border-top-width: 0; /* 等同於 md:border-t-0 */
+    background-color: transparent; /* 等同於 md:bg-transparent */
+    padding: 0; /* 等同於 md:p-0 */
+  }
+
+  .comment-input-inner {
+    max-width: 1280px; /* 等同於 md:max-w-4xl */
+    margin-left: auto;
+    margin-right: auto; /* 等同於 md:mx-auto */
+    padding-left: 2rem;
+    padding-right: 2rem; /* 等同於 md:px-8 */
+  }
+}
+</style>
