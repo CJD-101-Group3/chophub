@@ -58,8 +58,8 @@ const routes = [
     { path: '/ArtisanShowcase', component: ArtisanShowcase},
     { path: '/PostActivity', component: PostActivity},
     { path: '/post/:id', component: PostDetail },
+    { path: '/Weaponslist/:WeaponDetail', component:WeaponDetail},
     { path: '/:pathMatch(.*)*', component:PageNotFound},
-    { path: '/:WeaponDetail', component:WeaponDetail},
 
 ]
 
