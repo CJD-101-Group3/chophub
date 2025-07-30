@@ -27,6 +27,7 @@ import ArtisanShowcase from '@/views/ArtisanShowcase.vue'
 import PostActivity from '@/views/PostActivity.vue'
 import PostDetail from '@/views/PostDetail.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
+import WeaponDetail from '@/views/WeaponDetail.vue'
 
 
 
@@ -57,7 +58,8 @@ const routes = [
     { path: '/ArtisanShowcase', component: ArtisanShowcase},
     { path: '/PostActivity', component: PostActivity},
     { path: '/post/:id', component: PostDetail },
-    { path: '/:pathMatch(.*)*', component:PageNotFound}
+    { path: '/:pathMatch(.*)*', component:PageNotFound},
+    { path: '/:WeaponDetail(.*)*', component:WeaponDetail},
 
 ]
 
