@@ -59,7 +59,7 @@ const routes = [
     { path: '/PostActivity', component: PostActivity},
     { path: '/post/:id', component: PostDetail },
     { path: '/:pathMatch(.*)*', component:PageNotFound},
-    { path: '/:WeaponDetail(.*)*', component:WeaponDetail},
+    { path: '/:WeaponDetail', component:WeaponDetail},
 
 ]
 
