@@ -1,78 +1,152 @@
 <template>
-   <div class="min-h-screen bg-[#282828]">
+   <div class="min-h-screen  relative overflow-hidden">
+
+     <!-- 動態背景層，固定並覆蓋父元素 -->
+    <div
+      class="absolute inset-0 -z-10
+        bg-[linear-gradient(135deg,#0d1012,#1a1d1f,#111314,#080807,#28343d,#080807,#0d1012)]
+        bg-[length:600%_600%]
+        animate-gradient-diagonal"
+    ></div>
   <Theheader />
    
-
+  
   <div class="w-full h-[633px] bg-black"></div>
-  <div class="w-full h-20 bg-[#F2994A]"></div>
+  <div class="relative   h-7">
+  <div class="absolute bottom-0 left-0 w-1/2 h-1 bg-[#b06b29]"></div>
+  <div class="absolute bottom-3 left-0 w-3/4 h-1 bg-[#d6853c]"></div>
+  <div class="absolute bottom-6 left-0 w-full h-4 bg-[#F2994A]"></div>
+</div>
 
 
-
-
-
-   <div class="relative w-full max-w-[1532px] mx-auto overflow-hidden mt-10">
-    <div
-      ref="carouselRef"
-      class="flex gap-4 transition-transform duration-500 ease-in-out"
-      :style="{ 
-        transform: `translateX(-${currentIndex * (cardWidth + gap)}px)` 
+<!-- 輪播 -->
+<div class=" text-white py-12 flex justify-center w-full mt-8">
+    <Swiper
+      :modules="[EffectCoverflow, Pagination]"
+      effect="coverflow"
+      grabCursor
+      centeredSlides
+      slidesPerView="auto"
+      :coverflowEffect="{
+        rotate: 50,
+        stretch: 0,
+        depth: 100,
+        modifier: 1,
+        slideShadows: true,
       }"
+      pagination
+      class="w-full "
     >
-      <div
-        v-for="(color, index) in colors"
+      <SwiperSlide
+        v-for="(img, index) in images"
         :key="index"
-        class="w-[500px] h-[300px] flex-shrink-0 rounded-lg flex items-center justify-center text-white text-2xl font-bold transition-transform duration-300"
-        :class="[color]"
+        :style="{ width: '400px', height: '500px' }"
+        class="   rounded-xl overflow-hidden"
       >
-        {{ index + 1 }}
-      </div>
-    </div>
-
-    <!-- 左右按鈕 -->
-    <button
-      @click="prevSlide"
-      class="absolute left-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-30 hover:bg-opacity-70 text-black px-2 py-1 rounded"
-    >
-      ◀
-    </button>
-    <button
-      @click="nextSlide"
-      class="absolute right-2 top-1/2 -translate-y-1/2 bg-white bg-opacity-30 hover:bg-opacity-70 text-black px-2 py-1 rounded"
-    >
-      ▶
-    </button>
+        <img :src="img" class="w-full h-full object-cover" />
+      </SwiperSlide>
+    </Swiper>
   </div>
 
+
   <!-- 水平線 -->
-  <hr class="w-[1752px] mx-auto border-t-2 border-[#FFFFFF] my-6" />
+    <hr class="border-0 h-0.5 bg-gradient-to-r from-[#FFFFFF]/50 via-transparent to-[#FFFFFF]/50 my-6" />
 
 
 
   <!-- 搜尋列 -->
- <div class="flex items-center space-x-2 md:ml-[300px]">
+<div class="flex items-center space-x-2 md:ml-[200px] my-6 mt-10">
   <input
     type="text"
     placeholder="搜尋..."
-    class="w-[500px] border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F2994A] "
+    class="w-[500px] border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F2994A]"
   />
+  <button
+    class="px-4 py-2 bg-[#F2994A] text-white rounded-lg hover:bg-orange-500 transition"
+  >
+    搜尋
+  </button>
 </div>
 
 <!-- 水平線 -->
-  <hr class="w-[712px] md:ml-[300px] border-t-2 border-[#FFFFFF] my-6" />
-
-
-
-  <div class="container mx-auto max-w-7xl">
-    <div class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-       <WeaponCard 
-            v-for="post in posts" 
-            :key="post.id" 
-            v-bind="post" 
-          />
-    
-    </div>
+<div class="relative h-6 w-[1752px] mx-auto my-6">
+  <div class="absolute bottom-4 left-0 w-full h-0.5 bg-[#F2994A]"></div>
 </div>
-    
+
+<!-- 主內容區：左分類 + 右商品 -->
+<div class="container mx-auto max-w-8xl px-4">
+  <div class="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-6">
+
+    <!-- 左側分類選單 -->
+  <aside
+  class="backdrop-blur-md p-6 rounded-xl 
+          text-white  max-w-[280px] bg-[#FFFFFF]" 
+>
+  <h2 class="text-xl font-semibold mb-6 tracking-wide text-black">分類</h2>
+  <ul>
+  <li class="border-b border-black/20 last:border-b-0">
+      <button
+        class=" text-black w-full text-left px-4 py-3 rounded-md 
+                hover:bg-[#F2994A] hover:text-[#1a1f23] 
+                transition duration-300 font-medium"
+      >
+        劍類
+      </button>
+    </li>
+    <li class="border-b border-black/20 last:border-b-0">
+      <button
+        class=" text-black w-full text-left px-4 py-3 rounded-md 
+                hover:bg-[#F2994A] hover:text-[#1a1f23] 
+                transition duration-300 font-medium"
+      >
+        斧頭類
+      </button>
+    </li>
+    <li class="border-b border-black/20 last:border-b-0">
+      <button
+        class="text-black w-full text-left px-4 py-3 rounded-md 
+                hover:bg-[#F2994A] hover:text-[#1a1f23] 
+                transition duration-300 font-medium"
+      >
+        長柄武器
+      </button>
+    </li>
+    <li class="border-b border-black/20  last:border-b-0">
+      <button
+        class="text-black w-full text-left px-4 py-3 rounded-md 
+                hover:bg-[#F2994A] hover:text-[#1a1f23] 
+                transition duration-300 font-medium"
+      >
+        弓箭類
+      </button>
+    </li>
+    <li>
+      <button
+        class="text-black w-full text-left px-4 py-3 rounded-md 
+                hover:bg-[#F2994A] hover:text-[#1a1f23] 
+                transition duration-300 font-medium"
+      >
+        盾牌
+      </button>
+    </li>
+  </ul>
+</aside>
+
+    <!-- 右側商品卡片區 -->
+    <main>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <WeaponCard 
+          v-for="post in posts" 
+          :key="post.id" 
+          v-bind="post" 
+        />
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<div class="w-full h-8 "></div>
 
 
     <Thefooter />
@@ -86,6 +160,24 @@ import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 import WeaponCard from '../components/WeaponCard.vue';
 
+
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { EffectCoverflow, Pagination } from 'swiper/modules'
+
+import 'swiper/css'
+import 'swiper/css/effect-coverflow'
+import 'swiper/css/pagination'
+
+const images = [
+  'https://swiperjs.com/demos/images/nature-1.jpg',
+  'https://swiperjs.com/demos/images/nature-2.jpg',
+  'https://swiperjs.com/demos/images/nature-3.jpg',
+  'https://swiperjs.com/demos/images/nature-4.jpg',
+  'https://swiperjs.com/demos/images/nature-5.jpg',
+  'https://swiperjs.com/demos/images/nature-6.jpg',
+  'https://swiperjs.com/demos/images/nature-7.jpg',
+]
+
 const posts = ref(Array.from({ length: 9 }, (_, index) => ({
   id: index + 1, // 新增 id，從 1 開始
   postImage: `https://picsum.photos/400/280?random=${index + 1}`, // 讓每張圖片都不同
@@ -98,14 +190,6 @@ const posts = ref(Array.from({ length: 9 }, (_, index) => ({
   stars: Math.floor(Math.random() * 50),
 })));
 
-const colors = [
-  'bg-red-500',
-  'bg-green-500',
-  'bg-blue-500',
-  'bg-yellow-500',
-  'bg-purple-500',
-  'bg-pink-500'
-]
 
 const currentIndex = ref(1)
 const cardWidth = 500

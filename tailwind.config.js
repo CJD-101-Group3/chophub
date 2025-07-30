@@ -13,7 +13,20 @@ export default {
                 lg: '1024px',
                 xl: '1280px',
             },
-        },
+            keyframes: {
+            gradientDiagonalMove: {
+                    '0%': { 'background-position': '100% 0%' },
+                    '50%': { 'background-position': '0% 100%' },
+                    '100%': { 'background-position': '100% 0%' },
+            },
+            },
+            animation: {
+                    'gradient-diagonal': 'gradientDiagonalMove 25s ease infinite',
+            },
+            backgroundSize: {
+                    '600%': '600% 600%',
+            },
+            },
     },
     plugins: [],
 }
