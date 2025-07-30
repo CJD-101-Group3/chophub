@@ -29,8 +29,7 @@ const memberInfo = ref({
   gender: '男生',
   joinDate: '2025/05/20',
   location: '加州',
-  avatarUrl: '/src/assets/users/userp.png', // 大頭照路徑
-  // --- 主要改動點：移除了 coverImageUrl ---
+  avatarUrl: '/src/assets/users/userp.png',
 });
 </script>
 
@@ -55,11 +54,13 @@ const memberInfo = ref({
               v-for="item in menuItems"
               :key="item.name"
               :href="item.href"
-              @click="activeTab = item.name"
+              @click.prevent="activeTab = item.name"
               class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
               :class="{
-                'bg-[#F2994A] text-white': activeTab === item.name,
-                'text-gray-600 hover:bg-gray-100': activeTab !== item.name
+                /* 【修改處】為 active 狀態增加了 hover:text-white */
+                'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
+                /* 【修改處】修正了 inactive 狀態的 hover 樣式 */
+                'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
               }"
             >
               {{ item.name }}
@@ -89,7 +90,6 @@ const memberInfo = ref({
           </transition>
         </div>
         
-
         <div class="flex justify-center mb-6">
           <img 
             :src="memberInfo.avatarUrl" 
@@ -122,7 +122,6 @@ const memberInfo = ref({
         <!-- 操作按鈕區 -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
           <button class="w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-4 rounded-md transition-colors duration-300">編輯資料</button>
-          <!-- <button class="w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-4 rounded-md transition-colors duration-300">申請成為刀匠</button> -->
           <button class="w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-4 rounded-md transition-colors duration-300">刀匠展示頁</button>
         </div>
         

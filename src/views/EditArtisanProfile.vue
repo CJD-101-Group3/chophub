@@ -58,7 +58,6 @@ const profileForm = reactive({
   featuredWeaponUrls: [
     selectedWeaponImage, weapon2, weapon3, weapon4, weapon5,
   ],
-  // --- 主要改動點：新增社群連結資料 ---
   socialLinks: [
     { id: 1, platform: 'YOUTUBE', handle: '@Hattori_Hanzo5777' },
     { id: 2, platform: 'X', handle: '@Hattori_Hanzo5777' },
@@ -77,10 +76,10 @@ const allBadges = ref([
   { id: 5, imageUrl: badge5, name: '新手村村民' },
 ]);
 
-// --- 主要改動點：新增社群連結的處理函數 ---
+// 社群連結的處理函數
 const addSocialLink = () => {
   profileForm.socialLinks.push({
-    id: Date.now(), // 用時間戳確保ID唯一
+    id: Date.now(),
     platform: '',
     handle: ''
   });
@@ -105,9 +104,18 @@ const removeSocialLink = (index) => {
             <h2 class="text-xl font-bold text-gray-800">{{ memberInfo.name }}</h2>
           </div>
           <nav class="flex flex-col space-y-2">
-            <a v-for="item in menuItems" :key="item.name" :href="item.href" @click.prevent="activeTab = item.name"
+            <a
+              v-for="item in menuItems"
+              :key="item.name"
+              :href="item.href"
+              @click.prevent="activeTab = item.name"
               class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
-              :class="{ 'bg-[#F2994A] text-white': activeTab === item.name, 'text-gray-600 hover:bg-gray-100': activeTab !== item.name }">
+              :class="{
+                /* 【修改處】修正了 active 和 inactive 狀態的 hover 樣式 */
+                'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
+                'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
+              }"
+            >
               {{ item.name }}
             </a>
           </nav>
@@ -124,7 +132,7 @@ const removeSocialLink = (index) => {
               <img :src="memberInfo.avatarUrl" alt="Avatar" class="w-8 h-8 rounded-full object-cover mr-3"/>
               <span class="font-semibold">{{ memberInfo.name }}</span>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5" :class="{'rotate-180': isDropdownOpen}"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform" :class="{'rotate-180': isDropdownOpen}"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
           </button>
           <transition name="fade">
             <div v-if="isDropdownOpen" class="absolute z-10 w-full mt-2 bg-white border rounded-md shadow-lg">
@@ -136,7 +144,7 @@ const removeSocialLink = (index) => {
         <!-- 主內容 -->
         <div class="space-y-8 max-w-2xl mx-auto">
           
-          <!-- 大頭照編輯區 (保留) -->
+          <!-- 大頭照編輯區 -->
           <div class="relative w-80 h-96 mx-auto">
             <img :src="profileForm.avatarUrl" alt="User Avatar" class="w-full h-full object-cover rounded-xl shadow-lg">
             <div class="absolute bottom-0 left-0 right-0 h-1/3 bg-black bg-opacity-40 rounded-b-xl flex items-center justify-center gap-4 p-2">
@@ -145,7 +153,7 @@ const removeSocialLink = (index) => {
             </div>
           </div>
 
-          <!-- 帳號與安全 卡片 (保留) -->
+          <!-- 帳號與安全 卡片 -->
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-6">帳號與安全</h2>
             <div class="space-y-4">
@@ -159,7 +167,7 @@ const removeSocialLink = (index) => {
             </div>
           </div>
 
-          <!-- 會員資訊 卡片 (保留) -->
+          <!-- 會員資訊 卡片 -->
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-6">會員資訊</h2>
             <div class="space-y-4">
@@ -176,7 +184,7 @@ const removeSocialLink = (index) => {
             </div>
           </div>
           
-          <!-- 刀匠簡介 卡片 (保留) -->
+          <!-- 刀匠簡介 卡片 -->
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-6">刀匠簡介</h2>
             <div class="space-y-4">
@@ -191,7 +199,7 @@ const removeSocialLink = (index) => {
             </div>
           </div>
 
-          <!-- 刀匠卡片 編輯區 (保留) -->
+          <!-- 刀匠卡片 編輯區 -->
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-6">刀匠卡片</h2>
             <div class="space-y-4">
@@ -230,7 +238,7 @@ const removeSocialLink = (index) => {
             </div>
           </div>
 
-          <!-- 刀匠精選武器 (保留) -->
+          <!-- 刀匠精選武器 -->
           <div class="bg-[#E2E9EF] p-6 lg:p-8 rounded-lg shadow-sm">
             <h2 class="text-xl font-bold text-gray-800 mb-6">刀匠精選武器</h2>
             <div class="flex space-x-6 overflow-x-auto pb-4 flex-nowrap">
@@ -244,7 +252,7 @@ const removeSocialLink = (index) => {
             </div>
           </div>
 
-          <!-- 所有徽章 展示區 (保留) -->
+          <!-- 所有徽章 展示區 -->
           <div class="bg-[#E2E9EF] p-6 lg:p-8 rounded-lg shadow-sm">
             <h2 class="text-xl font-bold text-gray-800 mb-6">刀匠徽章</h2>
             <div class="flex space-x-6 overflow-x-auto pb-4">
