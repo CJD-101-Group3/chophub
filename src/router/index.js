@@ -26,6 +26,7 @@ import EditArtisanProfile from '@/views/EditArtisanProfile.vue'
 import ArtisanShowcase from '@/views/ArtisanShowcase.vue'
 import PostActivity from '@/views/PostActivity.vue'
 import PostDetail from '@/views/PostDetail.vue'
+import PageNotFound from '@/views/PageNotFound.vue'
 
 
 
@@ -56,6 +57,7 @@ const routes = [
     { path: '/ArtisanShowcase', component: ArtisanShowcase},
     { path: '/PostActivity', component: PostActivity},
     { path: '/post/:id', component: PostDetail },
+    { path: '/:pathMatch(.*)*', component:PageNotFound}
 
 ]
 
