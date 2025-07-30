@@ -347,7 +347,7 @@
           },
           size: {
             value: {
-              min: 1,
+              min: 2,
               max: 3,
             },
             animation: {
@@ -524,6 +524,7 @@
     />
     </div>
     <Theheader />
+
 
     <div class="w-full h-[633px] bg-black"></div>
     <div class="relative h-7">
