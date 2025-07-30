@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
-import activity1 from '@/assets/activities/activities1.png'; // 這行是關鍵
+import activity1 from '@/assets/activities/activities1.png';
 
 // --- Layout State ---
 const isDropdownOpen = ref(false);
@@ -27,7 +27,6 @@ const memberInfo = ref({
 const contentTabs = ['已報名', '未完成', '已取消', '收藏'];
 const activeContentTab = ref('已報名');
 
-// ** 修改點 3: 統一所有活動的圖片路徑 **
 const allActivities = ref([
   { id: 1, title: '【鍛造群俠會】刀匠線上交流', type: '線上活動', date: '2025/7/23(三) 10:00am', imageUrl: activity1, status: '已報名' },
   { id: 2, title: '【古兵器講座】羅馬短劍的歷史', type: '線上活動', date: '2025/8/15(五) 19:30pm', imageUrl: activity1, status: '已報名' },
@@ -37,7 +36,6 @@ const allActivities = ref([
 ]);
 
 const filteredActivities = computed(() => {
-  // 當 activeContentTab 是 '未完成' 時，我們假設它對應 '已報名' 的狀態
   const statusToFilter = activeContentTab.value === '未完成' ? '已報名' : activeContentTab.value;
   return allActivities.value.filter(activity => activity.status === statusToFilter);
 });
@@ -80,9 +78,17 @@ const closeModal = () => {
             <h2 class="text-xl font-bold text-gray-800">{{ memberInfo.name }}</h2>
           </div>
           <nav class="flex flex-col space-y-2">
-            <a v-for="item in menuItems" :key="item.name" :href="item.href" @click.prevent="activeTab = item.name"
+            <a
+              v-for="item in menuItems"
+              :key="item.name"
+              :href="item.href"
+              @click.prevent="activeTab = item.name"
               class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
-              :class="{ 'bg-[#F2994A] text-white': activeTab === item.name, 'text-gray-600 hover:bg-gray-100': activeTab !== item.name }">
+              :class="{
+                /* 【修改處】修正了 active 和 inactive 狀態的 hover 樣式 */
+                'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
+                'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
+              }">
               {{ item.name }}
             </a>
           </nav>
@@ -114,14 +120,13 @@ const closeModal = () => {
           
           <!-- 內容頁籤導覽列 -->
           <nav class="flex space-x-2 lg:space-x-4 border-b">
-            <!-- ** 修改點 2: 美化頁籤的點擊外框 ** -->
             <button v-for="tab in contentTabs" :key="tab" @click="activeContentTab = tab"
               class="px-3 py-2 font-semibold transition-colors duration-200 rounded-t-md focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#F2994A]"
               :class="{
-  'border-b-2 border-[#F2994A] text-[#F2994A]': activeContentTab === tab,
-  'text-gray-500 hover:text-gray-800': activeContentTab !== tab,
-  'text-[#F2994A]': tab === '未完成' && activeContentTab !== tab
-}">
+                'border-b-2 border-[#F2994A] text-[#F2994A]': activeContentTab === tab,
+                'text-gray-500 hover:text-gray-800': activeContentTab !== tab,
+                'text-[#F2994A]': tab === '未完成' && activeContentTab !== tab
+              }">
               {{ tab }}
             </button>
           </nav>
@@ -157,7 +162,6 @@ const closeModal = () => {
 
     <!-- 退票確認彈窗 -->
     <transition name="modal-fade">
-      <!-- ** 修改點 1: 彈窗置中 ** -->
       <div v-if="isModalVisible" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
           <p class="font-bold text-yellow-600 flex items-center gap-2">
