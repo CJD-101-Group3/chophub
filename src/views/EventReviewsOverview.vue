@@ -1,52 +1,11 @@
-<template>
-   <Theheader />
-
-   <main class="bg-[#282828]">
-      <div>
-         <div class="text-white h3 font-bold text-center py-9 md:h2">活動評論</div>
-
-         <RatingSummary 
-            class="mb-12"
-            :average-rating="ratingData.average"
-            :total-reviews="ratingData.total"
-            :distributions="ratingData.distribution"
-         />
-
-         <EventFilter 
-            class="mb-8" 
-            @filter-applied="applyDateFilter" 
-         />
-         <div class="flex flex-col gap-2">
-
-         <EventReviewItem
-         v-for="activity in activities"
-         :key="activity.id"
-         v-bind="activity"
-         />
-         </div>
-
-            <div class="flex items-center justify-center py-12">
-            <PageButton
-            v-for="page in 3"
-            :key="page"
-            :number="page"
-            :isActive="currentPage === page"
-            @click="goToPage(page)"
-            />
-          </div>
-      </div>
-   </main>
-   <Thefooter />
-</template>
-
 <script setup>
-import Theheader from '../components/Theheader.vue';
-import Thefooter from '../components/Thefooter.vue';
-import Basebutton from '../components/Basebutton.vue';
-import PageButton from '../components/PageButton.vue';
-import RatingSummary from '../components/RatingSummary.vue';
-import EventFilter from '../components/EventFilter.vue';
-import EventReviewItem from '../components/EventReviewItem.vue';
+import Theheader from '@/components/Theheader.vue';
+import Thefooter from '@/components/Thefooter.vue';
+import Basebutton from '@/components/Basebutton.vue';
+import PageButton from '@/components/PageButton.vue';
+import RatingSummary from '@/components/RatingSummary.vue';
+import EventFilter from '@/components/EventFilter.vue';
+import EventReviewItem from '@/components/EventReviewItem.vue';
 import { ref } from 'vue';
 
 // 在真實世界中，這些資料會來自 API
@@ -121,6 +80,48 @@ const goToPage = (page) => {
 currentPage.value = page
 }
 </script>
+
+<template>
+   <Theheader />
+
+   <main class="bg-[#282828]">
+      <div>
+         <div class="text-white h3 font-bold text-center py-9 md:h2">活動評論</div>
+          
+         <RatingSummary 
+            class="mb-12"
+            :average-rating="ratingData.average"
+            :total-reviews="ratingData.total"
+            :distributions="ratingData.distribution"
+         />
+
+         <EventFilter 
+            class="mb-8" 
+            @filter-applied="applyDateFilter" 
+         />
+
+         <div class="mx-5 my-5">
+         <EventReviewItem
+         v-for="activity in activities"
+         :key="activity.id"
+         v-bind="activity"
+         />
+         </div>
+
+            <div class="flex items-center justify-center py-12">
+            <PageButton
+            v-for="page in 3"
+            :key="page"
+            :number="page"
+            :isActive="currentPage === page"
+            @click="goToPage(page)"
+            />
+          </div>
+      </div>
+   </main>
+   <Thefooter />
+</template>
+
 
 <style>
 </style>

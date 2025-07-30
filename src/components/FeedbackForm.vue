@@ -1,5 +1,45 @@
+<script setup>
+import { ref } from 'vue';
+import basebutton from '../components/Basebutton.vue';
+
+// 表單數據綁定
+const satisfaction = ref(0); // 星星評分，0表示未評分
+const expectations = ref('');
+const flow = ref('');
+const speakerPerformance = ref('');
+const favoritePart = ref('');
+const improvementSuggestions = ref('');
+const willAttendAgain = ref('');
+const futureEvents = ref('');
+
+// 提交表單的處理函式
+const handleSubmit = () => {
+  if (satisfaction.value === 0 || !expectations.value || !flow.value || !speakerPerformance.value || !willAttendAgain.value) {
+    alert('請完成所有必填選項！');
+    return;
+  }
+  
+  const formData = {
+    satisfaction: satisfaction.value,
+    expectations: expectations.value,
+    flow: flow.value,
+    speakerPerformance: speakerPerformance.value,
+    favoritePart: favoritePart.value,
+    improvementSuggestions: improvementSuggestions.value,
+    willAttendAgain: willAttendAgain.value,
+    futureEvents: futureEvents.value
+  };
+  
+  console.log('Form Submitted!', formData);
+  
+  alert('感謝您的回饋！');
+  
+  // 使用 fetch() 或 axios可將 formData 發送到您的後端伺服器
+};
+</script>
+
 <template>
-  <div class="bg-[#282828] text-white p-8 shadow-2xl">
+  <div class="bg-[#282828] text-white p-8 md:mx-[50px] lg:mx-[250px]" >
     <h2 class="h3 font-bold text-center mt-8 mb-8 md:h2">活動回饋評論填寫</h2>
     
     <form @submit.prevent="handleSubmit" class="space-y-8">
@@ -189,42 +229,3 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-import basebutton from '../components/Basebutton.vue';
-
-// 表單數據綁定
-const satisfaction = ref(0); // 星星評分，0表示未評分
-const expectations = ref('');
-const flow = ref('');
-const speakerPerformance = ref('');
-const favoritePart = ref('');
-const improvementSuggestions = ref('');
-const willAttendAgain = ref('');
-const futureEvents = ref('');
-
-// 提交表單的處理函式
-const handleSubmit = () => {
-  if (satisfaction.value === 0 || !expectations.value || !flow.value || !speakerPerformance.value || !willAttendAgain.value) {
-    alert('請完成所有必填選項喔！');
-    return;
-  }
-  
-  const formData = {
-    satisfaction: satisfaction.value,
-    expectations: expectations.value,
-    flow: flow.value,
-    speakerPerformance: speakerPerformance.value,
-    favoritePart: favoritePart.value,
-    improvementSuggestions: improvementSuggestions.value,
-    willAttendAgain: willAttendAgain.value,
-    futureEvents: futureEvents.value
-  };
-  
-  console.log('Form Submitted!', formData);
-  
-  alert('感謝您的回饋！');
-  
-  // 使用 fetch() 或 axios可將 formData 發送到您的後端伺服器
-};
-</script>

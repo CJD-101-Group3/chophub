@@ -80,9 +80,9 @@
 
 <script setup>
 // JavaScript 邏輯
-import Theheader from '../components/Theheader.vue';
-import Thefooter from '../components/Thefooter.vue';
-import basebutton from '../components/Basebutton.vue';
+import Theheader from '@/components/Theheader.vue';
+import Thefooter from '@/components/Thefooter.vue';
+import basebutton from '@/components/Basebutton.vue';
 
 // export default {
 //   name: 'EventPayment',
