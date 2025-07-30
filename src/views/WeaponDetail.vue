@@ -117,13 +117,7 @@ onMounted(() => {
 <style>
 /* 移除 scoped，讓樣式套用到全域，確保 canvas 正常顯示 */
 /* 這組 CSS 是比較穩健的寫法，可以確保 canvas 填滿畫面且沒有滾動條 */
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden; /* 強制隱藏滾動條 */
-}
+
 
 canvas {
   display: block;
