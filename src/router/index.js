@@ -59,6 +59,7 @@ const routes = [
     { path: '/PostActivity', component: PostActivity},
     { path: '/post/:id', component: PostDetail },
     { path: '/Weaponslist/:WeaponDetail', component:WeaponDetail},
+    // 請在這支上新添路由，不要添加在PageNotFound頁面底下
     { path: '/:pathMatch(.*)*', component:PageNotFound},
 
 ]

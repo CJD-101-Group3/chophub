@@ -3,7 +3,6 @@ export default {
     data(){
         return {
             ironImages: [
-                '/img/iron.png',
                 '/img/4.png',
                 '/img/40.png',
                 '/img/404.png'
@@ -12,13 +11,11 @@ export default {
             halfTimer: null,
             swingDuration: 2000,
             ironScales:[
-                1.5,
                 1.4,
                 1.4,
                 1.4
             ],
             irondx:[
-                0,
                 50,
                 50,
                 50
@@ -194,7 +191,7 @@ export default {
     #slogan{
         position: absolute;
         right: 30%;
-        top: 65%;
+        top: 68%;
         font-weight: 600;
         animation: awray 2s ease;
     }
