@@ -23,7 +23,7 @@ const isOpen = ref(false)
         <!-- 電腦版導覽連結 -->
         <nav class="hidden md:flex h5 items-center space-x-6 text-white ">
             <RouterLink to="/post" class="h5 hover:text-orange-400 transition">貼文區</RouterLink>
-            <RouterLink to="/weaponlist" class="h5 hover:text-orange-400 transition">武器展示區</RouterLink>
+            <RouterLink to="/weaponslist" class="h5 hover:text-orange-400 transition">武器展示區</RouterLink>
             <RouterLink to="/EventHomePage" class="h5 hover:text-orange-400 transition">活動專區</RouterLink>
             <RouterLink to="/About" class="h5 hover:text-orange-400 transition">關於我們</RouterLink>
             <div class="flex items-center space-x-2">
@@ -50,7 +50,7 @@ const isOpen = ref(false)
         <!-- 登入 / 註冊 -->
         <RouterLink
             to="/Login"
-            class="group flex items-center space-x-2 pb-3 border-b border-black hover:text-white transition duration-300 block"
+            class="group  items-center space-x-2 pb-3 border-b border-black hover:text-white transition duration-300 block"
             @click="isOpen = false">
             <img :src="user" alt="user" class="h1 w-5 h-5 group-hover:brightness-0 group-hover:invert duration-300" />
             <span class="font-bold">點此登入/註冊</span>
@@ -58,7 +58,7 @@ const isOpen = ref(false)
         <!-- 導覽項目 -->
         <RouterLink
             to="/post"
-            class="group flex items-center space-x-2 hover:text-white transition block"
+            class="group items-center space-x-2 hover:text-white transition block"
             @click="isOpen = false">
             <img :src="message" alt="message" class="h1 w-5 h-5 group-hover:brightness-0 group-hover:invert duration-300" />
             <span class="font-bold">貼文區</span>
@@ -66,7 +66,7 @@ const isOpen = ref(false)
 
         <RouterLink
             to="/Weaponslist"
-            class="group flex items-center space-x-2 hover:text-white transition block"
+            class="group items-center space-x-2 hover:text-white transition block"
             @click="isOpen = false">
             <img :src="weapon" alt="weapon" class="h1 w-5 h-5 group-hover:brightness-0 group-hover:invert duration-300" />
             <span class="font-bold">武器展示區</span>
@@ -74,7 +74,7 @@ const isOpen = ref(false)
 
         <RouterLink
             to="/EventHomePage"
-            class="group flex items-center space-x-2 hover:text-white transition block"
+            class="group items-center space-x-2 hover:text-white transition block"
             @click="isOpen = false">
             <img :src="calendar" alt="calendar" class="h1 w-5 h-5 group-hover:brightness-0 group-hover:invert duration-300" />
             <span class="font-bold">活動專區</span>
@@ -82,7 +82,7 @@ const isOpen = ref(false)
 
         <RouterLink
             to="/About"
-            class="group flex items-center space-x-2 hover:text-white transition block"
+            class="group items-center space-x-2 hover:text-white transition block"
             @click="isOpen = false">
             <img :src="aboutus" alt="aboutus" class="h1 w-5 h-5 group-hover:brightness-0 group-hover:invert duration-300" />
             <span class="font-bold">關於我們</span>

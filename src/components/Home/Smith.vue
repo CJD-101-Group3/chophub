@@ -1,0 +1,65 @@
+<template>
+    <div class="absolute bottom-[8%] left-1/2 translate-x-[-50%] z-20 w-[35vw] ">
+        <!-- 對話泡泡 -->
+        <div
+            :key="message"
+            class="absolute top-[-20%] left-[30%] translate-x-[-50%] px-4 py-2 bg-white border-2 border-black rounded-lg text-black w-max shadow-lg animate-fade-in"style="font-size: 1.5vw">
+            {{ message }}
+            <!-- 小尾巴 -->
+            <div
+                class="absolute left-1/2 translate-x-[-50%] top-full w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-black"></div>
+        </div>
+
+
+        <div class="relative w-full">
+            <!-- 陰影 -->
+            <div
+                class="absolute bottom-[5%] left-1/2 translate-x-[-30%] w-[6vw] h-[4vw] bg-black/20 rounded-full blur-[2px] z-0"></div>
+
+            <!-- Smith 本人 -->
+            <img src="/Home_img/Smith_1.png" alt="Smith" class="w-full relative z-10" />
+        </div>
+    </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+
+// 輪播訊息陣列
+const messages = [
+    '歡迎來到 ChopHub！',
+    '看看武器架上的武器吧!',
+    '也許有新的活動喔!',
+    '有鐵塊又偷溜出去了？',
+    '我昨天鍛的劍呢！',
+    '別看了,逛留言板吧!',
+]
+
+const message = ref(messages[0])
+let index = 0
+
+// 每 3 秒輪播訊息
+onMounted(() => {
+    setInterval(() => {
+        index = (index + 1) % messages.length
+        message.value = messages[index]
+    }, 4000)
+})
+</script>
+
+<style scoped>
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out both;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+</style>

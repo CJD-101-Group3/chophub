@@ -1,5 +1,19 @@
 <script setup>
 import Theheader from '@/components/Theheader.vue'
+import Smith from '@/components/Home/Smith.vue'
+import Hand1 from '@/components/Home/Hand1.vue'
+import Weapon_bar from '@/components/Home/Weapon_bar.vue'
+import Board from '@/components/Home/Board.vue'
+import Event from '@/components/Home/Event.vue'
+import Window from '@/components/Home/Window.vue'
+import Lamp from '@/components/Home/Lamp.vue'
+import { ref } from 'vue'
+
+const isDay = ref(true)
+
+const toggleWindow = () => {
+    isDay.value = !isDay.value
+}
 </script>
 
 <template>
@@ -10,16 +24,10 @@ import Theheader from '@/components/Theheader.vue'
             <img src="/Home_img/BG_img.png" alt="Home Background" class="absolute inset-0 w-full h-full object-fill" />
 
             <!-- Smith -->
-            <img
-                src="/Home_img/Smith_1.png"
-                alt="Smith"
-                class="absolute w-[35vw] bottom-[8%] left-1/2 translate-x-[-50%] z-20" />
+            <Smith />
 
             <!-- 手0 -->
-            <img
-                src="/Home_img/Hand_0.png"
-                alt="Smith 手"
-                class="absolute w-[13vw] bottom-[35%] left-1/2 translate-x-[-8%] z-10" />
+            <Hand1 />
             <!-- 鐵砧 -->
             <img
                 src="/Home_img/Anv.png"
@@ -31,35 +39,21 @@ import Theheader from '@/components/Theheader.vue'
                 alt="鐵塊"
                 class="absolute w-[8vw] bottom-[21%] left-1/2 translate-x-[43%] z-30" />
             <!-- 武器架 -->
-            <img
-                src="/Home_img/Weapons.png"
-                alt="武器架"
-                class="absolute w-[40vw] bottom-[13%] translate-x-[9%] z-30" />
-            <!-- 窗戶 -->
-            <img
-                src="/Home_img/Window_d.png"
-                alt="窗戶(日)"
-                class="absolute w-[27vw] bottom-[54%] left-1/2 translate-x-[-20%] z-10" />
+            <Weapon_bar />
             <!-- 留言板 -->
-            <img
-                src="/Home_img/Board.png"
-                alt="留言板"
-                class="absolute w-[43vw] bottom-[33%] left-1/2 translate-x-[13%] z-30" />
+            <Board />
             <!-- 活動黑板 -->
-            <img
-                src="/Home_img/Event_board.png"
-                alt="活動黑板"
-                class="absolute w-[28vw] bottom-[0%] left-1/2 translate-x-[27%] z-30" />
+            <Event />
             <!-- 桶子 -->
             <img
                 src="/Home_img/Taru.png"
                 alt="桶子"
                 class="absolute w-[20vw] bottom-[0%] left-1/2 translate-x-[-90%] z-30" />
-                <!-- 吊燈 -->
-            <img
-                src="/Home_img/Light.png"
-                alt="吊燈"
-                class="absolute w-[20vw] bottom-[68%]  left-1/2 translate-x-[-99%] z-30" />
+            <!-- 窗戶元件，點擊會切換 isDay -->
+            <Window :isDay="isDay" @toggle="toggleWindow" />
+
+            <!-- 吊燈元件，根據 isDay 顯示燈光 -->
+            <Lamp :isDay="isDay" />
         </div>
     </div>
 </template>

@@ -18,7 +18,7 @@
                     <h2 class="text-2xl font-bold text-gray-800">活動入場憑證</h2>
 
                     <!-- QR Code 元件 -->
-                     <QrcodeVue 
+                    <QrcodeVue 
                         :value="qrValue" 
                         :size="220" 
                         level="H"
