@@ -15,7 +15,7 @@ const buttonClass = computed(() => {
 
 <template>
     <button
-        :class="`h6 w-10 h-10 rounded-[8px] font-bold transition duration-300 ${buttonClass}`"
+        :class="`h6 w-10 h-10 rounded-[8px] font-bold transition duration-300 mb-5 ${buttonClass}`"
         @click="$emit('click')">
         {{ number }}
     </button>

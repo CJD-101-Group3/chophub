@@ -534,7 +534,7 @@
     </div>
 
     <!-- 輪播 -->
-    <div class="text-white py-12 flex justify-center w-full mt-8">
+    <div class="text-white py-12 flex justify-center w-full mt-8 select-none">
       <Swiper
         :modules="[EffectCoverflow, Pagination]"
         effect="coverflow"

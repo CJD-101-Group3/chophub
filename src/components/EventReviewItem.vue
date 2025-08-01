@@ -1,11 +1,11 @@
 <template>
-  <!-- Main Card Container -->
-  <div class="w-full md:w-1/2 flex flex-col mx-5 md:flex-row items-center gap-6 md:mx-auto bg-white p-4 border-b border-gray-700">
+  <div class="w-full flex flex-col items-center gap-4 mx-auto bg-white p-4 border-b border-gray-700
+              md:flex-row md:w-3/4 md:p-6 md:gap-6
+              lg:w-1/2 mb-5">
     
-    <!-- 1. Image Section -->
-    <div class="flex-shrink-0 w-64 rounded-md overflow-hidden">
+    <div class="flex-shrink-0 w-full rounded-md overflow-hidden
+                md:w-64">
       <div class="aspect-[16/10]"> 
-        <!-- B. 內層圖片，填滿容器 -->
         <img 
           :src="imageUrl" 
           :alt="title" 
@@ -14,28 +14,25 @@
       </div>
     </div>
 
-    <!-- 2. Activity Details Section -->
-    <div class="flex-grow">
+    <div class="flex-grow w-full text-center
+                md:w-auto md:text-left">
       <h3 class="text-2xl font-bold text-[#F2994A]">{{ title }}</h3>
       <p class="mt-2 text-lg text-gray-400">{{ eventType }}</p>
       <p class="mt-1 text-xl text-[#4F4F4F]">{{ dateTime }}</p>
     </div>
 
-    <!-- 3. Buttons Section -->
-    <a class="flex flex-shrink-0 gap-4"
-      href="./EventReview">
-      <!-- <div class="flex flex-col items-center justify-center bg-[#F2994A] px-6 py-3 text-white rounded-lg">
-        <span class="text-[20px] md:text-[24px] font-bold">撰寫評論</span>
-      </div> -->
-      <basebutton class="w-[100px] h-[50px] text-[20px] md:text-[24px] font-bold">撰寫評論</basebutton>
-    </a>
+    <div class="flex-shrink-0 w-full mt-2
+                md:w-auto md:mt-0">
+      <a href="./EventReview">
+        <basebutton class="w-full h-[50px] text-[20px] font-bold md:w-[120px] md:text-[24px]">
+        撰寫評論</basebutton>
+      </a>
+    </div>
     
   </div>
 </template>
 
 <script setup>
-// Define the props that this component will accept
-// This makes the component reusable for any activity data
 import Basebutton from './Basebutton.vue';
 
 defineProps({
@@ -45,7 +42,7 @@ defineProps({
   },
   eventType: {
     type: String,
-    default: '線上活動', // A default value if not provided
+    default: '線上活動',
   },
   dateTime: {
     type: String,
@@ -59,5 +56,4 @@ defineProps({
 </script>
 
 <style scoped>
-
 </style>
