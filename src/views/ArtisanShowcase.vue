@@ -2,7 +2,10 @@
 import { ref } from 'vue';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
-// 引入所有需要的圖片資源，請確保您的路徑和檔名正確
+// **【步驟 4.1】** 引入你剛剛建立的 SocialIcon 元件
+import SocialIcon from '../components/SocialIcon.vue'; 
+
+// 引入圖片資源
 import artisanAvatar from '../assets/users/userp.png';
 import artisanCardBg from '../assets/users/artisan-card-bg.png';
 import weapon1 from '../assets/weapons/weapon1.png';
@@ -14,14 +17,6 @@ import badge1 from '../assets/badges/badge1.png';
 import badge2 from '../assets/badges/badge2.png';
 import badge3 from '../assets/badges/badge3.png';
 import badge4 from '../assets/badges/badge4.png';
-// import badge5 from '../assets/badges/badge5.png'; // 根據您的 Figma 截圖，補回 badge5-10
-// import badge6 from '../assets/badges/badge6.png';
-// import badge7 from '../assets/badges/badge7.png';
-// import badge8 from '../assets/badges/badge8.png';
-// import badge9 from '../assets/badges/badge9.png';
-// import badge10 from '../assets/badges/badge10.png';
-
-
 
 const particlesLoaded = async (container) => {
   console.log("Particles container loaded", container);
@@ -70,18 +65,12 @@ const artisanProfile = ref({
     { id: 2, name: '黑鐵級刀匠', imageUrl: badge2 },
     { id: 3, name: '赤火初煉者', imageUrl: badge3 },
     { id: 4, name: '登入王', imageUrl: badge4 },
-    // { id: 5, name: '百戰百勝', imageUrl: badge5 },
-    // { id: 6, name: '玉鋼砥魂', imageUrl: badge6 },
-    // { id: 7, name: '赤火初煉者', imageUrl: badge7 },
-    // { id: 8, name: '登入王', imageUrl: badge8 },
-    // { id: 9, name: '玉鋼砥魂', imageUrl: badge9 },
-    // { id: 10, name: '百鍊成鋒', imageUrl: badge10 },
   ],
 });
 </script>
 
 <template>
-        <div class="absolute inset-0 -z-10">
+      <div class="absolute inset-0 -z-10">
       <vue-particles
       id="tsparticles"
       @particles-loaded="particlesLoaded"
@@ -602,6 +591,8 @@ const artisanProfile = ref({
       }"
     />
     </div>
+
+
   <div class="flex flex-col min-h-screen">
     <Theheader />
 
@@ -644,20 +635,23 @@ const artisanProfile = ref({
         <section class="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
           <a v-for="link in artisanProfile.socialLinks" :key="link.id" :href="link.link" target="_blank"
              class="flex items-center gap-4 bg-[#F2994A] p-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors duration-200">
-            <div class="w-10 h-10 bg-white rounded-md flex items-center justify-center font-bold text-gray-400 text-xs">ICON</div>
+            
+            <!-- **【步驟 4.2】** 將原本的 div 替換成 SocialIcon 元件 -->
+            <div class="w-10 h-10 bg-white rounded-md flex items-center justify-center">
+              <SocialIcon :platform="link.platform" class="w-6 h-6 text-gray-800" />
+            </div>
+
             <div>
               <p class="font-bold text-gray-800">{{ link.platform }}</p>
               <p class="text-sm text-gray-600">{{ link.handle }}</p>
             </div>
           </a>
         </section>
-F2994A   E2E9EF
+
         <!-- 刀匠精選作品 -->
         <section class="bg-[#ffffff] p-6 lg:p-8 rounded-lg shadow-sm">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選作品</h2>
-          <!-- 主要修正點：基礎樣式是 flex + overflow，lg:* 才是 grid -->
           <div class="flex space-x-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-5 lg:gap-6 lg:space-x-0 lg:pb-0">
-            <!-- 主要修正點：手機版寬度設為 w-56 -->
             <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="work.link" class="flex-shrink-0 group w-56 lg:w-full">
               <div class="bg-white p-2 rounded-lg shadow-md overflow-hidden">
                 <img :src="work.imageUrl" :alt="'作品 ' + work.id" class="w-full h-48 lg:h-40 object-contain transition-transform duration-300 group-hover:scale-105">
@@ -672,15 +666,12 @@ F2994A   E2E9EF
         <!-- 刀匠精選貼文 -->
         <section class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選貼文</h2>
-          <!-- 主要修正點：手機版用 div 堆疊，電腦版用 table -->
-          <!-- 手機版卡片列表 -->
           <div class="space-y-4 lg:hidden">
             <a v-for="post in artisanProfile.featuredPosts" :key="post.id" :href="post.link" class="block bg-[#E2E9EF] p-4 rounded-lg hover:bg-gray-300 transition-colors">
               <p class="font-semibold text-gray-800">{{ post.category }} {{ post.title }}</p>
               <p class="text-sm text-gray-500 mt-2">發表日期：{{ post.date }}</p>
             </a>
           </div>
-          <!-- 電腦版表格 -->
           <table class="w-full text-left hidden lg:table">
             <thead>
               <tr class="border-b-2">
@@ -704,9 +695,7 @@ F2994A   E2E9EF
         <!-- 成就徽章 -->
         <section class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">成就徽章 (可滑動)</h2>
-          <!-- 主要修正點：基礎樣式是 flex + overflow，lg:* 才是換行+置中 -->
           <div class="flex space-x-6 overflow-x-auto pb-4 lg:flex-wrap lg:justify-center lg:gap-x-4 lg:gap-y-6 lg:space-x-0">
-            <!-- 主要修正點：手機版寬度設為 w-32 -->
             <div v-for="achievement in artisanProfile.achievements" :key="achievement.id" class="flex flex-col items-center flex-shrink-0 w-32 lg:w-24">
               <img :src="achievement.imageUrl" :alt="achievement.name" class="w-28 lg:w-24 h-auto object-contain">
               <span class="mt-2 text-sm font-semibold text-gray-700 text-center">{{ achievement.name }}</span>
@@ -722,7 +711,7 @@ F2994A   E2E9EF
 </template>
 
 <style scoped>
-/* 美化滾動條 (可選) */
+/* 美化滾動條 */
 .overflow-x-auto::-webkit-scrollbar {
   height: 8px;
 }
