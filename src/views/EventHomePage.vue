@@ -2,7 +2,7 @@
    <Theheader />
    <main class="bg-[#282828] flex-1 flex flex-col items-center overflow-y-auto space-y-4 md:space-y-6">
       <div class="relative">
-         <img src="/public/events/hero-background.jpg" alt="鑄造師" class="block z-index-[-1]">
+         <img src="/public/events/hero-background.jpg" alt="鑄造師" class="block z-index-[-1] opacity-[60%]">
          <p class="absolute top-[40%] left-[13%] text-[#fff] text-xl font-bold tracking-widest md:text-4xl lg:text-6xl">
             冷鋼烈火 ·
             共赴匠魂之旅</p>
@@ -10,12 +10,9 @@
             體驗鍛造、深度研修，沉浸兵器之美</p>
       </div>
 
-      <div class="flex flex-row gap-3">
+      <div class="W-full">
          <a href="/MyEvents">
          <Basebutton>我的活動</Basebutton>
-         </a>
-         <a href="/EventReviewsOverview">
-         <Basebutton>活動回饋</Basebutton>
          </a>
       </div>
 
@@ -27,7 +24,7 @@
          <DropDownFilter title="活動地點" :items="locationItems" v-model="selectedLocation" />
       </div>
 
-      <div v-if="filteredEvents.length > 0" class="inline-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div v-if="filteredEvents.length > 0" class="inline-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-5">
          <EventCard v-for="event in filteredEvents" :key="event.id" :title="event.title" :event-type="event.type"
             :event-date="event.date" :rating="event.rating" :review-count="event.reviews"
             :is-featured="event.isFeatured" :event-image="event.image" @learn-more="handleLearnMore" />

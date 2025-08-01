@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col items-center gap-4 mx-auto bg-white p-4 border-b border-gray-700
-              md:flex-row md:w-3/4 md:p-6 md:gap-6
-              lg:w-1/2 mb-5">
+              md:flex-row md:w-4/5 md:p-6 md:gap-6
+              lg:w-3/4 mb-5">
     
     <div class="flex-shrink-0 w-full rounded-md overflow-hidden
                 md:w-64">

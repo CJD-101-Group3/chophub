@@ -13,6 +13,7 @@
     "@tsparticles/slim": "^3.8.1",
     "@tsparticles/vue3": "^3.0.1",
     "axios": "^1.10.0",
+    "qrcode.vue": "^3.6.0",
     "swiper": "^11.2.10",
     "three": "^0.178.0",
     "tsparticles": "^3.8.1",

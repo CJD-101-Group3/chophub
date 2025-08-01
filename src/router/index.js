@@ -28,6 +28,7 @@ import PostActivity from '@/views/PostActivity.vue'
 import PostDetail from '@/views/PostDetail.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import WeaponDetail from '@/views/WeaponDetail.vue'
+import TicketDetailPage from '@/views/TicketDetailPage.vue'
 
 
 
@@ -59,6 +60,7 @@ const routes = [
     { path: '/PostActivity', component: PostActivity},
     { path: '/post/:id', component: PostDetail },
     { path: '/Weaponslist/:WeaponDetail', component:WeaponDetail},
+    { path: '/TicketDetailPage', component:TicketDetailPage},
     // 請在這支上新添路由，不要添加在PageNotFound頁面底下
     { path: '/:pathMatch(.*)*', component:PageNotFound},
 
