@@ -108,15 +108,11 @@ currentPage.value = page
          />
          </div>
 
-            <div class="flex items-center justify-center py-12">
-            <PageButton
-            v-for="page in 3"
-            :key="page"
-            :number="page"
-            :isActive="currentPage === page"
-            @click="goToPage(page)"
-            />
-          </div>
+      <div class="flex items-center justify-center gap-2">
+         <PageButton v-for="page in 3" :key="page" :number="page" :isActive="currentPage === page"
+            @click="goToPage(page)" />
+      </div>
+
       </div>
    </main>
    <Thefooter />

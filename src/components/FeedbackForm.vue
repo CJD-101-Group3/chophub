@@ -45,8 +45,8 @@ const handleSubmit = () => {
     <form @submit.prevent="handleSubmit" class="space-y-8">
       
       <!-- 1. 整體滿意度 -->
-      <div class="space-y-3">
-        <label class="text-lg font-medium text-white">整體滿意度</label>
+      <div class="space-y-7 mb-10">
+        <label class="text-lg font-medium text-white mb-">整體滿意度</label>
         <div class="flex items-center space-x-2">
           <svg 
             v-for="star in 5" 
@@ -66,7 +66,7 @@ const handleSubmit = () => {
       </div>
 
       <!-- 2. 內容符合期待 -->
-      <div class="space-y-3">
+      <div class="space-y-7 mb-10">
         <label class="text-lg font-medium text-white">活動內容是否符合期待</label>
         <div class="flex flex-col md:flex-row flex-wrap gap-x-6 gap-y-2">
           <label class="flex items-center space-x-2 cursor-pointer">
@@ -98,7 +98,7 @@ const handleSubmit = () => {
       </div>
       
       <!-- 3. 流程順暢度 -->
-      <div class="space-y-3">
+      <div class="space-y-7 mb-10">
         <label class="text-lg font-medium text-white">活動流程順暢度 (1為最低分, 5為最高分)</label>
         <div class="flex flex-col md:flex-row flex-wrap gap-x-6 gap-y-2">
             <label class="flex items-center space-x-2 cursor-pointer">
@@ -130,7 +130,7 @@ const handleSubmit = () => {
       </div>
 
       <!-- 4. 講師表現 -->
-      <div class="space-y-3">
+      <div class="space-y-7 mb-10">
         <label class="text-lg font-medium text-white">對講師/刀匠表現的評價 (1為最低分, 5為最高分)</label>
         <div class="flex flex-col md:flex-row flex-wrap gap-x-6 gap-y-2">
             <label class="flex items-center space-x-2 cursor-pointer">
@@ -162,7 +162,7 @@ const handleSubmit = () => {
       </div>
 
       <!-- 5. 最喜歡的部分 -->
-      <div class="space-y-3">
+      <div class="space-y-7 mb-10">
         <label for="favorite-part" class="text-lg font-medium text-white">最喜歡的部分：</label>
         <textarea 
           id="favorite-part"
@@ -174,7 +174,7 @@ const handleSubmit = () => {
       </div>
       
       <!-- 6. 建議改進的地方 -->
-      <div class="space-y-3">
+      <div class="space-y-7 mb-10">
         <label for="improvements" class="text-lg font-medium text-white">建議改進的地方：</label>
         <textarea 
           id="improvements"
@@ -186,7 +186,7 @@ const handleSubmit = () => {
       </div>
       
       <!-- 7. 再次參加 -->
-      <div class="space-y-3">
+      <div class="space-y-7 mb-10">
         <label class="text-lg font-medium text-white">是否願意再次參加</label>
         <div class="flex flex-wrap gap-x-6 gap-y-2">
           <label class="flex items-center space-x-2 cursor-pointer">
@@ -203,7 +203,7 @@ const handleSubmit = () => {
       </div>
 
       <!-- 8. 希望活動 -->
-      <div class="space-y-3">
+      <div class="space-y-7 mb-10">
         <label for="future-events" class="text-lg font-medium text-white">還希望我們舉辦什麼活動呢？</label>
         <textarea 
           id="future-events"
@@ -215,13 +215,13 @@ const handleSubmit = () => {
       </div>
 
       <!-- 提交按鈕 -->
-        <div class="flex items-center justify-center py-5">
+        <div class="flex items-center justify-center py-5 mb-10">
           <basebutton class="w-[150px]">提交評論</basebutton>
       </div>
 
       
       <!-- 免責聲明 -->
-      <p class="text-left flex justify-center pt-2">
+      <p class="text-left flex justify-center pt-2 mb-10">
         感謝您參加本次活動！<br>本問卷僅用於活動內容優化與品質提升，不會對外公開您的個人資料或評論內容。<br>您的意見將幫助我們設計更適合您的活動與體驗，謝謝支持！
       </p>
 

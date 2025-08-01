@@ -7,22 +7,37 @@
       <h3 class="h3 font-bold text-center">確認與繳費</h3>
       <form action="" class="space-y-4">
 
-        <div>
-          <label for="name">參加者姓名：</label><br>
-          <input type="text" placeholder="請輸入姓名" class="w-full md:w-1/2 p-3 border border-gray-300 rounded-md resize-y">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 items-center">
+          
+          <!--三個輸入框的容器 -->
+          <div class="space-y-4">
+            <div>
+              <label for="name">參加者姓名：</label><br>
+              <input type="text" placeholder="請輸入姓名" class="w-full p-3 border border-gray-300 rounded-md resize-y">
+            </div>
+
+            <div>
+              <labe for="email">電子郵件：</labe><br>
+              <input type="email" placeholder="請輸入電子郵件" class="w-full p-3 border border-gray-300 rounded-md resize-y">
+            </div>
+
+            <div>
+              <label for="phone">連絡電話：</label><br>
+              <input type="tel" placeholder="0912-345-678" class="w-full p-3 border border-gray-300 rounded-md resize-y">
+            </div>
+          </div>
+
+          <!-- 圖片容器 -->
+          <div class="hidden md:flex items-center justify-center p-4">
+            <img 
+              src="/public/events/Khukuri.png" 
+              alt="尼泊爾彎刀" 
+              class="w-full h-auto object-cover rounded-md max-h-[250px] opacity-90 shadow-md"
+            >
+          </div>
         </div>
 
-        <div>
-          <labe for="email">電子郵件：</labe><br>
-          <input type="email" placeholder="請輸入電子郵件" class="w-full md:w-1/2 p-3 border border-gray-300 rounded-md resize-y">
-        </div>
-
-        <div>
-        <label for="phone">連絡電話：</label><br>
-        <input type="tel" placeholder="0912-345-678" class="w-full md:w-1/2 p-3 border border-gray-300 rounded-md resize-y">
-        </div>
-
-        <hr>
+        <hr class="!my-6">
 
         <div>
           <label for="message">想對我們說的話</label>
@@ -60,15 +75,22 @@
           <label for="card-holder">持卡人姓名(英文拼音)</label>
           <input type="text" placeholder="請與護照相同" class="w-full p-3 border border-gray-300 rounded-md resize-y">
         </div>
-        <div class="flex justify-center">
-          <!-- 
-            直接把 "儲存並繼續" 這段文字放在 <basebutton> 的中間
-            Vue 會自動把這段文字放到元件 <slot> 的位置 
-          -->
-          <basebutton type="submit" class="mt-2">
-            儲存並繼續
-          </basebutton>
-        </div>
+
+        <div class="flex flex-row items-center justify-center gap-5">
+
+          <router-link 
+            to="/EventDetail" 
+            class="text-sm font-bold"
+          >
+            返回上一頁
+          </router-link>
+
+          <div>
+              <basebutton variant="primary" @click="goToPayment">
+                儲存並繼續
+              </basebutton>
+          </div>
+      </div>
 
 
 
@@ -79,21 +101,17 @@
 </template>
 
 <script setup>
-// JavaScript 邏輯
 import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
 import basebutton from '@/components/Basebutton.vue';
+import { useRouter } from 'vue-router';
 
-// export default {
-//   name: 'EventPayment',
-  
-//   // 步驟 3.3: 註冊元件
-//   components: {
-//     TheHeader,
-//     // AppFooter
-//     }}
+const router = useRouter();
+
+function goToPayment() {
+  router.push('/PaymentSuccess');
+}
 </script>
 
 <style>
-/* CSS 樣式 */
 </style>

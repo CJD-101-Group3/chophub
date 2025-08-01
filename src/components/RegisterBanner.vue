@@ -1,44 +1,48 @@
 <template>
-    <section class="bg-white flex flex-col md:flex-row items-center justify-center gap-8 py-5 px-5 ">
-        
-        <div class="w-full max-w-lg mx-auto md:w-1/3 md:mx-0 md:py-[50px]">
-        <img :src="imageUrl" 
-            :alt="imageAlt" 
-            class="rounded-lg object-cover w-full h-full shadow-lg">
-        </div>
-        
-        <div class="w-full md:w-1/2 flex flex-col justify-center">
-        <h1 class="h3 font-bold md:h3 text-[#F2994A]">
-            {{ title }}
-        </h1>
-            <div class="mt-5 leading-5">
-            <p class="text-[20px] md:text-[24px] text-black mt-2">{{ subtitle }}</p>
-            <p class="text-[20px] md:text-[24px] text-black mt-4">{{ dateTime }}</p>
+    <section class="w-full bg-white" >
+        <div class="mx-auto flex max-w-5xl flex-col items-center px-4 py-12 sm:px-6 md:flex-row lg:px-8">
+            <!-- --- 圖片部分 --- -->
+            <div class="w-full flex-shrink-0 md:w-1/3">
+                <img :src="event.imageUrl" :alt="event.imageAlt" class="w-full rounded-lg object-cover shadow-lg" />
+            </div>
+
+            <!-- --- 文字內容部分 --- -->
+            <div class="mt-8 w-full md:mt-0 md:w-2/3 md:pl-10">
+                <h1 class="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">{{ event.title }}</h1>
+
+                <div class="space-y-3 text-lg text-gray-700">
+                    <p class="flex items-start">
+                        <strong class="inline-block w-24 flex-shrink-0 font-semibold text-gray-900">活動時間</strong>
+                        <span>{{ event.time }}</span>
+                    </p>
+                    <p class="flex items-start">
+                        <strong class="inline-block w-24 flex-shrink-0 font-semibold text-gray-900">活動地點</strong>
+                        <span>{{ event.location }}</span>
+                    </p>
+                    <p class="flex items-start">
+                        <strong class="inline-block w-24 flex-shrink-0 font-semibold text-gray-900">主辦單位</strong>
+                        <span>{{ event.organizer }}</span>
+                    </p>
+                </div>
+
+                <div class="flex justify-end items-center">
+                    <span class="text-xl font-semibold text-[#F2994A]">尚餘 {{ event.spotsLeft }} 個名額</span>
+                    <basebutton class="text-xl w-[130px] mr-24 ml-5 md:mt-0 md:w-1/4">
+                        立刻報名
+                    </basebutton>
+                </div>
             </div>
         </div>
     </section>
 </template>
 
 <script setup>
+import basebutton from '@/components/basebutton.vue';
+
+// 定義這個元件可以接收一個名為 'event' 的 prop，它的型別是物件
 defineProps({
-    imageUrl: {
-        type: String,
-        required: true
-    },
-    imageAlt: {
-        type: String,
-        default: 'Event Banner'
-    },
-    title: {
-        type: String,
-        required: true
-    },
-    subtitle: {
-        type: String,
-        required: true
-    },
-    dateTime: {
-        type: String,
+    event: {
+        type: Object,
         required: true
     }
 });

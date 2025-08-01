@@ -1,40 +1,31 @@
 <template>
-   <Theheader />
+  <Theheader />
 
-   <main class="bg-[#282828]">
+  <main class="bg-[#282828]">
 
     <div>
-        <div class="text-white h3 font-bold text-center py-9 md:h2">我的活動</div>
-        
-    <div class="mx-auto max-w-5xl space-y-4">
+      <div class="text-white h3 font-bold text-center py-9 md:h2">我的活動</div>
 
-    <!-- 1. Tabs Navigation -->
-    <div class="border-b-2 border-[#4F4F4F]">
-      <button
-        v-for="tab in tabs"
-        :key="tab"
-        @click="activeTab = tab"
-        :class="[
-          'px-6 py-3 text-lg font-medium transition-colors duration-300 rounded-none',
-          { 'border-b-4 border-b-[#F2994A] text-white': activeTab === tab },
-          { 'text-gray-400 hover:text-white': activeTab !== tab }
-        ]"
-      >
-        {{ tab }}
-      </button>
-    </div>
+      <div class="mx-auto max-w-5xl space-y-4">
 
-      <MyEventItem
-        v-for="activity in activities"
-        :key="activity.id"
-        v-bind="activity"
-      />
-    </div>
+        <!-- 1. Tabs Navigation -->
+        <div class="border-b-2 border-[#4F4F4F]">
+          <button v-for="tab in tabs" :key="tab" @click="activeTab = tab" :class="[
+            'px-6 py-3 text-lg font-medium transition-colors duration-300 rounded-none',
+            { 'border-b-4 border-b-[#F2994A] text-white': activeTab === tab },
+            { 'text-gray-400 hover:text-white': activeTab !== tab }
+          ]">
+            {{ tab }}
+          </button>
+        </div>
+
+        <MyEventItem v-for="activity in activities" :key="activity.id" v-bind="activity" />
+      </div>
 
     </div>
-   </main>
+  </main>
 
-   <Thefooter />
+  <Thefooter />
 </template>
 
 <script setup>
@@ -101,5 +92,4 @@ const activities = ref([
 ]);
 </script>
 
-<style>
-</style>
+<style></style>

@@ -10,7 +10,9 @@
         :date-time="eventDetails.dateTime"
         />
         
+        <!-- <div class="mt-10"> -->
         <FeedbackForm/>
+      <!-- </div> -->
         
     </main>
     <Thefooter />
