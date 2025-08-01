@@ -31,7 +31,7 @@ function goToRegister() {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-gray-50">
+  <div class="flex flex-col min-h-screen bg-[#F8F9FA]">
     <Theheader />
 
     <div class="flex-1 flex items-center justify-center">

@@ -9,11 +9,11 @@ const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
 
 const activeTab = ref('貼文相關');
 const menuItems = ref([
-  { name: '會員資訊', href: '#' },
-  { name: '貼文相關', href: '#' },
-  { name: '收藏相關', href: '#' },
-  { name: '我的活動', href: '#' },
-  { name: '其他設定', href: '#' },
+  { name: '會員資訊', href: '/UserProfile' },
+  { name: '貼文相關', href: '/PostActivity' },
+  { name: '收藏相關', href: '/UserCollections' },
+  { name: '我的活動', href: '/MyActivities' },
+  { name: '其他設定', href: '/OtherSettings' },
 ]);
 
 const memberInfo = ref({
@@ -29,7 +29,6 @@ const postStats = ref({
   latestPost: '「鍛造入門心得」',
 });
 
-// --- 主要修改點：為每篇文章新增 link 屬性 ---
 const myPosts = ref([
   { id: 1, title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', status: '20則留言/50個讚', date: '2025/07/12', link: '/posts/1' },
   { id: 2, title: '【心得】新手磨刀石推薦', status: '5則留言/12個讚', date: '2025/07/11', link: '/posts/2' },
@@ -42,7 +41,6 @@ const myReplies = ref([
   { id: 3, date: '2025/07/10', postTitle: '新手磨刀石推薦', content: '我個人推薦#1000和#3000的組合，對新手來說...', link: '/posts/2' },
 ]);
 
-// --- 主要修改點：為每篇收藏文章新增 link 屬性 ---
 const myCollectedPosts = ref([
   { id: 1, category: '【心得】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '/posts/1' },
   { id: 2, category: '【分享】', title: '專訪日本國寶級刀匠：一生一刃', date: '2025/07/11', link: '/posts/6' },
@@ -73,11 +71,20 @@ const myReports = ref([
             <h2 class="text-xl font-bold text-gray-800">{{ memberInfo.name }}</h2>
           </div>
           <nav class="flex flex-col space-y-2">
-            <a v-for="item in menuItems" :key="item.name" :href="item.href" @click.prevent="activeTab = item.name"
+            <router-link
+              v-for="item in menuItems"
+              :key="item.name"
+              :to="item.href"
               class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
-              :class="{ 'bg-[#F2994A] text-white': activeTab === item.name, 'text-gray-600 hover:bg-gray-100': activeTab !== item.name }">
+              :class="{
+                /* 【修改處】修正了 active 和 inactive 狀態的 hover 樣式 */
+                'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
+                'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
+              }"
+              @click="activeTab = item.name"
+            >
               {{ item.name }}
-            </a>
+            </router-link>
           </nav>
         </div>
       </aside>
@@ -92,7 +99,7 @@ const myReports = ref([
               <img :src="memberInfo.avatarUrl" alt="Avatar" class="w-8 h-8 rounded-full object-cover mr-3"/>
               <span class="font-semibold">{{ memberInfo.name }}</span>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5" :class="{'rotate-180': isDropdownOpen}"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform" :class="{'rotate-180': isDropdownOpen}"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
           </button>
           <transition name="fade">
             <div v-if="isDropdownOpen" class="absolute z-10 w-full mt-2 bg-white border rounded-md shadow-lg">
@@ -194,7 +201,7 @@ const myReports = ref([
             </div>
           </div>
 
-          <!-- 檢舉專區 (保留原樣) -->
+          <!-- 檢舉專區 -->
           <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-4">檢舉專區 - 被檢舉紀錄</h2>
             <table class="w-full text-left hidden lg:table">
@@ -215,7 +222,7 @@ const myReports = ref([
           </div>
           
           <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">檢舉專區 - 舉發紀錄</h2>
+            <h2 class="text-xl font-bold text-gray-800 mb-4">檢舉專- 舉發紀錄</h2>
             <table class="w-full text-left hidden lg:table">
               <colgroup><col class="w-[15%]"><col class="w-[10%]"><col class="w-[60%]"><col class="w-[15%]"></colgroup>
               <thead><tr class="border-b-2"><th class="py-2">日期</th><th class="py-2">類型</th><th class="py-2">內容摘要</th><th class="py-2 text-right">結果</th></tr></thead>

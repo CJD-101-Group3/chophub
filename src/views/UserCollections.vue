@@ -12,11 +12,11 @@ const toggleDropdown = () => {
 // (電腦版) 側邊欄狀態
 const activeTab = ref('收藏相關');
 const menuItems = ref([
-  { name: '會員資訊', href: '#' },
-  { name: '貼文相關', href: '#' },
-  { name: '收藏相關', href: '#' },
-  { name: '我的活動', href: '#' },
-  { name: '其他設定', href: '#' },
+  { name: '會員資訊', href: '/UserProfile' },
+  { name: '貼文相關', href: '/PostActivity' },
+  { name: '收藏相關', href: '/UserCollections' },
+  { name: '我的活動', href: '/MyActivities' },
+  { name: '其他設定', href: '/OtherSettings' },
 ]);
 
 // 會員資料
@@ -76,20 +76,19 @@ const toggleEquip = (badgeId) => {
             <h2 class="text-xl font-bold text-gray-800">{{ memberInfo.name }}</h2>
           </div>
           <nav class="flex flex-col space-y-2">
-            <a
+            <router-link
               v-for="item in menuItems"
               :key="item.name"
-              :href="item.href"
-              @click.prevent="activeTab = item.name"
+              :to="item.href"
+              @click.native="activeTab = item.name"
               class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
               :class="{
-                /* 【修改處】修正了 active 和 inactive 狀態的 hover 樣式 */
                 'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
                 'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
               }"
             >
               {{ item.name }}
-            </a>
+            </router-link>
           </nav>
         </div>
       </aside>
