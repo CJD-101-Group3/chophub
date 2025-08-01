@@ -1,8 +1,9 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
+import { useRoute } from 'vue-router'; // 1. 引入 useRoute
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
-// 引入所有需要的圖片資源，確保路徑正確
+// 引入圖片資源
 import userp from '../assets/users/userp.png';
 import selectedWeaponImage from '../assets/weapons/selected-weapon.png';
 import weapon2 from '../assets/weapons/weapon2.png';
@@ -19,17 +20,27 @@ import badge5 from '../assets/badges/badge5.png';
 const isDropdownOpen = ref(false);
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
 
-// (電腦版) 側邊欄狀態
-const activeTab = ref('會員資訊');
+const route = useRoute(); // 2. 獲取當前路由資訊
+
+// 3. 更新 menuItems 的 href 為實際路由路徑
 const menuItems = ref([
-  { name: '會員資訊', href: '#' },
-  { name: '貼文相關', href: '#' },
-  { name: '收藏相關', href: '#' },
-  { name: '我的活動', href: '#' },
-  { name: '其他設定', href: '#' },
+  { name: '會員資訊', href: '/UserProfile' },
+  { name: '貼文相關', href: '/PostActivity' },
+  { name: '收藏相關', href: '/UserCollections' },
+  { name: '我的活動', href: '/MyActivities' },
+  { name: '其他設定', href: '/OtherSettings' },
 ]);
 
-// 原始會員資料
+// 透過 computed 屬性來動態判斷當前 active 的頁籤名稱
+const activeTab = computed(() => {
+  const currentRoute = menuItems.value.find(item => item.href === route.path);
+  return currentRoute ? currentRoute.name : '會員資訊'; // 預設為會員資訊
+});
+
+const countries = ref([
+  "美國", "英國", "臺灣", "日本", "韓國", "中國", "香港", "澳門", "新加坡", "馬來西亞", "加拿大", "澳大利亞", "德國", "法國", "義大利", "西班牙", "印度", "巴西", "俄羅斯", "阿富汗", "阿爾巴尼亞", "阿爾及利亞", "安道爾", "安哥拉", "阿根廷", "亞美尼亞", "奧地利", "亞塞拜然", "巴哈馬", "巴林", "孟加拉", "巴貝多", "白俄羅斯", "比利時", "貝里斯", "不丹", "玻利維亞", "波士尼亞與赫塞哥維納", "波札那", "汶萊", "保加利亞", "柬埔寨", "喀麥隆", "中非共和國", "查德", "智利", "哥倫比亞", "剛果", "哥斯大黎加", "克羅埃西亞", "古巴", "賽普勒斯", "捷克", "丹麥", "吉布地", "多明尼加", "厄瓜多", "埃及", "薩爾瓦多", "赤道幾內亞", "愛沙尼亞", "衣索比亞", "斐濟", "芬蘭", "喬治亞", "迦納", "希臘", "瓜地馬拉", "幾內亞", "蓋亞那", "海地", "宏都拉斯", "匈牙利", "冰島", "印尼", "伊朗", "伊拉克", "愛爾蘭", "以色列", "牙買加", "約旦", "哈薩克", "肯亞", "科威特", "吉爾吉斯", "寮國", "拉脫維亞", "黎巴嫩", "賴比瑞亞", "利比亞", "列支敦斯登", "立陶宛", "盧森堡", "馬達加斯加", "馬拉威", "馬爾地夫", "馬利", "馬爾他", "茅利塔尼亞", "模里西斯", "墨西哥", "摩爾多瓦", "摩納哥", "蒙古", "蒙特內哥羅", "摩洛哥", "莫三比克", "緬甸", "納米比亞", "尼泊爾", "荷蘭", "紐西蘭", "尼加拉瓜", "奈及利亞", "北韓", "北馬其頓", "挪威", "阿曼", "巴基斯坦", "巴拿馬", "巴拉圭", "秘魯", "菲律賓", "波蘭", "葡萄牙", "卡達", "羅馬尼亞", "盧安達", "聖馬利諾", "沙烏地阿拉伯", "塞內加爾", "塞爾維亞", "獅子山", "斯洛伐克", "斯洛維尼亞", "索馬利亞", "南非", "南韓", "斯里蘭卡", "蘇丹", "瑞典", "瑞士", "敘利亞", "塔吉克", "坦尚尼亞", "泰國", "東帝汶", "多哥", "千里達及托巴哥", "突尼西亞", "土耳其", "土庫曼", "烏干達", "烏克蘭", "阿拉伯聯合大公國", "烏拉圭", "烏茲別克", "梵蒂岡", "委內瑞拉", "越南", "葉門", "尚比亞", "辛巴威"
+]);
+
 const memberInfo = ref({
   name: '露比匠',
   avatarUrl: userp,
@@ -41,7 +52,7 @@ const memberInfo = ref({
   birthDate: '1997/06/28',
   gender: '男',
   joinDate: '2025/05/20',
-  location: '加州',
+  location: '臺灣',
   artisanIntro: '不破百鍊，鋼鐵不滅。\n股肱折疊，臂膀不滅。\n吾心如鏡，無所掛礙，故無所不斷。',
   artisanCard: {
     slogan: '眼盲，心不止。',
@@ -51,13 +62,10 @@ const memberInfo = ref({
   },
 });
 
-// 用於表單綁定的資料物件
 const profileForm = reactive({
   ...memberInfo.value,
   password: '',
-  featuredWeaponUrls: [
-    selectedWeaponImage, weapon2, weapon3, weapon4, weapon5,
-  ],
+  featuredWeaponUrls: [selectedWeaponImage, weapon2, weapon3, weapon4, weapon5],
   socialLinks: [
     { id: 1, platform: 'YOUTUBE', handle: '@Hattori_Hanzo5777' },
     { id: 2, platform: 'X', handle: '@Hattori_Hanzo5777' },
@@ -67,7 +75,6 @@ const profileForm = reactive({
   ]
 });
 
-// 徽章資料
 const allBadges = ref([
   { id: 1, imageUrl: badge1, name: '黑鐵級刀匠' },
   { id: 2, imageUrl: badge2, name: '赤火初煉者' },
@@ -76,19 +83,13 @@ const allBadges = ref([
   { id: 5, imageUrl: badge5, name: '新手村村民' },
 ]);
 
-// 社群連結的處理函數
 const addSocialLink = () => {
-  profileForm.socialLinks.push({
-    id: Date.now(),
-    platform: '',
-    handle: ''
-  });
+  profileForm.socialLinks.push({ id: Date.now(), platform: '', handle: '' });
 };
 
 const removeSocialLink = (index) => {
   profileForm.socialLinks.splice(index, 1);
 };
-
 </script>
 
 <template>
@@ -104,20 +105,19 @@ const removeSocialLink = (index) => {
             <h2 class="text-xl font-bold text-gray-800">{{ memberInfo.name }}</h2>
           </div>
           <nav class="flex flex-col space-y-2">
-            <a
+            <!-- 4. 將 a 標籤改為 router-link -->
+            <router-link
               v-for="item in menuItems"
               :key="item.name"
-              :href="item.href"
-              @click.prevent="activeTab = item.name"
+              :to="item.href"
               class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
               :class="{
-                /* 【修改處】修正了 active 和 inactive 狀態的 hover 樣式 */
                 'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
                 'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
               }"
             >
               {{ item.name }}
-            </a>
+            </router-link>
           </nav>
         </div>
       </aside>
@@ -136,7 +136,7 @@ const removeSocialLink = (index) => {
           </button>
           <transition name="fade">
             <div v-if="isDropdownOpen" class="absolute z-10 w-full mt-2 bg-white border rounded-md shadow-lg">
-              <a v-for="item in menuItems" :key="item.name" :href="item.href" class="block px-4 py-3 text-gray-700 hover:bg-[#F2994A] hover:text-white">{{ item.name }}</a>
+              <router-link v-for="item in menuItems" :key="item.name" :to="item.href" class="block px-4 py-3 text-gray-700 hover:bg-[#F2994A] hover:text-white">{{ item.name }}</router-link>
             </div>
           </transition>
         </div>
@@ -144,7 +144,6 @@ const removeSocialLink = (index) => {
         <!-- 主內容 -->
         <div class="space-y-8 max-w-2xl mx-auto">
           
-          <!-- 大頭照編輯區 -->
           <div class="relative w-80 h-96 mx-auto">
             <img :src="profileForm.avatarUrl" alt="User Avatar" class="w-full h-full object-cover rounded-xl shadow-lg">
             <div class="absolute bottom-0 left-0 right-0 h-1/3 bg-black bg-opacity-40 rounded-b-xl flex items-center justify-center gap-4 p-2">
@@ -153,7 +152,6 @@ const removeSocialLink = (index) => {
             </div>
           </div>
 
-          <!-- 帳號與安全 卡片 -->
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-6">帳號與安全</h2>
             <div class="space-y-4">
@@ -167,16 +165,29 @@ const removeSocialLink = (index) => {
             </div>
           </div>
 
-          <!-- 會員資訊 卡片 -->
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-6">會員資訊</h2>
             <div class="space-y-4">
               <div class="grid grid-cols-3 items-center gap-4"><label class="text-gray-600 col-span-1">會員暱稱</label><input type="text" v-model="profileForm.nickname" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
               <div class="grid grid-cols-3 items-center gap-4"><span class="text-gray-600 col-span-1">身份徽章</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.badge }}</span></div>
               <div class="grid grid-cols-3 items-center gap-4"><label class="text-gray-600 col-span-1">生日</label><input type="text" v-model="profileForm.birthDate" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
-              <div class="grid grid-cols-3 items-center gap-4"><label class="text-gray-600 col-span-1">性別</label><input type="text" v-model="profileForm.gender" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
+              <div class="grid grid-cols-3 items-center gap-4">
+                <label class="text-gray-600 col-span-1">性別</label>
+                <select v-model="profileForm.gender" class="col-span-2 w-1/2 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]">
+                  <option>男</option>
+                  <option>女</option>
+                </select>
+              </div>
               <div class="grid grid-cols-3 items-center gap-4"><span class="text-gray-600 col-span-1">加入時間</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.joinDate }}</span></div>
-              <div class="grid grid-cols-3 items-center gap-4"><label class="text-gray-600 col-span-1">所在地區</label><input type="text" v-model="profileForm.location" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
+              <div class="grid grid-cols-3 items-center gap-4">
+                <label class="text-gray-600 col-span-1">所在地區</label>
+                <select v-model="profileForm.location" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]">
+                  <option disabled value="">請選擇地區</option>
+                  <option v-for="country in countries" :key="country" :value="country">
+                    {{ country }}
+                  </option>
+                </select>
+              </div>
             </div>
             <div class="mt-6 flex gap-4">
               <button class="flex-1 bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-md transition-colors">儲存</button>
@@ -184,7 +195,6 @@ const removeSocialLink = (index) => {
             </div>
           </div>
           
-          <!-- 刀匠簡介 卡片 -->
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-6">刀匠簡介</h2>
             <div class="space-y-4">
@@ -199,7 +209,6 @@ const removeSocialLink = (index) => {
             </div>
           </div>
 
-          <!-- 刀匠卡片 編輯區 -->
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-6">刀匠卡片</h2>
             <div class="space-y-4">
@@ -214,11 +223,9 @@ const removeSocialLink = (index) => {
             </div>
           </div>
           
-            <!-- 社群連結 編輯區 -->
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-6">社群連結</h2>
             <div class="space-y-4">
-              <!-- v-for 遍歷現有的社群連結 -->
               <div v-for="(link, index) in profileForm.socialLinks" :key="link.id" class="flex items-center gap-2">
                 <input type="text" v-model="link.platform" placeholder="平台 (例如 YOUTUBE)" class="w-1/3 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]">
                 <input type="text" v-model="link.handle" placeholder="帳號或連結" class="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]">
@@ -227,7 +234,6 @@ const removeSocialLink = (index) => {
                 </button>
               </div>
             </div>
-            <!-- 新增按鈕 -->
             <div class="mt-4 flex justify-center">
               <button @click="addSocialLink" class="w-12 h-12 bg-[#F2994A] rounded-full text-white text-3xl flex items-center justify-center shadow-lg hover:bg-[#E88C3A] transform hover:scale-110 transition-transform">
                 +
@@ -238,7 +244,6 @@ const removeSocialLink = (index) => {
             </div>
           </div>
 
-          <!-- 刀匠精選武器 -->
           <div class="bg-[#E2E9EF] p-6 lg:p-8 rounded-lg shadow-sm">
             <h2 class="text-xl font-bold text-gray-800 mb-6">刀匠精選武器</h2>
             <div class="flex space-x-6 overflow-x-auto pb-4 flex-nowrap">
@@ -252,7 +257,6 @@ const removeSocialLink = (index) => {
             </div>
           </div>
 
-          <!-- 所有徽章 展示區 -->
           <div class="bg-[#E2E9EF] p-6 lg:p-8 rounded-lg shadow-sm">
             <h2 class="text-xl font-bold text-gray-800 mb-6">刀匠徽章</h2>
             <div class="flex space-x-6 overflow-x-auto pb-4">

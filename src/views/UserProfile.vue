@@ -1,7 +1,10 @@
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
+
+const router = useRouter();
 
 // (手機版) 下拉選單狀態
 const isDropdownOpen = ref(false);
@@ -31,6 +34,16 @@ const memberInfo = ref({
   location: '加州',
   avatarUrl: '/src/assets/users/userp.png',
 });
+
+// 跳轉到編輯頁面的函式
+const goToEditProfile = () => {
+  router.push('/EditProfile');
+};
+
+// **【修改處】** 新增跳轉到刀匠展示頁的函式
+const goToArtisanShowcase = () => {
+  router.push('/ArtisanShowcase');
+};
 </script>
 
 <template>
@@ -59,7 +72,7 @@ const memberInfo = ref({
                 'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
                 'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
               }"
-              @click.native="activeTab = item.name"
+              @click="activeTab = item.name" 
             >
               {{ item.name }}
             </router-link>
@@ -119,8 +132,9 @@ const memberInfo = ref({
 
         <!-- 操作按鈕區 -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
-          <button class="w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-4 rounded-md transition-colors duration-300">編輯資料</button>
-          <button class="w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-4 rounded-md transition-colors duration-300">刀匠展示頁</button>
+          <button @click="goToEditProfile" class="w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-4 rounded-md transition-colors duration-300">編輯資料</button>
+          <!-- 【修改處】將按鈕加上點擊事件 -->
+          <button @click="goToArtisanShowcase" class="w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-4 rounded-md transition-colors duration-300">刀匠展示頁</button>
         </div>
         
       </main>
