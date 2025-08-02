@@ -85,7 +85,7 @@ const closeModal = () => {
               @click.native="activeTab = item.name"
               class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
               :class="{
-                'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
+                'bg-[#F2B94C] text-white hover:text-white': activeTab === item.name,
                 'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
               }"
             >

@@ -77,7 +77,7 @@ const myReports = ref([
               :to="item.href"
               class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
               :class="{
-                'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
+                'bg-[#F2B94C] text-white hover:text-white': activeTab === item.name,
                 'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
               }"
               @click="activeTab = item.name"
@@ -128,24 +128,26 @@ const myReports = ref([
           <!-- 我的貼文 -->
           <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-4">我的貼文</h2>
-            <table class="w-full text-left hidden lg:table">
+            <!-- 【修改處】為 table 加上 border-separate 以便顯示圓角 -->
+            <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
               <colgroup><col class="w-7/12"><col class="w-3/12"><col class="w-2/12"></colgroup>
-              <thead><tr class="border-b-2"><th class="py-2">文章標題</th><th class="py-2">狀態</th><th class="py-2 text-right">發表日期</th></tr></thead>
+              <thead><tr class="border-b-2"><th class="py-2 px-3">文章標題</th><th class="py-2 px-3">狀態</th><th class="py-2 px-3 text-right">發表日期</th></tr></thead>
               <tbody>
-                <tr v-for="post in myPosts" :key="post.id" class="border-b last:border-b-0 hover:bg-gray-50">
-                  <td class="py-3 truncate">
-                    <!-- **【修改處 1】** -->
-                    <a :href="post.link" class="text-gray-800 hover:text-[#F2994A] transition-colors">{{ post.title }}</a>
+                <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
+                <tr v-for="post in myPosts" :key="post.id" class="subtle-float-on-hover">
+                  <td class="py-3 px-3 truncate">
+                    <a :href="post.link" class="text-gray-800 hover:text-gray-800">{{ post.title }}</a>
                   </td>
-                  <td>{{ post.status }}</td>
-                  <td class="text-right">{{ post.date }}</td>
+                  <td class="px-3">{{ post.status }}</td>
+                  <td class="px-3 text-right">{{ post.date }}</td>
                 </tr>
               </tbody>
             </table>
             <div class="space-y-4 lg:hidden">
-              <a v-for="post in myPosts" :key="post.id" :href="post.link" class="block bg-[#E2E9EF] p-4 rounded-md hover:bg-gray-300 transition-colors">
-                <p class="font-semibold truncate hover:text-[#F2994A]">{{ post.title }}</p>
-                <div class="flex justify-between text-sm text-gray-600  mt-2"><p>狀態：{{ post.status }}</p><p>發表日期：{{ post.date }}</p></div>
+              <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
+              <a v-for="post in myPosts" :key="post.id" :href="post.link" class="block bg-[#E2E9EF] p-4 rounded-md subtle-float-on-hover">
+                <p class="font-semibold truncate">{{ post.title }}</p>
+                <div class="flex justify-between text-sm text-gray-600 mt-2"><p>狀態：{{ post.status }}</p><p>發表日期：{{ post.date }}</p></div>
               </a>
             </div>
           </div>
@@ -153,23 +155,24 @@ const myReports = ref([
           <!-- 我的回覆摘要 -->
           <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-4">我的回覆摘要</h2>
-            <table class="w-full text-left hidden lg:table">
+            <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
               <colgroup><col class="w-[15%]"><col class="w-[30%]"><col class="w-[55%]"></colgroup>
-              <thead><tr class="border-b-2"><th class="py-2">回覆日期</th><th class="py-2">貼文標題</th><th class="py-2">回覆內容摘要</th></tr></thead>
+              <thead><tr class="border-b-2"><th class="py-2 px-3">回覆日期</th><th class="py-2 px-3">貼文標題</th><th class="py-2 px-3">回覆內容摘要</th></tr></thead>
               <tbody>
-                <tr v-for="reply in myReplies" :key="reply.id" class="border-b last:border-b-0 hover:bg-gray-50">
-                  <td class="py-3">{{ reply.date }}</td>
-                  <td class="truncate">
-                     <!-- **【修改處 2】** -->
-                     <a :href="reply.link" class="text-gray-800 hover:text-[#F2994A] transition-colors">{{ reply.postTitle }}</a>
+                <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
+                <tr v-for="reply in myReplies" :key="reply.id" class="subtle-float-on-hover">
+                  <td class="py-3 px-3">{{ reply.date }}</td>
+                  <td class="px-3 truncate">
+                     <a :href="reply.link" class="text-gray-800 hover:text-gray-800">{{ reply.postTitle }}</a>
                   </td>
-                  <td class="truncate">{{ reply.content }}</td>
+                  <td class="px-3 truncate">{{ reply.content }}</td>
                 </tr>
               </tbody>
             </table>
             <div class="space-y-4 lg:hidden">
-              <a v-for="reply in myReplies" :key="reply.id" :href="reply.link" class="block bg-[#E2E9EF] p-4 rounded-md hover:bg-gray-300 transition-colors">
-                <div class="flex justify-between items-center mb-2"><span class="font-semibold truncate hover:text-[#F2994A]">{{ reply.postTitle }}</span><span class="text-sm text-gray-500 hover:text-[#F2994A] flex-shrink-0 ml-2">{{ reply.date }}</span></div>
+              <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
+              <a v-for="reply in myReplies" :key="reply.id" :href="reply.link" class="block bg-[#E2E9EF] p-4 rounded-md subtle-float-on-hover">
+                <div class="flex justify-between items-center mb-2"><span class="font-semibold truncate">{{ reply.postTitle }}</span><span class="text-sm text-gray-500 flex-shrink-0 ml-2">{{ reply.date }}</span></div>
                 <p class="text-sm text-gray-700 truncate">{{ reply.content }}</p>
               </a>
             </div>
@@ -178,30 +181,31 @@ const myReports = ref([
           <!-- 我的收藏貼文 -->
           <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-4">我的收藏貼文</h2>
-            <table class="w-full text-left hidden lg:table">
+            <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
                <colgroup><col class="w-10/12"><col class="w-2/12"></colgroup>
-              <thead><tr class="border-b-2"><th class="py-2">收藏文章標題</th><th class="py-2 text-right">收藏日期</th></tr></thead>
+              <thead><tr class="border-b-2"><th class="py-2 px-3">收藏文章標題</th><th class="py-2 px-3 text-right">收藏日期</th></tr></thead>
               <tbody>
-                <tr v-for="post in myCollectedPosts" :key="post.id" class="border-b last:border-b-0 hover:bg-gray-50">
-                  <td class="py-3 truncate">
-                    <!-- **【修改處 3】** -->
-                    <a :href="post.link" class="text-gray-800 hover:text-[#F2994A] transition-colors">
+                <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
+                <tr v-for="post in myCollectedPosts" :key="post.id" class="subtle-float-on-hover">
+                  <td class="py-3 px-3 truncate">
+                    <a :href="post.link" class="text-gray-800 hover:text-gray-800">
                       <span class="text-gray-500">{{ post.category }}</span> {{ post.title }}
                     </a>
                   </td>
-                  <td class="text-right">{{ post.date }}</td>
+                  <td class="px-3 text-right">{{ post.date }}</td>
                 </tr>
               </tbody>
             </table>
             <div class="space-y-4 lg:hidden">
-              <a v-for="post in myCollectedPosts" :key="post.id" :href="post.link" class="block bg-[#E2E9EF] p-4 rounded-md hover:bg-gray-300 transition-colors">
-                <p class="font-semibold truncate hover:text-[#F2994A]"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</p>
+              <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
+              <a v-for="post in myCollectedPosts" :key="post.id" :href="post.link" class="block bg-[#E2E9EF] p-4 rounded-md subtle-float-on-hover">
+                <p class="font-semibold truncate"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</p>
                 <p class="text-sm text-gray-600 mt-2 text-right">收藏日期：{{ post.date }}</p>
               </a>
             </div>
           </div>
 
-          <!-- 檢舉專區 -->
+          <!-- 檢舉專區 (不加上浮效果) -->
           <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-4">檢舉專區 - 被檢舉紀錄</h2>
             <table class="w-full text-left hidden lg:table">
@@ -262,5 +266,44 @@ const myReports = ref([
 .sticky {
   position: -webkit-sticky;
   position: sticky;
+}
+
+/* --- 【修改後的樣式】 --- */
+
+/* 應用於手機版卡片和桌面版表格列的通用樣式 */
+.subtle-float-on-hover {
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  cursor: pointer;
+}
+
+.subtle-float-on-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+  z-index: 10;
+  position: relative;
+}
+
+/* 手機版卡片 hover 效果 */
+.lg\:hidden .subtle-float-on-hover:hover {
+  border-radius: 0.75rem; /* rounded-xl */
+}
+
+/* 桌面版表格 hover 效果 */
+.lg\:table .subtle-float-on-hover {
+  /* 表格列本身需要一個背景色，才能蓋掉表格的背景 */
+  background-color: white; 
+}
+.lg\:table .subtle-float-on-hover:hover {
+  background-color: #f8fafc; /* Tailwind's gray-50 or slate-50 */
+}
+
+/* 針對桌面版表格的第一個和最後一個 td 設定圓角 */
+.lg\:table .subtle-float-on-hover:hover td:first-child {
+  border-top-left-radius: 0.5rem; /* rounded-lg */
+  border-bottom-left-radius: 0.5rem;
+}
+.lg\:table .subtle-float-on-hover:hover td:last-child {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
 }
 </style>
