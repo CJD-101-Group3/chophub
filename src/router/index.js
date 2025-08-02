@@ -51,7 +51,7 @@ const routes = [
     { path: '/UserCollections', component: UserCollections},
     { path: '/MyActivities', component: MyActivities},
     { path: '/MyEvents', component: MyEvents},
-    { path: '/EventDetail', component: EventDetail},
+    { path: '/event/:id', name: 'EventDetail', component: () => import('@/views/EventDetail.vue')},
     { path: '/EventDetailRegistered', component: EventDetailRegistered},
     { path: '/EventHomePage', component: EventHomePage},
     { path: '/EventReviewsOverview', component: EventReviewsOverview},
