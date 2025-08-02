@@ -27,9 +27,17 @@
 
                 <div class="flex justify-end items-center">
                     <span class="text-xl font-semibold text-[#F2994A]">尚餘 {{ event.spotsLeft }} 個名額</span>
-                    <basebutton class="text-xl w-[130px] mr-24 ml-5 md:mt-0 md:w-1/4">
+
+                    <GeneralButton
+                        variant="primary"
+                        @click="goToPayment"
+                        width="150px"
+                        height="50px"
+                        font-size="20px"
+                        class="mr-24 ml-5 md:mt-0 md:w-1/4"
+                    >
                         立刻報名
-                    </basebutton>
+                    </GeneralButton>                    
                 </div>
             </div>
         </div>
@@ -37,7 +45,8 @@
 </template>
 
 <script setup>
-import basebutton from '@/components/basebutton.vue';
+import GeneralButton from './GeneralButton.vue'
+import { useRouter } from 'vue-router'
 
 // 定義這個元件可以接收一個名為 'event' 的 prop，它的型別是物件
 defineProps({
@@ -46,4 +55,11 @@ defineProps({
         required: true
     }
 });
+
+const router = useRouter();
+
+function goToPayment() {
+  router.push('/EventPayment');
+}
+
 </script>
