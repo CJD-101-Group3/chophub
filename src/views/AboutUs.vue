@@ -49,9 +49,9 @@ const mobileArtisans = [
       </div>
 
       <!-- Section 2: 統計數據欄 (此區塊保持不變，手機版置中) -->
-      <section class="bg-[#F2994A] mt-20 md:mt-28">
-        <div class="container mx-auto px-6 py-10">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+      <section class="bg-[#F2994A] mt-20 md:mt-28 ">
+        <div class="  px-6 py-10">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-screen-lg mx-auto">
             <div><p class="text-4xl lg:text-5xl font-bold">50+</p><p class="mt-2 text-lg">專業工匠</p></div>
             <div><p class="text-4xl lg:text-5xl font-bold">10+</p><p class="mt-2 text-lg">合作企業</p></div>
             <div><p class="text-4xl lg:text-5xl font-bold">200+</p><p class="mt-2 text-lg">分享貼文</p></div>
