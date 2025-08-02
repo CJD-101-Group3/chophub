@@ -2,7 +2,7 @@
    <Theheader />
    <main class="bg-[#282828] flex-1 flex flex-col items-center overflow-y-auto space-y-4 md:space-y-6">
       <div class="relative">
-         <img src="/public/events/hero-background.jpg" alt="鑄造師" class="block z-index-[-1] opacity-[60%]">
+         <img src="/events/hero-background.jpg" alt="鑄造師" class="block z-index-[-1] opacity-[60%]">
          <p class="absolute top-[40%] left-[13%] text-[#fff] text-xl font-bold tracking-widest md:text-4xl lg:text-6xl">
             冷鋼烈火 ·
             共赴匠魂之旅</p>
@@ -122,7 +122,7 @@ const events = ref([
       rating: 4,
       reviews: 76,
       isFeatured: true,
-      image: '/public/events/knife-exhibition.png'
+      image: '/events/knife-exhibition.png'
    },
    {
       id: 3,
@@ -144,7 +144,7 @@ const events = ref([
       rating: 4,
       reviews: 64,
       isFeatured: true,
-      image: '/public/events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg'
+      image: '/events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg'
    },
    {
       id: 5,
@@ -155,7 +155,7 @@ const events = ref([
       rating: 5,
       reviews: 97,
       isFeatured: false,
-      image: '/public/events/forgingman.png'
+      image: '/events/forgingman.png'
    },
    {
       id: 6,
@@ -166,7 +166,7 @@ const events = ref([
       rating: 4.5,
       reviews: 43,
       isFeatured: false,
-      image: '/public/events/viking-forges-weapons-swords-smithy-man-warrior-s-clothes-is-smithy.jpg'
+      image: '/events/viking-forges-weapons-swords-smithy-man-warrior-s-clothes-is-smithy.jpg'
    }
 ]);
 
