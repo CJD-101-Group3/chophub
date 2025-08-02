@@ -30,7 +30,7 @@
           <!-- 圖片容器 -->
           <div class="hidden md:flex items-center justify-center p-4">
             <img 
-              src="/public/events/Khukuri.png" 
+              src="/events/Khukuri.png" 
               alt="尼泊爾彎刀" 
               class="w-full h-auto object-cover rounded-md max-h-[250px] opacity-90 shadow-md"
             >
@@ -80,20 +80,16 @@
 
           <router-link 
             to="/EventDetail" 
-            class="text-[16px] font-bold"
+            class="text-sm font-bold"
           >
             返回上一頁
           </router-link>
 
-        <GeneralButton
-            variant="primary"
-            @click="goToPayment"
-            width="150px"
-            height="50px"
-            font-size="16px"
-        >
-            儲存並繼續
-        </GeneralButton>
+          <div>
+              <basebutton variant="primary" @click="goToPayment">
+                儲存並繼續
+              </basebutton>
+          </div>
       </div>
 
 
@@ -107,7 +103,7 @@
 <script setup>
 import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
-import GeneralButton from '@/components/GeneralButton.vue';
+import basebutton from '@/components/Basebutton.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
