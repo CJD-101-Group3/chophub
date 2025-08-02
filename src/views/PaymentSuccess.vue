@@ -5,8 +5,17 @@
         <div class="h3 font-bold text-white">報名成功！</div>
         <div class="h4 font-bold text-white text-center">感謝您的參與，<br>我們已收到您的報名與繳費資訊！</div>
 
-        <basebutton variant="primary" @click="goToMyEvents" class="w-[130px]">查看我的活動</basebutton>
-    </main>
+    <GeneralButton
+        variant="primary"
+        @click="goToMyEvents"
+        width="150px"
+        height="50px"
+        font-size="16px"
+    >
+        查看我的活動
+    </GeneralButton>
+
+</main>
     <Thefooter />
   </div>
 </template>
@@ -14,7 +23,7 @@
 <script setup>
 import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
-import basebutton from '@/components/Basebutton.vue';
+import GeneralButton from '@/components/GeneralButton.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

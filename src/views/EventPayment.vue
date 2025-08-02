@@ -80,16 +80,20 @@
 
           <router-link 
             to="/EventDetail" 
-            class="text-sm font-bold"
+            class="text-[16px] font-bold"
           >
             返回上一頁
           </router-link>
 
-          <div>
-              <basebutton variant="primary" @click="goToPayment">
-                儲存並繼續
-              </basebutton>
-          </div>
+        <GeneralButton
+            variant="primary"
+            @click="goToPayment"
+            width="150px"
+            height="50px"
+            font-size="16px"
+        >
+            儲存並繼續
+        </GeneralButton>
       </div>
 
 
@@ -103,7 +107,7 @@
 <script setup>
 import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
-import basebutton from '@/components/Basebutton.vue';
+import GeneralButton from '@/components/GeneralButton.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
