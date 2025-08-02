@@ -73,7 +73,7 @@ const mobileArtisans = [
           </div>
           <!-- 【修改點 2】將 text-center lg:text-left 改為 text-left -->
           <div class="text-left max-w-md">
-            <h2 class="text-3xl lg:text-4xl font-bold mb-4">專業工匠・匠心鍛鋼</h2>
+            <h3 class="text-3xl lg:text-3xl font-bold mb-4">專業工匠・匠心鍛鋼</h3>
             <p class="text-gray-300 leading-relaxed">
               他們不只是打造兵器，更傳承一段歷史。在高溫與錘聲中，金屬被反覆淬鍊，成就每一把兼具實用與美學的冷兵器。ChopHub 精選介紹來自世界各地的工匠職人，讓你認識背後那雙鍛造出傳奇的雙手。
             </p>
