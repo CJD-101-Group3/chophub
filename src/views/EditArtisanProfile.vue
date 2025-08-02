@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
-import { useRoute } from 'vue-router'; // 1. 引入 useRoute
+import { useRoute } from 'vue-router';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 // 引入圖片資源
@@ -20,9 +20,8 @@ import badge5 from '../assets/badges/badge5.png';
 const isDropdownOpen = ref(false);
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
 
-const route = useRoute(); // 2. 獲取當前路由資訊
+const route = useRoute();
 
-// 3. 更新 menuItems 的 href 為實際路由路徑
 const menuItems = ref([
   { name: '會員資訊', href: '/UserProfile' },
   { name: '貼文相關', href: '/PostActivity' },
@@ -31,10 +30,9 @@ const menuItems = ref([
   { name: '其他設定', href: '/OtherSettings' },
 ]);
 
-// 透過 computed 屬性來動態判斷當前 active 的頁籤名稱
 const activeTab = computed(() => {
   const currentRoute = menuItems.value.find(item => item.href === route.path);
-  return currentRoute ? currentRoute.name : '會員資訊'; // 預設為會員資訊
+  return currentRoute ? currentRoute.name : '會員資訊';
 });
 
 const countries = ref([
@@ -105,7 +103,6 @@ const removeSocialLink = (index) => {
             <h2 class="text-xl font-bold text-gray-800">{{ memberInfo.name }}</h2>
           </div>
           <nav class="flex flex-col space-y-2">
-            <!-- 4. 將 a 標籤改為 router-link -->
             <router-link
               v-for="item in menuItems"
               :key="item.name"
@@ -144,11 +141,12 @@ const removeSocialLink = (index) => {
         <!-- 主內容 -->
         <div class="space-y-8 max-w-2xl mx-auto">
           
-          <div class="relative w-80 h-96 mx-auto">
-            <img :src="profileForm.avatarUrl" alt="User Avatar" class="w-full h-full object-cover rounded-xl shadow-lg">
-            <div class="absolute bottom-0 left-0 right-0 h-1/3 bg-black bg-opacity-40 rounded-b-xl flex items-center justify-center gap-4 p-2">
-              <button class="text-sm bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-md transition-colors">圖片上傳</button>
-              <button class="text-sm bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition-colors">圖片移除</button>
+          <!-- **【修改處】** 大頭照編輯區改為圓形 -->
+          <div class="relative w-72 h-72 mx-auto group">
+            <img :src="profileForm.avatarUrl" alt="User Avatar" class="w-full h-full object-cover rounded-full shadow-lg">
+            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 rounded-full flex items-center justify-center gap-4 p-2 transition-opacity duration-300">
+              <button class="text-sm bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-md transition-all opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 duration-300">圖片上傳</button>
+              <button class="text-sm bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition-all opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 duration-300 delay-100">圖片移除</button>
             </div>
           </div>
 
