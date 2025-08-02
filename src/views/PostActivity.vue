@@ -77,7 +77,6 @@ const myReports = ref([
               :to="item.href"
               class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
               :class="{
-                /* 【修改處】修正了 active 和 inactive 狀態的 hover 樣式 */
                 'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
                 'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
               }"
@@ -129,25 +128,24 @@ const myReports = ref([
           <!-- 我的貼文 -->
           <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-bold text-gray-800 mb-4">我的貼文</h2>
-            <!-- 電腦版表格 -->
             <table class="w-full text-left hidden lg:table">
               <colgroup><col class="w-7/12"><col class="w-3/12"><col class="w-2/12"></colgroup>
               <thead><tr class="border-b-2"><th class="py-2">文章標題</th><th class="py-2">狀態</th><th class="py-2 text-right">發表日期</th></tr></thead>
               <tbody>
                 <tr v-for="post in myPosts" :key="post.id" class="border-b last:border-b-0 hover:bg-gray-50">
                   <td class="py-3 truncate">
-                    <a :href="post.link" class="hover:text-[#F2994A] transition-colors">{{ post.title }}</a>
+                    <!-- **【修改處 1】** -->
+                    <a :href="post.link" class="text-gray-800 hover:text-[#F2994A] transition-colors">{{ post.title }}</a>
                   </td>
                   <td>{{ post.status }}</td>
                   <td class="text-right">{{ post.date }}</td>
                 </tr>
               </tbody>
             </table>
-            <!-- 手機版卡片 -->
             <div class="space-y-4 lg:hidden">
               <a v-for="post in myPosts" :key="post.id" :href="post.link" class="block bg-[#E2E9EF] p-4 rounded-md hover:bg-gray-300 transition-colors">
-                <p class="font-semibold truncate">{{ post.title }}</p>
-                <div class="flex justify-between text-sm text-gray-600 mt-2"><p>狀態：{{ post.status }}</p><p>發表日期：{{ post.date }}</p></div>
+                <p class="font-semibold truncate hover:text-[#F2994A]">{{ post.title }}</p>
+                <div class="flex justify-between text-sm text-gray-600  mt-2"><p>狀態：{{ post.status }}</p><p>發表日期：{{ post.date }}</p></div>
               </a>
             </div>
           </div>
@@ -162,7 +160,8 @@ const myReports = ref([
                 <tr v-for="reply in myReplies" :key="reply.id" class="border-b last:border-b-0 hover:bg-gray-50">
                   <td class="py-3">{{ reply.date }}</td>
                   <td class="truncate">
-                     <a :href="reply.link" class="hover:text-[#F2994A] transition-colors">{{ reply.postTitle }}</a>
+                     <!-- **【修改處 2】** -->
+                     <a :href="reply.link" class="text-gray-800 hover:text-[#F2994A] transition-colors">{{ reply.postTitle }}</a>
                   </td>
                   <td class="truncate">{{ reply.content }}</td>
                 </tr>
@@ -170,7 +169,7 @@ const myReports = ref([
             </table>
             <div class="space-y-4 lg:hidden">
               <a v-for="reply in myReplies" :key="reply.id" :href="reply.link" class="block bg-[#E2E9EF] p-4 rounded-md hover:bg-gray-300 transition-colors">
-                <div class="flex justify-between items-center mb-2"><span class="font-semibold truncate">{{ reply.postTitle }}</span><span class="text-sm text-gray-500 flex-shrink-0 ml-2">{{ reply.date }}</span></div>
+                <div class="flex justify-between items-center mb-2"><span class="font-semibold truncate hover:text-[#F2994A]">{{ reply.postTitle }}</span><span class="text-sm text-gray-500 hover:text-[#F2994A] flex-shrink-0 ml-2">{{ reply.date }}</span></div>
                 <p class="text-sm text-gray-700 truncate">{{ reply.content }}</p>
               </a>
             </div>
@@ -185,7 +184,8 @@ const myReports = ref([
               <tbody>
                 <tr v-for="post in myCollectedPosts" :key="post.id" class="border-b last:border-b-0 hover:bg-gray-50">
                   <td class="py-3 truncate">
-                    <a :href="post.link" class="hover:text-[#F2994A] transition-colors">
+                    <!-- **【修改處 3】** -->
+                    <a :href="post.link" class="text-gray-800 hover:text-[#F2994A] transition-colors">
                       <span class="text-gray-500">{{ post.category }}</span> {{ post.title }}
                     </a>
                   </td>
@@ -195,7 +195,7 @@ const myReports = ref([
             </table>
             <div class="space-y-4 lg:hidden">
               <a v-for="post in myCollectedPosts" :key="post.id" :href="post.link" class="block bg-[#E2E9EF] p-4 rounded-md hover:bg-gray-300 transition-colors">
-                <p class="font-semibold truncate"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</p>
+                <p class="font-semibold truncate hover:text-[#F2994A]"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</p>
                 <p class="text-sm text-gray-600 mt-2 text-right">收藏日期：{{ post.date }}</p>
               </a>
             </div>
@@ -222,7 +222,7 @@ const myReports = ref([
           </div>
           
           <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">檢舉專- 舉發紀錄</h2>
+            <h2 class="text-xl font-bold text-gray-800 mb-4">檢舉專區 - 舉發紀錄</h2>
             <table class="w-full text-left hidden lg:table">
               <colgroup><col class="w-[15%]"><col class="w-[10%]"><col class="w-[60%]"><col class="w-[15%]"></colgroup>
               <thead><tr class="border-b-2"><th class="py-2">日期</th><th class="py-2">類型</th><th class="py-2">內容摘要</th><th class="py-2 text-right">結果</th></tr></thead>
