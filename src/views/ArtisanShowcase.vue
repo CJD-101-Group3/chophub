@@ -623,12 +623,15 @@ const artisanProfile = ref({
         </section>
 
         <!-- 刀匠卡片 -->
+        
         <section class="relative rounded-lg overflow-hidden shadow-lg">
-          <img :src="artisanProfile.card.imageUrl" alt="Artisan at work" class="w-full h-56 md:h-72 object-cover">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 lg:p-8 text-white">
-            <p class="text-3xl lg:text-4xl font-bold mb-4">{{ artisanProfile.card.quote }}</p>
-            <p class="text-sm lg:text-base whitespace-pre-line leading-snug">{{ artisanProfile.card.details }}</p>
-          </div>
+          <router-link to="/ArtisanShowcase" class="cursor-pointer">
+            <img :src="artisanProfile.card.imageUrl" alt="Artisan at work" class="w-full h-56 md:h-72 object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 lg:p-8 text-white">
+              <p class="text-3xl lg:text-4xl font-bold mb-4">{{ artisanProfile.card.quote }}</p>
+              <p class="text-sm lg:text-base whitespace-pre-line leading-snug">{{ artisanProfile.card.details }}</p>
+            </div>
+          </router-link>
         </section>
 
         <!-- 社群連結 -->
