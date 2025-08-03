@@ -25,7 +25,7 @@ const memberInfo = ref({
   avatarUrl: '/src/assets/users/userp.png',
 });
 
-// --- 用一個 ref 物件來管理所有設定的開關狀態 ---
+// --- 此頁面專用的資料 ---
 const settings = ref({
   // 通知與提醒
   newWeaponAlerts: false,
@@ -61,10 +61,10 @@ const settings = ref({
               v-for="item in menuItems"
               :key="item.name"
               :to="item.href"
-              @click.native="activeTab = item.name"
+              @click="activeTab = item.name"
               class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
               :class="{
-                'bg-[#F2B94C] text-white hover:text-white': activeTab === item.name,
+                'bg-[#F2994A] text-white hover:text-white': activeTab === item.name,
                 'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
               }"
             >
@@ -76,6 +76,7 @@ const settings = ref({
 
       <!-- 右側主內容區 -->
       <main class="flex-1">
+        
         <!-- 手機版下拉式選單 -->
         <div class="relative lg:hidden mb-6">
           <button @click="toggleDropdown" class="w-full flex items-center justify-between p-3 bg-white border border-gray-300 rounded-md shadow-sm">
@@ -83,28 +84,25 @@ const settings = ref({
               <img :src="memberInfo.avatarUrl" alt="Avatar" class="w-8 h-8 rounded-full object-cover mr-3"/>
               <span class="font-semibold">{{ memberInfo.name }}</span>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform" :class="{'rotate-180': isDropdownOpen}">
-              <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform" :class="{'rotate-180': isDropdownOpen}"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
           </button>
           <transition name="fade">
-            <div v-if="isDropdownOpen" class="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg">
-              <a v-for="item in menuItems" :key="item.name" :href="item.href" class="block px-4 py-3 text-gray-700 hover:bg-[#F2994A] hover:text-white">{{ item.name }}</a>
+            <div v-if="isDropdownOpen" class="absolute z-10 w-full mt-2 bg-white border rounded-md shadow-lg">
+              <router-link v-for="item in menuItems" :key="item.name" :to="item.href" class="block px-4 py-3 text-gray-700 hover:bg-[#F2994A] hover:text-white">{{ item.name }}</router-link>
             </div>
           </transition>
         </div>
 
-        <div class="max-w-xl mx-auto space-y-8">
+        <div class="max-w-2xl mx-auto space-y-8">
           <!-- 通知與提醒 卡片 -->
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold text-gray-800 mb-6">通知與提醒</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">通知與提醒</h2>
             <div class="space-y-5">
               <!-- 每個設定項目 -->
               <div class="flex justify-between items-center border-b pb-4">
                 <span class="text-gray-700">新武器上架提醒</span>
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" v-model="settings.newWeaponAlerts" class="sr-only peer">
-                  <!-- 【修改處#2】移除 peer-focus:* 相關 class -->
                   <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F2994A]"></div>
                 </label>
               </div>
@@ -112,7 +110,6 @@ const settings = ref({
                 <span class="text-gray-700">新活動詳情通知</span>
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" v-model="settings.newEventNotifications" class="sr-only peer">
-                  <!-- 【修改處#2】移除 peer-focus:* 相關 class -->
                   <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F2994A]"></div>
                 </label>
               </div>
@@ -120,7 +117,6 @@ const settings = ref({
                 <span class="text-gray-700">新回覆我的貼文通知</span>
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" v-model="settings.newPostReplies" class="sr-only peer">
-                  <!-- 【修改處#2】移除 peer-focus:* 相關 class -->
                   <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F2994A]"></div>
                 </label>
               </div>
@@ -128,7 +124,6 @@ const settings = ref({
                 <span class="text-gray-700">貼文被檢舉與移除通知</span>
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" v-model="settings.postReportedAlerts" class="sr-only peer">
-                  <!-- 【修改處#2】移除 peer-focus:* 相關 class -->
                   <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F2994A]"></div>
                 </label>
               </div>
@@ -143,7 +138,6 @@ const settings = ref({
                 <span class="text-gray-700">精選收藏是否公開</span>
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" v-model="settings.isCollectionPublic" class="sr-only peer">
-                  <!-- 【修改處#2】移除 peer-focus:* 相關 class -->
                   <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F2994A]"></div>
                 </label>
               </div>
@@ -151,7 +145,6 @@ const settings = ref({
                 <span class="text-gray-700">成就徽章是否公開</span>
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" v-model="settings.areBadgesPublic" class="sr-only peer">
-                  <!-- 【修改處#2】移除 peer-focus:* 相關 class -->
                   <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F2994A]"></div>
                 </label>
               </div>
@@ -159,7 +152,6 @@ const settings = ref({
                 <span class="text-gray-700">是否顯示所在地區</span>
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" v-model="settings.showLocation" class="sr-only peer">
-                  <!-- 【修改處#2】移除 peer-focus:* 相關 class -->
                   <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F2994A]"></div>
                 </label>
               </div>

@@ -637,8 +637,8 @@ const artisanProfile = ref({
         <!-- 社群連結 -->
         <section class="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
           <a v-for="link in artisanProfile.socialLinks" :key="link.id" :href="link.link" target="_blank"
-             class="flex items-center gap-4 bg-[#F2994A] p-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors duration-200">
-            
+             class="flex items-center gap-4 bg-[#F2994A] p-4 rounded-lg shadow-sm hover:bg-[#F2B94C] transition-colors duration-200">
+
             <!-- **【步驟 4.2】** 將原本的 div 替換成 SocialIcon 元件 -->
             <div class="w-10 h-10 bg-white rounded-md flex items-center justify-center">
               <SocialIcon :platform="link.platform" class="w-6 h-6 text-gray-800" />
