@@ -656,7 +656,7 @@ const artisanProfile = ref({
           <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選作品</h2>
           <div class="flex space-x-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-5 lg:gap-6 lg:space-x-0 lg:pb-0">
             <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="work.link" class="flex-shrink-0 group w-56 lg:w-full">
-              <div class="bg-white p-2 rounded-lg shadow-md overflow-hidden">
+              <div class="bg-black p-2 rounded-lg shadow-md overflow-hidden">
                 <img :src="work.imageUrl" :alt="'作品 ' + work.id" class="w-full h-48 lg:h-40 object-contain transition-transform duration-300 group-hover:scale-105">
               </div>
               <button class="mt-3 w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-md transition-colors text-sm">
