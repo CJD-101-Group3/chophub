@@ -37,7 +37,7 @@ const mobileArtisans = [
           <!-- 【修改點 1】將 text-center lg:text-left 改為 text-left -->
           <div class="space-y-4 text-left">
             <h1 class="text-4xl lg:text-5xl font-bold text-[#F8F9FA]">About Us</h1>
-            <h2 class="hidden lg:block text-3xl lg:text-4xl font-bold text-[#F8F9FA]">ChopHub</h2>
+            <h2 class="hidden lg:block text-3xl lg:text-4xl font-bold text-[#F2994A]">ChopHub</h2>
             <p class="text-[#F8F9FA] text-base md:text-xl leading-relaxed">
               ChopHub 是一個專注於冷兵器文化的交流平台，致力於提供深入的兵器知識、真實用戶評論與工匠介紹。在這裡，你可以瀏覽各式兵器資料，從東方武士刀到西方長劍，並針對武器的實用性、造型與歷史留下星等評價。我們同時邀請專業工匠分享鍛造理念，讓冷兵器不再只是收藏品，而是一種跨越時代的工藝精神。ChopHub，讓歷史的鋒刃在現代再次閃耀。
             </p>

@@ -23,6 +23,7 @@ function handleSubmit() {
   };
   emit('submit', credentials);
   console.log('表單已提交:', credentials);
+  router.push('/UserProfile');
 }
 
 function goToRegister() {
