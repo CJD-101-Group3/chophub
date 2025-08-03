@@ -4,12 +4,12 @@
         <!-- 下拉選單按鈕 -->
         <div>
             <button type="button"
-                class="inline-flex justify-between w-full rounded-md border border-gray-600 shadow-sm px-4 py-2 bg-[#282828] text-sm font-medium text-gray-300 hover:bg-gray-700 focus:outline-none"
+                class="flex flex-col items-center md:inline-flex md:flex-row  md:justify-between w-full rounded-md border border-gray-600 shadow-sm px-4 py-2 bg-[#282828] text-xl font-medium text-gray-300 hover:bg-gray-700 focus:outline-none"
                 @click="isOpen = !isOpen">
                 <!-- 顯示當前選中的標籤，如果沒有，則顯示預設標題 -->
                 {{ selectedLabel }}
                 <!-- 向下的箭頭圖示 -->
-                <svg class="-mr-1 ml-2 h-5 w-5 transition-transform duration-200"
+                <svg class="mr-0 ml-0 h-5 w-5 md:-mr-1 md:ml-2 transition-transform duration-200"
                     :class="{ 'transform rotate-180': isOpen }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                     fill="currentColor" aria-hidden="true">
                     <path fill-rule="evenodd"
@@ -30,7 +30,7 @@
                 <div class="py-1" role="none">
                     <!-- 使用 v-for 迴圈產生選項 -->
                     <button v-for="item in items" :key="item.value" @click="selectItem(item)"
-                        class="text-gray-700 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900"
+                        class="text-gray-700 block w-full text-left px-4 py-2 text-xl hover:bg-gray-100 hover:text-gray-900"
                         role="menuitem">
                         {{ item.label }}
                     </button>

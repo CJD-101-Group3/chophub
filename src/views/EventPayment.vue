@@ -1,10 +1,23 @@
+<script setup>
+import Theheader from '@/components/Theheader.vue';
+import Thefooter from '@/components/Thefooter.vue';
+import basebutton from '@/components/Basebutton.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function goToPayment() {
+  router.push('/PaymentSuccess');
+}
+</script>
+
 <template>
   <!-- HTML 模板 -->
   <Theheader />
   <main class="bg-[#F8F9FA] min-h-screen w-full flex items-center justify-center py-8 md:py-12 xl:py-16 px-4 md:px-6 xl:px-8">
 
     <div class="w-full max-w-7xl bg-[#F8F9FA] p-8 sm:p-12">
-      <h3 class="h3 font-bold text-center">確認與繳費</h3>
+      <h3 class="h3 font-bold text-center mb-8">確認與繳費</h3>
       <form action="" class="space-y-4">
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 items-center">
@@ -99,19 +112,6 @@
   </main>
   <Thefooter />
 </template>
-
-<script setup>
-import Theheader from '@/components/Theheader.vue';
-import Thefooter from '@/components/Thefooter.vue';
-import basebutton from '@/components/Basebutton.vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
-function goToPayment() {
-  router.push('/PaymentSuccess');
-}
-</script>
 
 <style>
 </style>

@@ -1,3 +1,86 @@
+<script setup>
+import Theheader from '@/components/Theheader.vue';
+import Thefooter from '@/components/Thefooter.vue';
+import { ref } from 'vue';
+import EventInfoCard from '@/components/EventInfoCard.vue';
+import UnregisterBanner from '@/components/UnregisterBanner.vue';
+import basebutton from '@/components/basebutton.vue';
+
+const eventData = ref({
+   title: '【藏鋒夜宴】兵器藏家限定導覽',
+   time: '2025年08月23日 星期六 19:00–20:00',
+   location: '冷兵器體驗館（台北市大同區火鍛街 88 號）',
+   organizer: '鋼火典藏會',
+   spotsLeft: 5,
+   imageUrl: '/public/events/katana-exhibition.png',
+   imageAlt: '兵器展'
+});
+
+      const quantity = ref(1);
+
+      const increaseQuantity = () => {
+      quantity.value++;
+      };
+
+      const decreaseQuantity = () => {
+      if (quantity.value > 1) {
+         quantity.value--;
+      }
+      };
+
+
+
+const suggestedEvents = ref([
+   {
+      id: 2,
+      title: '【虛擬兵器匠】線上設計你的奇幻刀劍',
+      type: '線上活動',
+      location: '線上',
+      date: '2025/8/10(日) 19:00PM',
+      rating: 4,
+      reviews: 76,
+      isFeatured: true,
+      image: '/public/events/knife-exhibition.png'
+   },
+   {
+      id: 3,
+      title: '鍛造群俠會 - 刀匠線上交流',
+      type: '線上活動',
+      location: '線上',
+      date: '2025/7/23(三) 10:00AM',
+      rating: 4,
+      reviews: 82,
+      isFeatured: false,
+      image: ''
+   },
+   {
+      id: 4,
+      title: '匠人現場 - 劍柄木雕實作坊',
+      type: '實體活動',
+      location: '台中市',
+      date: '2025/8/12(二) 13:30PM',
+      rating: 4,
+      reviews: 64,
+      isFeatured: true,
+      image: '/public/events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg'
+   },
+]);
+
+// --- 【第 2 步：建立處理函式】 ---
+// 建立一個函式，它會接收從子元件傳來的資料 (我們之前設定的是 event.id)
+function handleViewDetails(eventId) {
+   // eventId 就是子元件 emit('view-details', event.id) 時傳過來的那個 id
+
+   // 為了測試，我們先在控制台印出來看看
+   console.log(`接收到來自子元件的請求，需要查看 ID 為 ${eventId} 的活動詳情。`);
+
+   // 實際應用中，您會在這裡執行頁面跳轉
+   // router.push(`/events/${eventId}`);
+
+   //可以用這個 id 去呼叫 API、打開一個彈出視窗等
+}
+</script>
+
 <template>
    <div class=" bg-[#282828] text-gray-200 font-sans">
       <Theheader />
@@ -113,88 +196,6 @@
    </div>
 </template>
 
-<script setup>
-import Theheader from '@/components/Theheader.vue';
-import Thefooter from '@/components/Thefooter.vue';
-import { ref } from 'vue';
-import EventInfoCard from '@/components/EventInfoCard.vue';
-import UnregisterBanner from '@/components/UnregisterBanner.vue';
-import basebutton from '@/components/basebutton.vue';
-
-const eventData = ref({
-   title: '【藏鋒夜宴】兵器藏家限定導覽',
-   time: '2025年08月23日 星期六 19:00–20:00',
-   location: '冷兵器體驗館（台北市大同區火鍛街 88 號）',
-   organizer: '鋼火典藏會',
-   spotsLeft: 5,
-   imageUrl: '/public/events/katana-exhibition.png',
-   imageAlt: '兵器展'
-});
-
-      const quantity = ref(1);
-
-      const increaseQuantity = () => {
-      quantity.value++;
-      };
-
-      const decreaseQuantity = () => {
-      if (quantity.value > 1) {
-         quantity.value--;
-      }
-      };
-
-
-
-const suggestedEvents = ref([
-   {
-      id: 2,
-      title: '【虛擬兵器匠】線上設計你的奇幻刀劍',
-      type: '線上活動',
-      location: '線上',
-      date: '2025/8/10(日) 19:00PM',
-      rating: 4,
-      reviews: 76,
-      isFeatured: true,
-      image: '/public/events/knife-exhibition.png'
-   },
-   {
-      id: 3,
-      title: '鍛造群俠會 - 刀匠線上交流',
-      type: '線上活動',
-      location: '線上',
-      date: '2025/7/23(三) 10:00AM',
-      rating: 4,
-      reviews: 82,
-      isFeatured: false,
-      image: ''
-   },
-   {
-      id: 4,
-      title: '匠人現場 - 劍柄木雕實作坊',
-      type: '實體活動',
-      location: '台中市',
-      date: '2025/8/12(二) 13:30PM',
-      rating: 4,
-      reviews: 64,
-      isFeatured: true,
-      image: '/public/events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg'
-   },
-]);
-
-// --- 【第 2 步：建立處理函式】 ---
-// 建立一個函式，它會接收從子元件傳來的資料 (我們之前設定的是 event.id)
-function handleViewDetails(eventId) {
-   // eventId 就是子元件 emit('view-details', event.id) 時傳過來的那個 id
-
-   // 為了測試，我們先在控制台印出來看看
-   console.log(`接收到來自子元件的請求，需要查看 ID 為 ${eventId} 的活動詳情。`);
-
-   // 實際應用中，您會在這裡執行頁面跳轉
-   // router.push(`/events/${eventId}`);
-
-   //可以用這個 id 去呼叫 API、打開一個彈出視窗等
-}
-</script>
 
 <style scoped>
 p {

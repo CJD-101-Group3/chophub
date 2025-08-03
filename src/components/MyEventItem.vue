@@ -1,6 +1,6 @@
 <template>
   <!-- Main Card Container-->
-  <div class="flex flex-col mx-5 md:mx-auto bg-white shadow-md rounded-lg overflow-hidden">
+  <div class="flex flex-col mx-5 md:mx-auto bg-white rounded-lg overflow-hidden shadow-[8px_8px_15px_rgba(255,255,255,0.6)]">
     
     <!-- Top section with details -->
     <div class="flex flex-col md:flex-row items-center gap-6 p-4">

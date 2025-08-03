@@ -43,7 +43,7 @@ function goToDetail() {
 </script>
 
 <template>
-  <div class="flex flex-col w-full md:w-[387px] bg-[#FEFEFE] rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2">
+  <div class="flex flex-col w-full md:w-[387px] bg-[#FEFEFE] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2 shadow-[15px_15px_13px_rgba(255,255,255,0.5)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] md:transition-shadow">
     
     <div class="relative">
       <img :src="imageSource" alt="Event Image" class="w-full h-[215px] object-cover" />

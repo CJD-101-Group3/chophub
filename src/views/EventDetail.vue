@@ -1,3 +1,99 @@
+<script setup>
+import Theheader from '@/components/Theheader.vue';
+import Thefooter from '@/components/Thefooter.vue';
+import { ref } from 'vue';
+import EventInfoCard from '@/components/EventInfoCard.vue';
+import RegisterBanner from '@/components/RegisterBanner.vue';
+import GeneralButton from '../components/GeneralButton.vue';
+import { useRouter } from 'vue-router';
+
+const eventData = ref({
+   title: '【藏鋒夜宴】兵器藏家限定導覽',
+   time: '2025年08月23日 星期六 19:00–20:00',
+   location: '冷兵器體驗館（台北市大同區火鍛街 88 號）',
+   organizer: '鋼火典藏會',
+   spotsLeft: 5,
+   imageUrl: '/public/events/katana-exhibition.png',
+   imageAlt: '兵器展'
+});
+
+const quantity = ref(1);
+
+const increaseQuantity = () => {
+   quantity.value++;
+};
+
+const decreaseQuantity = () => {
+   if (quantity.value > 1) {
+      quantity.value--;
+   }
+};
+
+// 模擬提交報名的方法
+const submitRegistration = () => {
+   alert(`您已選擇 ${quantity.value} 張票，總金額為 NT$ ${500 * quantity.value}`);
+   // 實際應用中可能會替換成 API 呼叫等邏輯
+};
+
+
+const suggestedEvents = ref([
+   {
+      id: 2,
+      title: '【虛擬兵器匠】線上設計你的奇幻刀劍',
+      type: '線上活動',
+      location: '線上',
+      date: '2025/8/10(日) 19:00PM',
+      rating: 4,
+      reviews: 76,
+      isFeatured: true,
+      image: '/public/events/knife-exhibition.png'
+   },
+   {
+      id: 3,
+      title: '鍛造群俠會 - 刀匠線上交流',
+      type: '線上活動',
+      location: '線上',
+      date: '2025/7/23(三) 10:00AM',
+      rating: 4,
+      reviews: 82,
+      isFeatured: false,
+      image: ''
+   },
+   {
+      id: 4,
+      title: '匠人現場 - 劍柄木雕實作坊',
+      type: '實體活動',
+      location: '台中市',
+      date: '2025/8/12(二) 13:30PM',
+      rating: 4,
+      reviews: 64,
+      isFeatured: true,
+      image: '/public/events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg'
+   },
+]);
+
+// --- 【第 2 步：建立處理函式】 ---
+// 建立一個函式，它會接收從子元件傳來的資料 (我們之前設定的是 event.id)
+function handleViewDetails(eventId) {
+   // eventId 就是子元件 emit('view-details', event.id) 時傳過來的那個 id
+
+   // 為了測試，我們先在控制台印出來看看
+   console.log(`接收到來自子元件的請求，需要查看 ID 為 ${eventId} 的活動詳情。`);
+
+   // 實際應用中，您會在這裡執行頁面跳轉
+   // router.push(`/events/${eventId}`);
+
+   // 或者，您也可以用這個 id 去呼叫 API、打開一個彈出視窗等
+}
+
+const router = useRouter();
+
+function goToPayment() {
+   router.push('/EventPayment');
+}
+
+</script>
+
 <template>
    <div class=" bg-[#282828] text-gray-200 font-sans">
       <Theheader />
@@ -53,20 +149,20 @@
                   <div>
                      <h3 class="font-bold text-white mb-2"><span class="text-[#F2994A] mr-2">|</span>現場報到</h3>
                      <p>活動當日需憑 QR code報到憑證 + 證件入場，建議提早 10 分鐘報到。</p>
-                  </div>               
+                  </div>
                   <div>
                      <h3 class="font-bold text-white mb-2"><span class="text-[#F2994A] mr-2">|</span>退費規則</h3>
                      <p>．活動報名截止前可全額退費</p>
                      <p>．若因主辦單位取消，將全額退費</p>
-                  </div>               
+                  </div>
                   <div>
                      <h3 class="font-bold text-white mb-2"><span class="text-[#F2994A] mr-2">|</span>特殊需求</h3>
                      <p>若有無障礙需求或其他協助，請於報名時備註，以利安排。</p>
-                  </div>               
+                  </div>
                   <div>
                      <h3 class="font-bold text-white mb-2"><span class="text-[#F2994A] mr-2">|</span>個資使用</h3>
                      <p>報名資料僅作活動聯絡與保險用途，依個資法保護，不會對外公開。</p>
-                  </div>               
+                  </div>
 
                </div>
             </section>
@@ -102,7 +198,7 @@
                   <!-- 票價 -->
                   <div class="flex-1 md:text-center">
                      <div class="flex flex-col items-center">
-                        <h4 class="font-bold">票價</h4>
+                        <h3 class="font-bold">票價</h3>
                         <h5 class="text-xl font-bold mt-2">NT$ 500</h5>
                      </div>
                   </div>
@@ -110,39 +206,32 @@
                   <!-- 張數選擇器-->
                   <div class="flex-1 md:text-center">
                      <div class="flex flex-col items-center">
-                  <h4 class="font-bold">張數</h4>
-                  <div class="flex items-center justify-center mt-2 space-x-4">
-                     <button
-                        @click="decreaseQuantity"
-                        :disabled="quantity <= 1"
-                        class="bg-gray-200 w-8 h-8 rounded-full font-bold text-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                        -
-                     </button>
+                        <h3 class="font-bold">張數</h3>
+                        <div class="flex items-center justify-center mt-2 space-x-4">
+                           <button @click="decreaseQuantity" :disabled="quantity <= 1"
+                              class="bg-gray-200 w-8 h-8 rounded-full font-bold text-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                              -
+                           </button>
 
-                     <span class="text-xl font-bold">{{ quantity }}</span>
+                           <span class="text-xl font-bold">{{ quantity }}</span>
 
-                     <button
-                        @click="increaseQuantity"
-                        class="bg-gray-200 w-8 h-8 rounded-full font-bold text-lg hover:bg-gray-300"
-                     >
-                        +
-                     </button>
+                           <button @click="increaseQuantity"
+                              class="bg-gray-200 w-8 h-8 rounded-full font-bold text-lg hover:bg-gray-300">
+                              +
+                           </button>
+                        </div>
                      </div>
-                  </div>
                   </div>
                </div>
 
                <!-- 按鈕區塊 -->
             </section>
-               <div class="mt-6 text-center">
-                  <basebutton
-                  @click="submitRegistration"
-                  class="bg-[#F2994A] text-white font-bold px-8 rounded-lg hover:bg-orange-600 transition-colors w-full md:w-auto"
-                  >
+            <div class="flex justify-center items-center">
+               <GeneralButton variant="primary" @click="goToPayment" width="150px" height="50px" font-size="20px">
                   立刻報名
-                  </basebutton>
-               </div>
+               </GeneralButton>
             </div>
+         </div>
 
          <!-- Suggested Events -->
          <section class="mt-20">
@@ -161,98 +250,8 @@
    </div>
 </template>
 
-<script setup>
-import Theheader from '@/components/Theheader.vue';
-import Thefooter from '@/components/Thefooter.vue';
-import { ref } from 'vue';
-import EventInfoCard from '@/components/EventInfoCard.vue';
-import RegisterBanner from '@/components/RegisterBanner.vue';
-import basebutton from '@/components/basebutton.vue';
-
-const eventData = ref({
-   title: '【藏鋒夜宴】兵器藏家限定導覽',
-   time: '2025年08月23日 星期六 19:00–20:00',
-   location: '冷兵器體驗館（台北市大同區火鍛街 88 號）',
-   organizer: '鋼火典藏會',
-   spotsLeft: 5,
-   imageUrl: '/public/events/katana-exhibition.png',
-   imageAlt: '兵器展'
-});
-
-      const quantity = ref(1);
-
-      const increaseQuantity = () => {
-      quantity.value++;
-      };
-
-      const decreaseQuantity = () => {
-      if (quantity.value > 1) {
-         quantity.value--;
-      }
-      };
-
-      // 模擬提交報名的方法
-      const submitRegistration = () => {
-      // 在這裡，您可以取得最終的票券張數並執行後續操作，
-      // 例如將資料送到後端或顯示總金額。
-      alert(`您已選擇 ${quantity.value} 張票，總金額為 NT$ ${500 * quantity.value}`);
-      // 實際應用中可能會替換成 API 呼叫等邏輯
-      };
-
-
-const suggestedEvents = ref([
-   {
-      id: 2,
-      title: '【虛擬兵器匠】線上設計你的奇幻刀劍',
-      type: '線上活動',
-      location: '線上',
-      date: '2025/8/10(日) 19:00PM',
-      rating: 4,
-      reviews: 76,
-      isFeatured: true,
-      image: '/public/events/knife-exhibition.png'
-   },
-   {
-      id: 3,
-      title: '鍛造群俠會 - 刀匠線上交流',
-      type: '線上活動',
-      location: '線上',
-      date: '2025/7/23(三) 10:00AM',
-      rating: 4,
-      reviews: 82,
-      isFeatured: false,
-      image: ''
-   },
-   {
-      id: 4,
-      title: '匠人現場 - 劍柄木雕實作坊',
-      type: '實體活動',
-      location: '台中市',
-      date: '2025/8/12(二) 13:30PM',
-      rating: 4,
-      reviews: 64,
-      isFeatured: true,
-      image: '/public/events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg'
-   },
-]);
-
-// --- 【第 2 步：建立處理函式】 ---
-// 建立一個函式，它會接收從子元件傳來的資料 (我們之前設定的是 event.id)
-function handleViewDetails(eventId) {
-   // eventId 就是子元件 emit('view-details', event.id) 時傳過來的那個 id
-
-   // 為了測試，我們先在控制台印出來看看
-   console.log(`接收到來自子元件的請求，需要查看 ID 為 ${eventId} 的活動詳情。`);
-
-   // 實際應用中，您會在這裡執行頁面跳轉
-   // router.push(`/events/${eventId}`);
-
-   // 或者，您也可以用這個 id 去呼叫 API、打開一個彈出視窗等
-}
-</script>
-
 <style scoped>
 p {
-  @apply text-white text-2xl leading-relaxed mb-4 font-normal;
+   @apply text-white text-2xl md:text-base leading-relaxed mb-4 font-normal;
 }
 </style>

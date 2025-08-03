@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="flex justify-end items-center">
-                    <span class="text-xl font-semibold text-[#F2994A]">尚餘 {{ event.spotsLeft }} 個名額</span>
+                    <span class="text-xl font-semibold text-[#F2994A] mt-5">尚餘 {{ event.spotsLeft }} 個名額</span>
 
                     <GeneralButton
                         variant="primary"
@@ -34,7 +34,7 @@
                         width="150px"
                         height="50px"
                         font-size="20px"
-                        class="mr-24 ml-5 md:mt-0 md:w-1/4"
+                        class="mr-18 ml-5 mt-5 md:w-1/4"
                     >
                         立刻報名
                     </GeneralButton>                    

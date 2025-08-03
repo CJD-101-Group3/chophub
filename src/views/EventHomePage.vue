@@ -1,57 +1,18 @@
-<template>
-   <Theheader />
-   <main class="bg-[#282828] flex-1 flex flex-col items-center overflow-y-auto space-y-4 md:space-y-6">
-      <div class="relative">
-         <img src="/events/hero-background.jpg" alt="鑄造師" class="block z-index-[-1] opacity-[60%]">
-         <p class="absolute top-[40%] left-[13%] text-[#fff] text-xl font-bold tracking-widest md:text-4xl lg:text-6xl">
-            冷鋼烈火 ·
-            共赴匠魂之旅</p>
-         <p class="absolute top-[45%] left-[13%] text-[#fff] mt-5 md:mt-10 text-base md:text-2xl lg:text-3xl">
-            體驗鍛造、深度研修，沉浸兵器之美</p>
-      </div>
-
-      <div class="W-full">
-         <a href="/MyEvents">
-         <Basebutton>我的活動</Basebutton>
-         </a>
-      </div>
-
-      <div class="flex flex-row gap-3">
-         <DropDownFilter title="活動類型" :items="typeItems" v-model="selectedType" />
-
-         <DropDownFilter title="時間排序" :items="timeItems" v-model="selectedTime" />
-
-         <DropDownFilter title="活動地點" :items="locationItems" v-model="selectedLocation" />
-      </div>
-
-      <div v-if="filteredEvents.length > 0" class="inline-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-5">
-         <EventCard v-for="event in filteredEvents" :key="event.id" :title="event.title" :event-type="event.type"
-            :event-date="event.date" :rating="event.rating" :review-count="event.reviews"
-            :is-featured="event.isFeatured" :event-image="event.image" @learn-more="handleLearnMore" />
-      </div>
-
-      <div v-else class="text-white text-center py-10">
-         <p>找不到符合條件的活動，請嘗試調整篩選條件。</p>
-      </div>
-
-      <div class="flex gap-2">
-         <PageButton v-for="page in 3" :key="page" :number="page" :isActive="currentPage === page"
-            @click="goToPage(page)" />
-      </div>
-
-   </main>
-
-   <Thefooter />
-</template>
-
 <script setup>
 import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
-import Basebutton from '@/components/Basebutton.vue';
+import GeneralButton from '../components/GeneralButton.vue';
 import DropDownFilter from '@/components/DropDownFilter.vue';
 import EventCard from '@/components/EventCard.vue';
-import PageButton from '../components/PageButton.vue';
+import Pagination from '@/components/Pagination.vue';
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function goToMyEvents() {
+   router.push('/MyEvents');
+}
 
 // --- 下拉選單的選項定義 ---
 
@@ -197,16 +158,58 @@ const filteredEvents = computed(() => {
 });
 
 
-// --- 事件與方法 ---
-
-function handleLearnMore(eventTitle) {
-   alert(`你想了解更多關於「${eventTitle}」的資訊！`);
-}
-
+// --- 頁數模擬資料 ---
+// 在實際應用中，totalPages 應該來自後端 API
+const mockTotalPages = ref(15);
 const currentPage = ref(1);
-
-const goToPage = (page) => {
-   currentPage.value = page;
-};
-
 </script>
+
+<template>
+   <Theheader />
+   <main class="bg-[#282828] flex-1 flex flex-col items-center overflow-y-auto space-y-4 md:space-y-6">
+      <div class="relative">
+         <img src="/events/hero-background.jpg" alt="鑄造師" class="block z-index-[-1] opacity-[60%]">
+         <p class="absolute top-[40%] left-[13%] text-[#fff] text-xl font-bold tracking-widest md:text-4xl lg:text-6xl">
+            冷鋼烈火 ·
+            共赴匠魂之旅</p>
+         <p class="absolute top-[45%] left-[13%] text-[#fff] mt-5 md:mt-10 text-base md:text-2xl lg:text-3xl">
+            體驗鍛造、深度研修，沉浸兵器之美</p>
+      </div>
+
+      <div class="flex justify-center items-center">
+         <GeneralButton 
+            variant="primary" 
+            @click="goToMyEvents" 
+            width="150px" height="50px" font-size="20px">
+            我的活動
+         </GeneralButton>
+      </div>
+
+      <div class="flex flex-row gap-3">
+         <DropDownFilter title="活動類型" :items="typeItems" v-model="selectedType" />
+
+         <DropDownFilter title="時間排序" :items="timeItems" v-model="selectedTime" />
+
+         <DropDownFilter title="活動地點" :items="locationItems" v-model="selectedLocation" />
+      </div>
+
+      <div v-if="filteredEvents.length > 0" class="inline-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-5">
+         <EventCard v-for="event in filteredEvents" :key="event.id" :title="event.title" :event-type="event.type"
+            :event-date="event.date" :rating="event.rating" :review-count="event.reviews"
+            :is-featured="event.isFeatured" :event-image="event.image" @learn-more="handleLearnMore"
+            class="shadow-[8px_8px_15px_rgba(255,255,255,0.4)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] transition-shadow duration-300"/>
+      </div>
+
+      <div v-else class="text-white text-center py-10">
+         <p>找不到符合條件的活動，請嘗試調整篩選條件。</p>
+      </div>
+
+      <div>
+
+         <Pagination :total-pages="mockTotalPages" v-model:currentPage="currentPage" />
+
+      </div>
+   </main>
+
+   <Thefooter />
+</template>

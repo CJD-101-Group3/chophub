@@ -1,3 +1,18 @@
+<script setup>
+import Theheader from '@/components/Theheader.vue';
+import Thefooter from '@/components/Thefooter.vue';
+import GeneralButton from '@/components/GeneralButton.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function goToMyEvents() {
+  router.push('/MyEvents');
+}
+</script>
+
+<style></style>
+
 <template>
   <div class="min-h-screen flex flex-col">
     <Theheader />
@@ -20,17 +35,3 @@
   </div>
 </template>
 
-<script setup>
-import Theheader from '@/components/Theheader.vue';
-import Thefooter from '@/components/Thefooter.vue';
-import GeneralButton from '@/components/GeneralButton.vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
-function goToMyEvents() {
-  router.push('/MyEvents');
-}
-</script>
-
-<style></style>

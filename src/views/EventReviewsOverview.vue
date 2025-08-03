@@ -25,7 +25,7 @@ const ratingData = ref({
 // 接收篩選器數據的方法
 const applyDateFilter = (datePayload) => {
   // datePayload 就是 EventFilter emit 出來的那個物件
-  console.log('篩選條件已更新:', datePayload); 
+  console.log('篩選條件已更新:', datePayload);
   // 輸出: { start: '用戶輸入的開始日期', end: '用戶輸入的結束日期' }
 
   // 根據 datePayload.start 和 datePayload.end
@@ -77,47 +77,35 @@ const activities = ref([
 const currentPage = ref(1)
 
 const goToPage = (page) => {
-currentPage.value = page
+  currentPage.value = page
 }
 </script>
 
 <template>
-   <Theheader />
+  <Theheader />
 
-   <main class="bg-[#282828]">
-      <div>
-         <div class="text-white h3 font-bold text-center py-9 md:h2">活動評論</div>
-          
-         <RatingSummary 
-            class="mb-12"
-            :average-rating="ratingData.average"
-            :total-reviews="ratingData.total"
-            :distributions="ratingData.distribution"
-         />
+  <main class="bg-[#282828]">
+    <div>
+      <div class="text-white h3 font-bold text-center py-9 md:h2">活動評論</div>
 
-         <EventFilter 
-            class="mb-8" 
-            @filter-applied="applyDateFilter" 
-         />
+      <RatingSummary class="mb-12" :average-rating="ratingData.average" :total-reviews="ratingData.total"
+        :distributions="ratingData.distribution" />
 
-         <div class="mx-5 my-5">
-         <EventReviewItem
-         v-for="activity in activities"
-         :key="activity.id"
-         v-bind="activity"
-         />
-         </div>
+      <EventFilter class="mb-8" @filter-applied="applyDateFilter" />
+
+      <div class="mx-5 my-5">
+        <EventReviewItem v-for="activity in activities" :key="activity.id" v-bind="activity" />
+      </div>
 
       <div class="flex items-center justify-center gap-2">
-         <PageButton v-for="page in 3" :key="page" :number="page" :isActive="currentPage === page"
-            @click="goToPage(page)" />
+        <PageButton v-for="page in 3" :key="page" :number="page" :isActive="currentPage === page"
+          @click="goToPage(page)" />
       </div>
 
-      </div>
-   </main>
-   <Thefooter />
+    </div>
+  </main>
+  <Thefooter />
 </template>
 
 
-<style>
-</style>
+<style></style>

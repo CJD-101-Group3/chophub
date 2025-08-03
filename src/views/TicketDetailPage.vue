@@ -1,3 +1,36 @@
+<script setup>
+import Theheader from '../components/Theheader.vue';
+import Thefooter from '../components/Thefooter.vue';
+import { ref, onMounted, computed } from 'vue';
+import QrcodeVue from 'qrcode.vue';
+
+// --- MOCK API ---
+const mockEventsDatabase = [
+    { id: 1, title: '【鍛造群俠會】刀匠線上交流', dateTime: '2025/7/23(三) 10:00am', imageUrl: '/events/burning-coal.jpg', price: 500, ticketCount: 1, eventType: '線上活動', status: 'upcoming' },
+    { id: 2, title: '【匠魂燒鍛】小型鍛刀入門體驗', dateTime: '2024/5/15(五) 14:00pm', imageUrl: '/events/forgingseafood-and-man.png', price: 1200, ticketCount: 2, eventType: '實體工作坊', status: 'upcoming' },
+];
+
+
+// --- COMPONENT LOGIC ---
+const isLoading = ref(false); 
+const error = ref(null);
+
+const event = ref(mockEventsDatabase[0]); 
+
+
+const qrValue = computed(() => {
+    if (!event.value) return ''; 
+
+    // 建立一個 JSON 字串。這樣掃描 QR Code 的後端就能輕鬆解析出多個資訊
+    return JSON.stringify({
+        eventId: event.value.id,
+        ticketId: `TICKET-${event.value.id}-USER-123`, // 這是模擬的票券ID
+        userId: 123 // 這是模擬的使用者ID
+    });
+});
+
+</script>
+
 <template>
     <Theheader/>
     <div class="bg-[#282828] min-h-screen text-white">
@@ -63,35 +96,3 @@
     <Thefooter/>
 </template>
 
-<script setup>
-import Theheader from '../components/Theheader.vue';
-import Thefooter from '../components/Thefooter.vue';
-import { ref, onMounted, computed } from 'vue';
-import QrcodeVue from 'qrcode.vue';
-
-// --- MOCK API ---
-const mockEventsDatabase = [
-    { id: 1, title: '【鍛造群俠會】刀匠線上交流', dateTime: '2025/7/23(三) 10:00am', imageUrl: '/events/burning-coal.jpg', price: 500, ticketCount: 1, eventType: '線上活動', status: 'upcoming' },
-    { id: 2, title: '【匠魂燒鍛】小型鍛刀入門體驗', dateTime: '2024/5/15(五) 14:00pm', imageUrl: '/events/forgingseafood-and-man.png', price: 1200, ticketCount: 2, eventType: '實體工作坊', status: 'upcoming' },
-];
-
-
-// --- COMPONENT LOGIC ---
-const isLoading = ref(false); 
-const error = ref(null);
-
-const event = ref(mockEventsDatabase[0]); 
-
-
-const qrValue = computed(() => {
-    if (!event.value) return ''; 
-
-    // 建立一個 JSON 字串。這樣掃描 QR Code 的後端就能輕鬆解析出多個資訊
-    return JSON.stringify({
-        eventId: event.value.id,
-        ticketId: `TICKET-${event.value.id}-USER-123`, // 這是模擬的票券ID
-        userId: 123 // 這是模擬的使用者ID
-    });
-});
-
-</script>

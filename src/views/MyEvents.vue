@@ -1,50 +1,8 @@
-<template>
-  <Theheader />
-
-  <main class="bg-[#282828] pb-16">
-
-    <div>
-      <div class="text-white h3 font-bold text-center py-9 md:h2">我的活動</div>
-
-      <div class="mx-auto max-w-5xl space-y-4">
-
-        <!-- 1. Tabs Navigation (優化後的語意) -->
-        <div class="border-b-2 border-[#4F4F4F] px-4">
-          <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" :class="[
-            'px-6 py-3 text-lg font-medium transition-colors duration-300 rounded-none',
-            { 'border-b-4 border-b-[#F2994A] text-white': activeTab === tab.key },
-            { 'text-gray-400 hover:text-white': activeTab !== tab.key }
-          ]">
-            {{ tab.name }}
-          </button>
-        </div>
-
-        <!-- 2. Display a message if no activities match the filter -->
-        <div v-if="filteredActivities.length === 0" class="text-center text-gray-400 py-12">
-          <p class="text-xl">這個分類下沒有活動喔！</p>
-        </div>
-        
-        <!-- 3. Dynamic List Rendering based on the active tab -->
-        <MyEventItem 
-          v-else
-          v-for="activity in filteredActivities" 
-          :key="activity.id" 
-          v-bind="activity"
-          @write-review="handleWriteReview" 
-        />
-      </div>
-
-    </div>
-  </main>
-
-  <Thefooter />
-</template>
-
 <script setup>
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 import MyEventItem from '../components/MyEventItem.vue';
-import { ref, computed } from 'vue'; // 引入 computed
+import { ref, computed } from 'vue';
 
 // --- STATE MANAGEMENT ---
 
@@ -121,3 +79,46 @@ const filteredActivities = computed(() => {
   }
 });
 </script>
+
+<template>
+  <Theheader />
+
+  <main class="bg-[#282828] pb-16 min-screen">
+
+
+    <div>
+      <div class="text-white h3 font-bold text-center py-9 md:h2">我的活動</div>
+
+      <div class="mx-auto max-w-5xl space-y-4">
+
+        <!-- 1. Tabs Navigation (優化後的語意) -->
+        <div class="border-b-2 border-[#4F4F4F] px-4">
+          <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" :class="[
+            'px-6 py-3 text-lg font-medium transition-colors duration-300 rounded-none',
+            { 'border-b-4 border-b-[#F2994A] text-white': activeTab === tab.key },
+            { 'text-gray-400 hover:text-white': activeTab !== tab.key }
+          ]">
+            {{ tab.name }}
+          </button>
+        </div>
+
+        <!-- 2. Display a message if no activities match the filter -->
+        <div v-if="filteredActivities.length === 0" class="text-center text-gray-400 py-12">
+          <p class="text-xl">這個分類下沒有活動喔！</p>
+        </div>
+        
+        <!-- 3. Dynamic List Rendering based on the active tab -->
+        <MyEventItem 
+          v-else
+          v-for="activity in filteredActivities" 
+          :key="activity.id" 
+          v-bind="activity"
+          @write-review="handleWriteReview" 
+          />
+      </div>
+
+    </div>
+  </main>
+
+<Thefooter />
+</template>
