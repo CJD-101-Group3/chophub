@@ -13,6 +13,7 @@
 </template>
 
 <script setup>
+
 defineProps({
     isDay: Boolean,
 })

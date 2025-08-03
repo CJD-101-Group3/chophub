@@ -548,6 +548,7 @@
           modifier: 1,
           slideShadows: true,
         }"
+        :initial-slide="4"
         pagination
         class="w-full"
       >
