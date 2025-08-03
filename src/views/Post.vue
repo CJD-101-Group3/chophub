@@ -7,6 +7,8 @@ import TheHeader from '@/components/Theheader.vue';
 import TheFooter from '@/components/Thefooter.vue';
 import PostCard from '@/components/PostCard.vue';
 import searchIcon from '@/assets/icon/search.svg';
+import pagearrowIcon1 from '@/assets/icon/pagearrowleft.svg';
+import pagearrowIcon2 from '@/assets/icon/pagearrowright.svg';
 
 // --- 2. 【新增】一個用來控制彈窗顯示/隱藏的狀態 ---
 const isModalOpen = ref(false);
@@ -42,6 +44,18 @@ function goToPage(page) {
 }
 function performSearch() {
   alert(`正在搜尋：${searchTerm.value}`);
+}
+
+// --- 【新增】2. 上一頁和下一頁的函式 ---
+function prevPage() {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+}
+function nextPage() {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
 }
 </script>
 
@@ -88,8 +102,35 @@ function performSearch() {
         />
 
         <div class="flex justify-center items-center mt-8 space-x-2 col-span-full">
-          <button v-for="page in totalPages" :key="page" @click="goToPage(page)" :class="['w-10 h-10 rounded-lg font-bold transition-colors', currentPage === page ? 'bg-[#F2994A] text-white' : 'bg-[#282828] text-gray-400 hover:bg-gray-600']">
+          <!-- 上一頁按鈕 -->
+          <button 
+            @click="prevPage" 
+            :disabled="currentPage === 1"
+            class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors bg-[#282828] text-gray-400 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <!-- 【修改】1. 使用 pagearrowIcon1 (左箭頭) -->
+            <!-- 【修改】2. 移除 transform rotate-180 樣式 -->
+            <img :src="pagearrowIcon1" alt="Previous" class="w-4 h-4">
+          </button>
+
+          <!-- 頁碼按鈕 -->
+          <button 
+            v-for="page in totalPages" 
+            :key="page" 
+            @click="goToPage(page)" 
+            :class="['w-10 h-10 rounded-lg font-bold transition-colors', currentPage === page ? 'bg-[#F2994A] text-white' : 'bg-[#282828] text-gray-400 hover:bg-gray-600']"
+          >
             {{ page }}
+          </button>
+
+          <!-- 下一頁按鈕 -->
+          <button 
+            @click="nextPage" 
+            :disabled="currentPage === totalPages"
+            class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors bg-[#282828] text-gray-400 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <!-- 【修改】使用 pagearrowIcon2 (右箭頭) -->
+            <img :src="pagearrowIcon2" alt="Next" class="w-4 h-4">
           </button>
         </div>
 
