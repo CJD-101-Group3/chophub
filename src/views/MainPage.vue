@@ -1,12 +1,14 @@
 <script setup>
 import Theheader from '@/components/Theheader.vue'
-import Smith from '@/components/Home/Smith.vue'
+import Smith_wrapper from '@/components/Home/Smith_wrapper.vue'
+import Smith_hammer from '@/components/Home/Smith_hammer.vue'
 import Hand1 from '@/components/Home/Hand1.vue'
 import Weapon_bar from '@/components/Home/Weapon_bar.vue'
 import Board from '@/components/Home/Board.vue'
 import Event from '@/components/Home/Event.vue'
 import Window from '@/components/Home/Window.vue'
 import Lamp from '@/components/Home/Lamp.vue'
+import Taru from '@/components/Home/Taru.vue'
 import { ref } from 'vue'
 
 const isDay = ref(true)
@@ -23,9 +25,10 @@ const toggleWindow = () => {
             <!-- 背景圖 -->
             <img src="/Home_img/BG_img.png" alt="Home Background" class="absolute inset-0 w-full h-full object-fill" />
 
-            <!-- Smith -->
-            <Smith />
-
+            <!-- Smith_wrapper -->
+            <Smith_wrapper />
+            <!-- Smith_hammer -->
+            <!-- <Smith_hammer /> -->
             <!-- 手0 -->
             <Hand1 />
             <!-- 鐵砧 -->
@@ -45,15 +48,11 @@ const toggleWindow = () => {
             <!-- 活動黑板 -->
             <Event />
             <!-- 桶子 -->
-            <img
-                src="/Home_img/Taru.png"
-                alt="桶子"
-                class="absolute w-[20vw] bottom-[0%] left-1/2 translate-x-[-90%] z-30" />
+            <Taru/>
             <!-- 窗戶元件，點擊會切換 isDay -->
             <Window :isDay="isDay" @toggle="toggleWindow" />
-
             <!-- 吊燈元件，根據 isDay 顯示燈光 -->
-            <Lamp :isDay="isDay" />
+            <Lamp :isDay="isDay" @toggle="toggleWindow" />
         </div>
     </div>
 </template>
