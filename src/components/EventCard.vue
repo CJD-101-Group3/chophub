@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps, ref, computed } from 'vue';
-import { useRouter } from 'vue-router'; // ✅ 匯入 router
+import { useRouter } from 'vue-router';
 
 // --- 匯入所有圖示 ---
 import bigStarIcon from '@/assets/icon/bigstar.svg';
@@ -11,7 +11,7 @@ import defaultEventImage from '@/assets/icon/activity1.png';
 
 // --- 定義 Props ---
 const props = defineProps({
-  id: { type: [String, Number], required: true }, // ✅ 加入 id
+  id: { type: [String, Number], required: true },
   eventImage: { type: String, default: '' },
   isFeatured: { type: Boolean, default: false },
   title: { type: String, default: '鍛造群俠會 - 刀匠線上交流' },
@@ -48,11 +48,14 @@ function goToDetail() {
     <div class="relative">
       <img :src="imageSource" alt="Event Image" class="w-full h-[215px] object-cover" />
       
+      <!-- 
+        【修改】將星星圖示尺寸從 w-14 h-14 (56px) 調整為 w-10 h-10 (40px)
+      -->
       <img
         v-if="isFeatured"
         :src="favoriteStarSrc"
         alt="Featured Event"
-        class="absolute top-5 right-5 w-14 h-14 cursor-pointer"
+        class="absolute top-5 right-5 w-10 h-10 cursor-pointer"
         @click="toggleFavorite"
       />
     </div>
@@ -79,7 +82,6 @@ function goToDetail() {
       </div>
       <div class="flex-grow"></div>
 
-      <!-- ✅ 點擊導向詳情頁 -->
       <button
         @click="goToDetail"
         class="w-full bg-[#F2994A] text-white font-semibold rounded-lg text-lg h-[56px] flex items-center justify-center 
