@@ -526,7 +526,17 @@
     <Theheader />
 
 
-    <div class="w-full h-[633px] bg-black"></div>
+    <div class="w-full h-[633px] bg-black relative overflow-hidden">
+      <img src="/src/assets/weapons/wb.png" alt="" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+        <h1 class="text-3xl md:text-5xl font-bold text-white drop-shadow-lg mb-4">
+          鐵與血的傳承：冷兵器全覽
+        </h1>
+        <p class="text-lg md:text-2xl text-white drop-shadow-md">
+          鋒芒萬丈：刀劍世界探索
+        </p>
+      </div>
+    </div>
     <div class="relative h-7">
       <div class="absolute bottom-0 left-0 w-1/2 h-1 bg-[#b06b29]"></div>
       <div class="absolute bottom-3 left-0 w-3/4 h-1 bg-[#d6853c]"></div>

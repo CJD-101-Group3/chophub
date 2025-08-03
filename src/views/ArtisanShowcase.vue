@@ -625,9 +625,9 @@ const artisanProfile = ref({
         <!-- 刀匠卡片 -->
         
         <section class="relative rounded-lg overflow-hidden shadow-lg">
-          <router-link to="/ArtisanShowcase" class="cursor-pointer">
+          <router-link to="/" class="block cursor-pointer relative z-10">
             <img :src="artisanProfile.card.imageUrl" alt="Artisan at work" class="w-full h-56 md:h-72 object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 lg:p-8 text-white">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 lg:p-8 text-white pointer-events-none">
               <p class="text-3xl lg:text-4xl font-bold mb-4">{{ artisanProfile.card.quote }}</p>
               <p class="text-sm lg:text-base whitespace-pre-line leading-snug">{{ artisanProfile.card.details }}</p>
             </div>
@@ -652,12 +652,14 @@ const artisanProfile = ref({
         </section>
 
         <!-- 刀匠精選作品 -->
-        <section class="bg-[#ffffff] p-6 lg:p-8 rounded-lg shadow-sm">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選作品</h2>
+<section
+  class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8"
+  style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);"
+>            <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選作品</h2>
           <div class="flex space-x-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-5 lg:gap-6 lg:space-x-0 lg:pb-0">
             <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="work.link" class="flex-shrink-0 group w-56 lg:w-full">
               <div class="bg-black p-2 rounded-lg shadow-md overflow-hidden">
-                <img :src="work.imageUrl" :alt="'作品 ' + work.id" class="w-full h-48 lg:h-40 object-contain transition-transform duration-300 group-hover:scale-105">
+                <img :src="work.imageUrl" :alt="'作品 ' + work.id" class="w-full h-48 lg:h-40 object-contain transition-transform duration-300 ">
               </div>
               <button class="mt-3 w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-md transition-colors text-sm">
                 查看更多
@@ -667,10 +669,17 @@ const artisanProfile = ref({
         </section>
 
         <!-- 刀匠精選貼文 -->
-        <section class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選貼文</h2>
+<section
+  class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8"
+  style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);"
+>            <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選貼文</h2>
           <div class="space-y-4 lg:hidden">
-            <a v-for="post in artisanProfile.featuredPosts" :key="post.id" :href="post.link" class="block bg-[#E2E9EF] p-4 rounded-lg hover:bg-gray-300 transition-colors">
+            <a
+              v-for="post in artisanProfile.featuredPosts"
+              :key="post.id"
+              :href="post.link"
+              class="block bg-white shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 rounded-lg"
+            >
               <p class="font-semibold text-gray-800">{{ post.category }} {{ post.title }}</p>
               <p class="text-sm text-gray-500 mt-2">發表日期：{{ post.date }}</p>
             </a>
@@ -696,8 +705,11 @@ const artisanProfile = ref({
         </section>
 
         <!-- 成就徽章 -->
-        <section class="bg-white p-6 lg:p-8 rounded-lg shadow-md">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">成就徽章 (可滑動)</h2>
+<section
+  class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8"
+  style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);"
+>          
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">成就徽章</h2>
           <div class="flex space-x-6 overflow-x-auto pb-4 lg:flex-wrap lg:justify-center lg:gap-x-4 lg:gap-y-6 lg:space-x-0">
             <div v-for="achievement in artisanProfile.achievements" :key="achievement.id" class="flex flex-col items-center flex-shrink-0 w-32 lg:w-24">
               <img :src="achievement.imageUrl" :alt="achievement.name" class="w-28 lg:w-24 h-auto object-contain">
