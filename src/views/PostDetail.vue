@@ -3,15 +3,14 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 // 匯入您指定的圖片與 SVG 圖示
-import postDetailImage from '@/assets/icon/smalllike.svg';
+import postDetailImage from '@/assets/post/postdetail01.jpg';
 import smallLikeIcon from '@/assets/icon/smalllike.svg';
 import smallLikeActiveIcon from '@/assets/icon/smalllike_h.svg';
 import smallStarIcon from '@/assets/icon/smallstar.svg';
 import smallStarActiveIcon from '@/assets/icon/smallstar_h.svg';
-import messagesIcon from '@/assets/icon/smalllike.svg';
-import shareIcon from '@/assets/icon/smalllike.svg';
-import sendIcon from '@/assets/icon/smalllike.svg';
-
+import messagesIcon from '@/assets/icon/postshare.svg';
+import shareIcon from '@/assets/icon/postshare.svg';
+// sendIcon 的匯入已被移除，因為我們將直接使用 SVG 程式碼
 
 // --- STATE MANAGEMENT ---
 
@@ -38,7 +37,7 @@ const isSaved = ref(false);
 // Comments Data (simulated)
 const comments = ref([
     { id: 1, author: { name: '中壢彭于晏', avatar: 'https://i.pravatar.cc/150?u=pengyuyan' }, content: '武器評價文字武器評價文字...', likes: 82, time: '23週' },
-    { id: 2, author: { name: '館長', avatar: 'https://i.pravatar.cc/150?u=chang' }, content: '這把看起來不錯！', imageUrl: './input_file_0.png', likes: 150, time: '2週' }
+    { id: 2, author: { name: '館長', avatar: 'https://i.pravatar.cc/150?u=chang' }, content: '這把看起來不錯！', likes: 150, time: '2週' }
 ]);
 
 // --- New Comment State ---
@@ -104,8 +103,6 @@ function postComment() {
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-40">
 
-    <!-- ★★★★★ 主要修改處 ★★★★★ -->
-    <!-- 新增 hidden lg:block，讓此按鈕只在網頁版顯示 -->
     <button @click="router.back()" class="hidden lg:block absolute top-4 right-4 text-white z-50 p-2 rounded-full bg-black bg-opacity-50 hover:bg-opacity-75 transition">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -120,7 +117,7 @@ function postComment() {
 
       <div class="w-full h-full lg:w-5/12 flex flex-col bg-white dark:bg-zinc-900">
         
-        <!-- 手機版 Header (包含自己的關閉按鈕，lg:hidden 確保只在手機版顯示) -->
+        <!-- 手機版 Header -->
         <header class="p-4 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-700 lg:hidden">
           <div class="flex items-center gap-3">
             <img :src="post.author.avatar" alt="Author Avatar" class="w-8 h-8 rounded-full object-cover">
@@ -168,21 +165,18 @@ function postComment() {
 
           <!-- 新的橫向按鈕列 -->
           <div class="flex items-center justify-around py-2 border-t border-b border-zinc-200 dark:border-zinc-700">
-            <!-- 讚按鈕 -->
             <button @click="toggleLike" class="flex items-center justify-center gap-2 w-1/3 py-2 rounded-lg font-semibold transition-colors" :class="isLiked ? 'text-blue-600' : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'">
               <span class="p-2 rounded-full" :class="isLiked ? 'bg-blue-100' : ''">
                 <img :src="isLiked ? smallLikeActiveIcon : smallLikeIcon" alt="Like" class="h-6 w-6" />
               </span>
               <span>讚</span>
             </button>
-            <!-- 收藏按鈕 -->
             <button @click="toggleSave" class="flex items-center justify-center gap-2 w-1/3 py-2 rounded-lg font-semibold transition-colors" :class="isSaved ? 'text-yellow-600' : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'">
               <span class="p-2 rounded-full" :class="isSaved ? 'bg-yellow-100' : ''">
                 <img :src="isSaved ? smallStarActiveIcon : smallStarIcon" alt="Save" class="h-6 w-6" />
               </span>
               <span>收藏</span>
             </button>
-            <!-- 分享按鈕 -->
             <button class="flex items-center justify-center gap-2 w-1/3 py-2 rounded-lg font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
               <span class="p-2 rounded-full">
                 <img :src="shareIcon" alt="Share" class="h-6 w-6" />
@@ -205,7 +199,7 @@ function postComment() {
                 <div class="flex items-center text-xs text-zinc-500 dark:text-zinc-400 mt-2 gap-3">
                   <span>{{ comment.time }}</span>
                   <button class="font-semibold">讚</button>
-                  <button class="font-semibold">回覆</button>
+                  <button class="font-semibold">檢舉</button>
                 </div>
               </div>
             </div>
@@ -234,8 +228,21 @@ function postComment() {
                 placeholder="新增留言..." 
                 class="flex-grow bg-transparent focus:outline-none text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 px-2"
               />
-              <button @click="postComment" :disabled="!isCommentSubmittable" class="p-2 rounded-full transition" :class="isCommentSubmittable ? 'opacity-100' : 'opacity-50 cursor-not-allowed'">
-                <img :src="sendIcon" alt="Send" class="h-6 w-6" />
+              <!-- ★★★★★ 主要修改處 ★★★★★ -->
+              <button 
+                @click="postComment" 
+                :disabled="!isCommentSubmittable" 
+                class="p-2 rounded-full transition-colors"
+                :class="isCommentSubmittable 
+                  ? 'text-zinc-500 hover:text-blue-500' 
+                  : 'text-zinc-400 opacity-50 cursor-not-allowed'"
+              >
+                <!-- 將 <img> 替換為內聯 SVG。 -->
+                <!-- 關鍵點：fill="currentColor" 會讓 SVG 繼承父層 <button> 的文字顏色 -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                  <path d="M0 0h24v24H0z" fill="none"/>
+                </svg>
               </button>
             </div>
           </div>
