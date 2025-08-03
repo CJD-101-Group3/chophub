@@ -13,7 +13,7 @@ const isOpen = ref(false)
 <template>
     <header class="w-full h-[74px] bg-[#282828] flex items-center justify-between px-6 border-b-[0.5px] border-gray-700">
         <!-- Logo -->
-        <RouterLink to="/MainPage">
+        <RouterLink to="/Home">
         <div class="flex items-center space-x-2">
             <img :src="logo" alt="LOGO" class="w-[70px] h-[70px]" />
         </div>

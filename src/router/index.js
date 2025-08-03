@@ -8,7 +8,6 @@ import Login from '@/views/Login.vue'
 import events from '@/views/events.vue'
 import EventPayment from '@/views/EventPayment.vue'
 import Register from '@/views/Register.vue'
-import MainPage from '@/views/MainPage.vue'
 import PaymentSuccess from '@/views/PaymentSuccess.vue'
 import EventReview from '@/views/EventReview.vue'
 import UserProfile from '@/views/UserProfile.vue'
@@ -41,7 +40,7 @@ const routes = [
     { path: '/events', component: events},
     { path: '/EventPayment', component: EventPayment},
     { path: '/Register', component: Register},
-    { path: '/MainPage', component: MainPage},
+    { path: '/Home', component: Home},
     { path: '/PaymentSuccess', component: PaymentSuccess},
     { path: '/EventReview', component: EventReview},
     { path: '/UserProfile', component: UserProfile},
