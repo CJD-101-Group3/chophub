@@ -52,7 +52,6 @@ function goToDetail() {
         【修改】將星星圖示尺寸從 w-14 h-14 (56px) 調整為 w-10 h-10 (40px)
       -->
       <img
-        v-if="isFeatured"
         :src="favoriteStarSrc"
         alt="Featured Event"
         class="absolute top-5 right-5 w-10 h-10 cursor-pointer"

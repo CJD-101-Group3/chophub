@@ -1,7 +1,7 @@
 <script setup>
 import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import EventInfoCard from '@/components/EventInfoCard.vue';
 import RegisterBanner from '@/components/RegisterBanner.vue';
 import GeneralButton from '../components/GeneralButton.vue';
@@ -18,6 +18,8 @@ const eventData = ref({
 });
 
 const quantity = ref(1);
+const ticketPrice = 500;
+
 
 const increaseQuantity = () => {
    quantity.value++;
@@ -34,6 +36,11 @@ const submitRegistration = () => {
    alert(`您已選擇 ${quantity.value} 張票，總金額為 NT$ ${500 * quantity.value}`);
    // 實際應用中可能會替換成 API 呼叫等邏輯
 };
+
+// 建立一個 computed 屬性來計算總金額
+const totalPrice = computed(() => {
+   return ticketPrice * quantity.value;
+});
 
 
 const suggestedEvents = ref([
@@ -97,15 +104,15 @@ function goToPayment() {
 <template>
    <div class=" bg-[#282828] text-gray-200 font-sans">
       <Theheader />
+         <RegisterBanner :event="eventData" />
 
       <main class="mx-auto px-6 pb-12">
-         <RegisterBanner :event="eventData" />
 
          <!-- Sections Wrapper -->
          <div class="max-w-4xl mx-auto mt-32 space-y-16">
             <!-- Introduction -->
             <section>
-               <h2 class="text-2xl font-bold text-white mb-6 pb-3 border-b border-gray-700">活動介紹</h2>
+               <h3 class="font-bold text-white mb-6 pb-3 border-b border-gray-500"><span class="text-gray-500 mr-2">|</span>活動介紹</h3>
                <div class="space-y-4 text-gray-300 leading-relaxed">
                   <p>沉入火與鋼交織的夜色，展開一場只屬於藏家的沉浸式體驗。</p>
                   <p>【藏鋒夜宴】為冷兵器收藏愛好者量身打造，限額邀請。由專家親自導覽，帶領參加者近距離欣賞平日難得一見的限定展品與私藏珍品，從歷史淬煉到現代工藝，細細講述每一把兵器背後的故事與靈魂。</p>
@@ -116,7 +123,7 @@ function goToPayment() {
 
             <!-- Registration Info -->
             <section>
-               <h2 class="text-2xl font-bold text-white mb-6 pb-3 border-b border-gray-700">報名辦法</h2>
+               <h3 class="font-bold text-white mb-6 pb-3 border-b border-gray-500"><span class="text-gray-500 mr-2">|</span>報名辦法</h3>
                <div class="space-y-6 text-gray-300">
                   <div>
                      <h3 class="font-bold text-white mb-2"><span class="text-[#F2994A] mr-2">|</span>報名費用</h3>
@@ -169,9 +176,9 @@ function goToPayment() {
 
             <!-- Schedule -->
             <section>
-               <h3 class="font-bold text-white mb-6 pb-3 border-b border-gray-700">活動時程規劃</h3>
+               <h3 class="font-bold text-white mb-6 pb-3 border-b border-gray-500">活動時程規劃</h3>
                <div class="space-y-2 text-gray-300">
-                  <p><span class="font-mono text-white">18:50-19:00 |</span> 報到與集合</p>
+                  <div class="text-white"><span class="font-mono text-white">18:50-19:00 |</span> 報到與集合</div>
                   <p><span class="font-mono text-white">19:00-19:10 |</span> 活動開場 & 導覽流程說明</p>
                   <p><span class="font-mono text-white">19:10-19:45 |</span> 專家深度導覽：限定展品與私藏珍品</p>
                   <p><span class="font-mono text-white">19:45-20:00 |</span> Q&A 與自由欣賞時間</p>
@@ -180,7 +187,7 @@ function goToPayment() {
 
             <!-- Contact -->
             <section>
-               <h3 class="font-bold text-white mb-6 pb-3 border-b border-gray-700">聯絡我們</h3>
+               <h3 class="font-bold text-white mb-6 pb-3 border-b border-gray-500">聯絡我們</h3>
                <div class="text-gray-300 space-y-2">
                   <p>如有任何關於活動內容、報名流程或特殊需求的疑問，歡迎與主辦單位聯繫，我們將誠摯為您解答：</p><br>
                   <p>主辦單位 | 鋼火典藏會 SteelFire Collectors Circle</p>
@@ -198,7 +205,7 @@ function goToPayment() {
                   <!-- 票價 -->
                   <div class="flex-1 md:text-center">
                      <div class="flex flex-col items-center">
-                        <h3 class="font-bold">票價</h3>
+                        <h4 class="font-bold">票價</h4>
                         <h5 class="text-xl font-bold mt-2">NT$ 500</h5>
                      </div>
                   </div>
@@ -206,7 +213,7 @@ function goToPayment() {
                   <!-- 張數選擇器-->
                   <div class="flex-1 md:text-center">
                      <div class="flex flex-col items-center">
-                        <h3 class="font-bold">張數</h3>
+                        <h4 class="font-bold">張數</h4>
                         <div class="flex items-center justify-center mt-2 space-x-4">
                            <button @click="decreaseQuantity" :disabled="quantity <= 1"
                               class="bg-gray-200 w-8 h-8 rounded-full font-bold text-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -222,6 +229,14 @@ function goToPayment() {
                         </div>
                      </div>
                   </div>
+                  <!-- 【新增】總金額區塊 -->
+                  <div class="flex-1 md:text-center">
+                     <div class="flex flex-col items-center">
+                        <h4 class="font-bold">總金額</h4>
+                        <!-- 使用 toLocaleString() 可以自動加上千分位，例如 1,500 -->
+                        <h5 class="text-xl font-bold mt-2 text-[#F2994A]">NT$ {{ totalPrice.toLocaleString() }}</h5>
+                     </div>  
+                  </div>              
                </div>
 
                <!-- 按鈕區塊 -->

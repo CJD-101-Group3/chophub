@@ -10,7 +10,8 @@ import { ref, computed } from 'vue';
 const tabs = ref([
   { key: 'upcoming', name: '即將到來' },
   { key: 'history', name: '歷史活動' },
-  { key: 'cancelled', name: '已取消' }
+  { key: 'cancelled', name: '已取消' },
+  { key: 'favorites', name: '我的收藏' }
 ]);
 
 // 2. 預設顯示 '即將到來' 的活動
@@ -28,27 +29,30 @@ const allActivities = ref([
     price: 500,
     ticketCount: 1,
     eventType: '線上活動',
-    status: 'upcoming' // 這是個未來的活動
+    status: 'upcoming',
+    isFavorited: true // --- NEW: 新增收藏狀態 ---
   },
   {
     id: 2,
     title: '【匠魂燒鍛】小型鍛刀入門體驗',
-    dateTime: '2024/5/15(五) 14:00pm', // 假設這是過去的活動
+    dateTime: '2024/5/15(五) 14:00pm',
     imageUrl: '/events/forgingseafood-and-man.png',
     price: 1200,
     ticketCount: 2,
     eventType: '實體工作坊',
-    status: 'past' // 狀態為 "已結束"，可以填問卷
+    status: 'past',
+    isFavorited: false
   },
   {
     id: 3,
     title: '【工藝知識講堂】冷兵器構造全解析',
-    dateTime: '2024/4/01(一) 19:30pm', // 假設這是已評論過的活動
+    dateTime: '2024/4/01(一) 19:30pm',
     imageUrl: '/events/katana-exhibition.png',
     price: 500,
     ticketCount: 1,
     eventType: '線上課程',
-    status: 'reviewed' // 狀態為 "已評論"
+    status: 'reviewed',
+    isFavorited: false
   },
   {
     id: 4,
@@ -58,7 +62,8 @@ const allActivities = ref([
     price: 1100,
     ticketCount: 1,
     eventType: '實體工作坊',
-    status: 'cancelled' // 這是已取消的活動
+    status: 'cancelled',
+    isFavorited: true
   },
 ]);
 
@@ -70,28 +75,44 @@ const filteredActivities = computed(() => {
     case 'upcoming':
       return allActivities.value.filter(act => act.status === 'upcoming');
     case 'history':
-      // 歷史活動包含 "已結束" 和 "已評論" 的
       return allActivities.value.filter(act => act.status === 'past' || act.status === 'reviewed');
     case 'cancelled':
       return allActivities.value.filter(act => act.status === 'cancelled');
+    // --- NEW: 新增收藏活動的過濾邏輯 ---
+    case 'favorites':
+      return allActivities.value.filter(act => act.isFavorited);
     default:
       return [];
   }
 });
+
+// --- NEW: 新增處理取消事件的函式 ---
+function handleCancelActivity(activityId) {
+  const activityToCancel = allActivities.value.find(act => act.id === activityId);
+  if (activityToCancel) {
+    activityToCancel.status = 'cancelled';
+    console.log(`Activity ${activityId} has been cancelled.`);
+  }
+}
+
+// --- NEW: 處理收藏狀態切換的函式 (用於解說) ---
+function handleToggleFavorite(activityId) {
+    const activity = allActivities.value.find(act => act.id === activityId);
+    if (activity) {
+        activity.isFavorited = !activity.isFavorited;
+    }
+}
 </script>
 
 <template>
+  <main class="bg-[#282828] pb-16 flex flex-col min-h-screen">
   <Theheader />
-
-  <main class="bg-[#282828] pb-16 min-screen">
-
-
     <div>
       <div class="text-white h3 font-bold text-center py-9 md:h2">我的活動</div>
 
       <div class="mx-auto max-w-5xl space-y-4">
 
-        <!-- 1. Tabs Navigation (優化後的語意) -->
+        <!-- 1. Tabs Navigation-->
         <div class="border-b-2 border-[#4F4F4F] px-4">
           <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" :class="[
             'px-6 py-3 text-lg font-medium transition-colors duration-300 rounded-none',
@@ -113,12 +134,12 @@ const filteredActivities = computed(() => {
           v-for="activity in filteredActivities" 
           :key="activity.id" 
           v-bind="activity"
-          @write-review="handleWriteReview" 
+          @write-review="handleWriteReview"
+          @cancel-activity="handleCancelActivity"
           />
       </div>
 
     </div>
   </main>
-
-<Thefooter />
+      <Thefooter />
 </template>

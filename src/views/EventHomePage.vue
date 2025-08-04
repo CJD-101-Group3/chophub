@@ -8,6 +8,14 @@ import Pagination from '@/components/Pagination.vue';
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
+const images = {
+  banner: `${import.meta.env.VITE_BASE_URL}/events/hero-background.jpg`,
+//   hero: `${import.meta.env.VITE_BASE_URL}/events/hero.jpg`,
+//   gallery1: `${import.meta.env.VITE_BASE_URL}/events/gallery1.jpg`,
+//   gallery2: `${import.meta.env.VITE_BASE_URL}/events/gallery2.jpg`,
+//   thumbnail: `${import.meta.env.VITE_BASE_URL}/events/thumbnail.jpg`
+};
+
 const router = useRouter();
 
 function goToMyEvents() {
@@ -66,7 +74,6 @@ const events = ref([
       id: 1,
       title: '匠魂初試 - 手作小刀實體體驗',
       type: '實體活動',
-      // 【修正 3】: 為每筆資料加上 'location' 屬性
       location: '台北市',
       date: '2025/8/03(日) 14:00PM',
       rating: 5,
@@ -168,7 +175,7 @@ const currentPage = ref(1);
    <Theheader />
    <main class="bg-[#282828] flex-1 flex flex-col items-center overflow-y-auto space-y-4 md:space-y-6">
       <div class="relative">
-         <img src="/events/hero-background.jpg" alt="鑄造師" class="block z-index-[-1] opacity-[60%]">
+         <img :src="images.banner" alt="鑄造師" class="block z-index-[-1] opacity-[60%]" />
          <p class="absolute top-[40%] left-[13%] text-[#fff] text-xl font-bold tracking-widest md:text-4xl lg:text-6xl">
             冷鋼烈火 ·
             共赴匠魂之旅</p>

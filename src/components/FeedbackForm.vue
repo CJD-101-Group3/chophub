@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import basebutton from '../components/Basebutton.vue';
+import { ref } from 'vue'
+import GeneralButton from './GeneralButton.vue';
 
 // 表單數據綁定
 const satisfaction = ref(0); // 星星評分，0表示未評分
@@ -216,7 +216,17 @@ const handleSubmit = () => {
 
       <!-- 提交按鈕 -->
         <div class="flex items-center justify-center py-5 mb-10">
-          <basebutton class="w-[150px]">提交評論</basebutton>
+
+        <GeneralButton
+        variant="primary"
+        @click="goToMyEvents"
+        width="150px"
+        height="50px"
+        font-size="16px"
+        >
+        提交評論
+        </GeneralButton>
+
       </div>
 
       
