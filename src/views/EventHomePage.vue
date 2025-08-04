@@ -8,13 +8,6 @@ import Pagination from '@/components/Pagination.vue';
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
-const images = {
-  banner: `${import.meta.env.VITE_BASE_URL}/events/hero-background.jpg`,
-//   hero: `${import.meta.env.VITE_BASE_URL}/events/hero.jpg`,
-//   gallery1: `${import.meta.env.VITE_BASE_URL}/events/gallery1.jpg`,
-//   gallery2: `${import.meta.env.VITE_BASE_URL}/events/gallery2.jpg`,
-//   thumbnail: `${import.meta.env.VITE_BASE_URL}/events/thumbnail.jpg`
-};
 
 const router = useRouter();
 
@@ -66,6 +59,10 @@ const locationItems = [
 const selectedType = ref('all');
 const selectedTime = ref('default');
 const selectedLocation = ref('all');
+
+const images = {
+   banner: `${import.meta.env.BASE_URL}events/hero-background.jpg`,
+};
 
 
 // --- 原始活動資料 ---
@@ -138,9 +135,24 @@ const events = ref([
    }
 ]);
 
+// --- 新增的計算屬性 ---
+const eventsWithFullImagePaths = computed(() => {
+   return events.value.map(event => {
+      // 建立一個事件物件的副本，避免修改原始物件
+      const newEvent = { ...event };
+
+      // 檢查圖片路徑是否為一個完整的 URL (以 http 開頭)
+      // 如果不是，且路徑存在，我們就為它加上 BASE_URL 前綴
+      if (newEvent.image && !newEvent.image.startsWith('http')) {
+         newEvent.image = `${import.meta.env.BASE_URL}${newEvent.image.startsWith('/') ? newEvent.image.substring(1) : newEvent.image}`;
+      }
+      return newEvent;
+   });
+});
+
 // --- 核心篩選邏輯 ---
 const filteredEvents = computed(() => {
-   let result = events.value;
+   let result = eventsWithFullImagePaths.value;
 
    if (selectedType.value !== 'all') {
       result = result.filter(event => event.type === selectedType.value);
@@ -169,6 +181,9 @@ const filteredEvents = computed(() => {
 // 在實際應用中，totalPages 應該來自後端 API
 const mockTotalPages = ref(15);
 const currentPage = ref(1);
+
+console.log('Vite 提供的 BASE_URL 是:', import.meta.env.BASE_URL);
+console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
 </script>
 
 <template>
@@ -184,10 +199,7 @@ const currentPage = ref(1);
       </div>
 
       <div class="flex justify-center items-center">
-         <GeneralButton 
-            variant="primary" 
-            @click="goToMyEvents" 
-            width="150px" height="50px" font-size="20px">
+         <GeneralButton variant="primary" @click="goToMyEvents" width="150px" height="50px" font-size="20px">
             我的活動
          </GeneralButton>
       </div>
@@ -204,7 +216,7 @@ const currentPage = ref(1);
          <EventCard v-for="event in filteredEvents" :key="event.id" :title="event.title" :event-type="event.type"
             :event-date="event.date" :rating="event.rating" :review-count="event.reviews"
             :is-featured="event.isFeatured" :event-image="event.image" @learn-more="handleLearnMore"
-            class="shadow-[8px_8px_15px_rgba(255,255,255,0.4)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] transition-shadow duration-300"/>
+            class="shadow-[8px_8px_15px_rgba(255,255,255,0.4)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] transition-shadow duration-300" />
       </div>
 
       <div v-else class="text-white text-center py-10">

@@ -4,6 +4,20 @@ import Thefooter from '../components/Thefooter.vue';
 import { ref, computed } from 'vue';
 import QrcodeVue from 'qrcode.vue';
 
+const eventsWithFullImagePaths = computed(() => {
+    return events.value.map(event => {
+        const newEvent = { ...event };
+
+        // 檢查圖片路徑是否為一個完整的 URL (以 http 開頭)
+        // 如果不是，且路徑存在，我們就為它加上 BASE_URL 前綴
+        if (newEvent.image && !newEvent.image.startsWith('http')) {
+            newEvent.image = `${import.meta.env.BASE_URL}${newEvent.image.startsWith('/') ? newEvent.image.substring(1) : newEvent.image}`;
+        }
+        return newEvent;
+    });
+});
+
+
 // --- 1. 模擬資料庫 ---
 // 我們不再需要 API，所以直接在前端模擬所有需要的資料。
 
@@ -23,14 +37,14 @@ const mockCurrentUser = {
 
 // --- 2. 元件邏輯 ---
 // 假設使用者正在查看活動 ID 為 2 的票券
-const event = ref(mockEventsDatabase['1']); 
+const event = ref(mockEventsDatabase['1']);
 const user = ref(mockCurrentUser);
 
 // --- 3. 產生 QR Code 的內容 ---
 // 這是這個方法的核心！我們將把人類可讀的資訊直接打包成 JSON 字串。
 const qrValue = computed(() => {
     // 必須確保 event 和 user 的資料都存在
-    if (!event.value || !user.value) return ''; 
+    if (!event.value || !user.value) return '';
 
     // 建立一個包含所有現場人員需要資訊的 JSON 物件
     const ticketInfo = {
@@ -55,10 +69,11 @@ const displayTicketId = computed(() => {
 </script>
 
 <template>
-    <Theheader/>
+    <Theheader />
     <div class="bg-[#282828] min-h-screen text-white">
         <header class="p-4">
-            <a href="/MyEvents" class="text-white hover:text-[#F2994A]">< 返回我的活動</a>
+            <a href="/MyEvents" class="text-white hover:text-[#F2994A]">
+                < 返回我的活動</a>
         </header>
 
         <main class="py-8 px-4">
@@ -67,16 +82,11 @@ const displayTicketId = computed(() => {
 
                 <!-- 1. 票券卡片 (邏輯不變，但內容和提示文字改變) -->
                 <div class="bg-white text-black rounded-xl shadow-lg p-6 flex flex-col items-center gap-4">
-                    
+
                     <!-- 實體活動 -->
                     <div v-if="event.eventType === '實體工作坊'" class="text-center">
                         <h2 class="text-2xl font-bold text-gray-800">活動入場憑證</h2>
-                        <QrcodeVue 
-                            :value="qrValue" 
-                            :size="220" 
-                            level="H"
-                            class="my-4 block mx-auto"
-                        />
+                        <QrcodeVue :value="qrValue" :size="220" level="H" class="my-4 block mx-auto" />
                         <p class="font-mono bg-gray-100 px-3 py-1 rounded">{{ displayTicketId }}</p>
                         <!-- !!! 關鍵：修改給使用者的提示文字 !!! -->
                         <p class="mt-2 text-gray-600 font-bold text-red-600">
@@ -86,8 +96,8 @@ const displayTicketId = computed(() => {
 
                     <!-- 線上活動 -->
                     <div v-else-if="event.eventType === '線上活動'" class="text-center">
-                         <h2 class="text-2xl font-bold text-gray-800">線上活動票券</h2>
-                         <p class="mt-4 text-gray-600">這是一場線上活動，無需實體票券。</p>
+                        <h2 class="text-2xl font-bold text-gray-800">線上活動票券</h2>
+                        <p class="mt-4 text-gray-600">這是一場線上活動，無需實體票券。</p>
                     </div>
                 </div>
 
@@ -102,13 +112,15 @@ const displayTicketId = computed(() => {
 
                 <!-- 3. 操作按鈕 (維持不變) -->
                 <div class="mt-8">
-                     <div v-if="event.eventType === '線上活動'" class="text-center">
-                        <a href="https://meet.google.com" target="_blank" class="w-full block bg-[#F2994A] hover:bg-orange-500 hover:text-white  text-white font-bold py-4 px-6 rounded-lg text-xl">
+                    <div v-if="event.eventType === '線上活動'" class="text-center">
+                        <a href="https://meet.google.com" target="_blank"
+                            class="w-full block bg-[#F2994A] hover:bg-orange-500 hover:text-white  text-white font-bold py-4 px-6 rounded-lg text-xl">
                             進入活動連結
                         </a>
                     </div>
                     <div v-else class="text-center">
-                        <a href="https://maps.google.com" target="_blank" class="w-full block bg-[#4F4F4F] hover:bg-gray-600 hover:text-white text-white font-bold py-4 px-6 rounded-lg text-xl">
+                        <a href="https://maps.google.com" target="_blank"
+                            class="w-full block bg-[#4F4F4F] hover:bg-gray-600 hover:text-white text-white font-bold py-4 px-6 rounded-lg text-xl">
                             規劃路線 (開啟地圖)
                         </a>
                     </div>
@@ -117,5 +129,5 @@ const displayTicketId = computed(() => {
             </div>
         </main>
     </div>
-    <Thefooter/>
+    <Thefooter />
 </template>

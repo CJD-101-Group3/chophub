@@ -21,6 +21,20 @@ const ratingData = ref({
   ].sort((a, b) => b.stars - a.stars) // 確保從 5 星排到 1 星
 });
 
+const eventsWithFullImagePaths = computed(() => {
+  return events.value.map(event => {
+    // 建立一個事件物件的副本，避免修改原始物件
+    const newEvent = { ...event };
+
+    // 檢查圖片路徑是否為一個完整的 URL (以 http 開頭)
+    // 如果不是，且路徑存在，我們就為它加上 BASE_URL 前綴
+    if (newEvent.image && !newEvent.image.startsWith('http')) {
+      newEvent.image = `${import.meta.env.BASE_URL}${newEvent.image.startsWith('/') ? newEvent.image.substring(1) : newEvent.image}`;
+    }
+    return newEvent;
+  });
+});
+
 
 // 接收篩選器數據的方法
 const applyDateFilter = (datePayload) => {

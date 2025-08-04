@@ -20,6 +20,8 @@ const props = defineProps({
   rating: { type: Number, default: 4 },
   reviewCount: { type: Number, default: 82 },
 });
+console.log(`卡片標題: '${props.title}', 收到的圖片 prop:`, props.eventImage);
+
 
 // --- 收藏狀態 ---
 const isFavorited = ref(false);
@@ -40,6 +42,7 @@ const router = useRouter();
 function goToDetail() {
   router.push(`/event/${props.id}`);
 }
+
 </script>
 
 <template>

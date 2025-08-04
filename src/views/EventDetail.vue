@@ -7,13 +7,27 @@ import RegisterBanner from '@/components/RegisterBanner.vue';
 import GeneralButton from '../components/GeneralButton.vue';
 import { useRouter } from 'vue-router';
 
+const eventsWithFullImagePaths = computed(() => {
+   return events.value.map(event => {
+      // 建立一個事件物件的副本，避免修改原始物件
+      const newEvent = { ...event };
+
+      // 檢查圖片路徑是否為一個完整的 URL (以 http 開頭)
+      // 如果不是，且路徑存在，我們就為它加上 BASE_URL 前綴
+      if (newEvent.image && !newEvent.image.startsWith('http')) {
+         newEvent.image = `${import.meta.env.BASE_URL}${newEvent.image.startsWith('/') ? newEvent.image.substring(1) : newEvent.image}`;
+      }
+      return newEvent;
+   });
+});
+
 const eventData = ref({
    title: '【藏鋒夜宴】兵器藏家限定導覽',
    time: '2025年08月23日 星期六 19:00–20:00',
    location: '冷兵器體驗館（台北市大同區火鍛街 88 號）',
    organizer: '鋼火典藏會',
    spotsLeft: 5,
-   imageUrl: '/public/events/katana-exhibition.png',
+   imageUrl: '/events/katana-exhibition.png',
    imageAlt: '兵器展'
 });
 
@@ -53,7 +67,7 @@ const suggestedEvents = ref([
       rating: 4,
       reviews: 76,
       isFeatured: true,
-      image: '/public/events/knife-exhibition.png'
+      image: '/events/knife-exhibition.png'
    },
    {
       id: 3,
@@ -75,22 +89,14 @@ const suggestedEvents = ref([
       rating: 4,
       reviews: 64,
       isFeatured: true,
-      image: '/public/events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg'
+      image: '/events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg'
    },
 ]);
 
 // --- 【第 2 步：建立處理函式】 ---
-// 建立一個函式，它會接收從子元件傳來的資料 (我們之前設定的是 event.id)
 function handleViewDetails(eventId) {
-   // eventId 就是子元件 emit('view-details', event.id) 時傳過來的那個 id
-
-   // 為了測試，我們先在控制台印出來看看
    console.log(`接收到來自子元件的請求，需要查看 ID 為 ${eventId} 的活動詳情。`);
 
-   // 實際應用中，您會在這裡執行頁面跳轉
-   // router.push(`/events/${eventId}`);
-
-   // 或者，您也可以用這個 id 去呼叫 API、打開一個彈出視窗等
 }
 
 const router = useRouter();

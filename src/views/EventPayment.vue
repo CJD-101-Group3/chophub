@@ -3,7 +3,7 @@ import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
 import GeneralButton from '../components/GeneralButton.vue'
 import { useRouter } from 'vue-router'
-import { ref, computed } from 'vue' 
+import { ref, computed } from 'vue'
 
 const router = useRouter();
 
@@ -47,18 +47,23 @@ function handleQuantityInput(event) {
     quantity.value = value;
   }
 }
+
+const img1 = `${import.meta.env.BASE_URL}events/Khukuri.png`;
+
+
 </script>
 
 <template>
   <Theheader />
-  <main class="bg-[#F8F9FA] min-h-screen w-full flex items-center justify-center py-8 md:py-12 xl:py-16 px-4 md:px-6 xl:px-8">
+  <main
+    class="bg-[#F8F9FA] min-h-screen w-full flex items-center justify-center py-8 md:py-12 xl:py-16 px-4 md:px-6 xl:px-8">
 
     <div class="w-full max-w-7xl bg-[#F8F9FA] p-8 sm:p-12">
       <h3 class="h3 font-bold text-center mb-8">確認與繳費</h3>
       <form action="" class="space-y-4 text-xl">
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 items-center">
-          
+
           <!--三個輸入框的容器 -->
           <div class="space-y-4">
             <div>
@@ -73,17 +78,15 @@ function handleQuantityInput(event) {
 
             <div>
               <label for="phone">連絡電話：</label><br>
-              <input type="tel" placeholder="0912-345-678" class="w-full p-3 border border-gray-300 rounded-md resize-y">
+              <input type="tel" placeholder="0912-345-678"
+                class="w-full p-3 border border-gray-300 rounded-md resize-y">
             </div>
           </div>
 
           <!-- 圖片容器 -->
           <div class="hidden md:flex items-center justify-center p-4">
-            <img 
-              src="/events/Khukuri.png" 
-              alt="尼泊爾彎刀" 
-              class="w-full h-auto object-cover rounded-md max-h-[250px] opacity-90 shadow-md"
-            >
+            <img :src="img1" alt="尼泊爾彎刀"
+              class="w-full h-auto object-cover rounded-md max-h-[250px] opacity-90 shadow-md">
           </div>
         </div>
 
@@ -92,7 +95,7 @@ function handleQuantityInput(event) {
         <div>
           <label for="message">想對我們說的話</label>
           <textarea placeholder="請留下對本次活動的期待，或想對我們說的話！" rows="5"
-                      class="w-full p-3 border border-gray-300 rounded-md resize-y"></textarea>
+            class="w-full p-3 border border-gray-300 rounded-md resize-y"></textarea>
         </div>
 
         <!-- 付款金額區塊 (已修改) -->
@@ -103,19 +106,14 @@ function handleQuantityInput(event) {
               <span class="font-bold">付款項目</span>
               <span class="ml-2 text-gray-600">(單價 NT$ {{ price }})</span>
             </div>
-            
+
             <div class="flex items-center gap-2">
-              <button type="button" @click="decrement" class="w-8 h-8 rounded-full bg-gray-200 text-gray-700 text-xl font-bold flex items-center justify-center hover:bg-gray-300 transition-colors">-</button>
-              <input 
-                type="number"
-                :value="quantity"
-                @input="handleQuantityInput"
-                min="1"
-                max="99"
-                class="w-16 text-center border border-gray-300 rounded-md p-1"
-                aria-label="票券數量"
-              >
-              <button type="button" @click="increment" class="w-8 h-8 rounded-full bg-gray-200 text-gray-700 text-xl font-bold flex items-center justify-center hover:bg-gray-300 transition-colors">+</button>
+              <button type="button" @click="decrement"
+                class="w-8 h-8 rounded-full bg-gray-200 text-gray-700 text-xl font-bold flex items-center justify-center hover:bg-gray-300 transition-colors">-</button>
+              <input type="number" :value="quantity" @input="handleQuantityInput" min="1" max="99"
+                class="w-16 text-center border border-gray-300 rounded-md p-1" aria-label="票券數量">
+              <button type="button" @click="increment"
+                class="w-8 h-8 rounded-full bg-gray-200 text-gray-700 text-xl font-bold flex items-center justify-center hover:bg-gray-300 transition-colors">+</button>
             </div>
           </div>
 
@@ -130,9 +128,10 @@ function handleQuantityInput(event) {
 
         <div>
           <label for="card-number">信用卡號碼</label>
-          <input type="text" placeholder="1234 1234 1234 1234" class="w-full p-3 border border-gray-300 rounded-md resize-y">
+          <input type="text" placeholder="1234 1234 1234 1234"
+            class="w-full p-3 border border-gray-300 rounded-md resize-y">
         </div>
-        
+
         <div class="w-full">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
@@ -152,24 +151,18 @@ function handleQuantityInput(event) {
           <input type="text" placeholder="請與護照相同" class="w-full p-3 border border-gray-300 rounded-md resize-y">
         </div>
 
-          <div class="flex flex-row items-center justify-center gap-5 pt-5">
+        <div class="flex flex-row items-center justify-center gap-5 pt-5">
 
-            <router-link 
-              to="/EventDetail" 
-              class="text-xl font-bold"
-            >
-              返回上一頁
-            </router-link>
+          <router-link to="/EventDetail" class="text-xl font-bold">
+            返回上一頁
+          </router-link>
 
-            <div>
-              <GeneralButton 
-                  variant="primary" 
-                  @click="goToPayment" 
-                  width="150px" height="50px" font-size="20px">
-                  儲存並繼續
-              </GeneralButton>
-            </div>
-      </div>
+          <div>
+            <GeneralButton variant="primary" @click="goToPayment" width="150px" height="50px" font-size="20px">
+              儲存並繼續
+            </GeneralButton>
+          </div>
+        </div>
 
 
 

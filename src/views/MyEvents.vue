@@ -17,6 +17,21 @@ const tabs = ref([
 // 2. 預設顯示 '即將到來' 的活動
 const activeTab = ref('upcoming');
 
+// --- 新增的計算屬性 ---
+const eventsWithFullImagePaths = computed(() => {
+  return events.value.map(event => {
+    // 建立一個事件物件的副本，避免修改原始物件
+    const newEvent = { ...event };
+
+    // 檢查圖片路徑是否為一個完整的 URL (以 http 開頭)
+    // 如果不是，且路徑存在，我們就為它加上 BASE_URL 前綴
+    if (newEvent.image && !newEvent.image.startsWith('http')) {
+      newEvent.image = `${import.meta.env.BASE_URL}${newEvent.image.startsWith('/') ? newEvent.image.substring(1) : newEvent.image}`;
+    }
+    return newEvent;
+  });
+});
+
 // --- MOCK DATA (優化的核心) ---
 // 為每個活動添加 'status' 屬性來驅動 UI 變化
 // status: 'upcoming' (即將到來), 'past' (已結束，可評論), 'reviewed' (已評論)
@@ -97,16 +112,16 @@ function handleCancelActivity(activityId) {
 
 // --- NEW: 處理收藏狀態切換的函式 (用於解說) ---
 function handleToggleFavorite(activityId) {
-    const activity = allActivities.value.find(act => act.id === activityId);
-    if (activity) {
-        activity.isFavorited = !activity.isFavorited;
-    }
+  const activity = allActivities.value.find(act => act.id === activityId);
+  if (activity) {
+    activity.isFavorited = !activity.isFavorited;
+  }
 }
 </script>
 
 <template>
   <main class="bg-[#282828] pb-16 flex flex-col min-h-screen">
-  <Theheader />
+    <Theheader />
     <div>
       <div class="text-white h3 font-bold text-center py-9 md:h2">我的活動</div>
 
@@ -127,19 +142,13 @@ function handleToggleFavorite(activityId) {
         <div v-if="filteredActivities.length === 0" class="text-center text-gray-400 py-12">
           <p class="text-xl">這個分類下沒有活動喔！</p>
         </div>
-        
+
         <!-- 3. Dynamic List Rendering based on the active tab -->
-        <MyEventItem 
-          v-else
-          v-for="activity in filteredActivities" 
-          :key="activity.id" 
-          v-bind="activity"
-          @write-review="handleWriteReview"
-          @cancel-activity="handleCancelActivity"
-          />
+        <MyEventItem v-else v-for="activity in filteredActivities" :key="activity.id" v-bind="activity"
+          @write-review="handleWriteReview" @cancel-activity="handleCancelActivity" />
       </div>
 
     </div>
   </main>
-      <Thefooter />
+  <Thefooter />
 </template>
