@@ -78,7 +78,7 @@
   <transition name="modal-fade">
     <div v-if="isModalVisible" class="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-        <p class="font-bold text-yellow-600 flex items-center gap-2">
+        <p class="text-xl font-bold text-yellow-600 flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" /></svg>
           您確定要取消這場活動報名嗎？
         </p>
@@ -86,7 +86,7 @@
           <p class="font-semibold">{{ title }}</p>
           <p>{{ dateTime }}</p>
         </div>
-        <p class="mt-4 text-xs text-gray-500">取消後將無法再次參加本次活動，因您已過報名截止日取消，本次收費將無法退款，謝謝您。</p>
+        <p class="mt-4 text-base text-gray-500">取消後將無法再次參加本次活動，因您已過報名截止日取消，本次收費將無法退款，謝謝您。</p>
         <div class="mt-6 flex gap-4">
           <button @click="confirmCancellation" class="flex-1 bg-[#D96570] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md transition-colors">確認退票</button>
           <button @click="closeModal" class="flex-1 bg-white hover:bg-gray-200 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-md transition-colors">返回</button>
