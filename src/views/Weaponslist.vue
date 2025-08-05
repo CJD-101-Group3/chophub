@@ -579,7 +579,7 @@
     />
 
     <!-- 搜尋列 -->
-    <div class="flex  justify-center md:justify-between items-center md:ml-[200px] my-6 mt-10">
+    <div class="flex  justify-center md:justify-between items-center md:ml-[200px] lg:ml-[120px] my-6 mt-10">
   <div class="flex items-center space-x-2">
     <input
       type="text"
@@ -593,7 +593,7 @@
     </button>
   </div>
 
-      <div class="ml-auto  md:mr-[250px]  hidden md:block">
+      <div class="ml-auto  md:mr-[250px] lg:mr-[120px] hidden md:block">
        <DropDownFilter title="活動類型" :items="typeItems" v-model="selectedType" />
 
        </div>
@@ -692,6 +692,8 @@ import Theheader from "../components/Theheader.vue";
 import Thefooter from "../components/Thefooter.vue";
 import WeaponCard from "../components/WeaponCard.vue";
 import DropDownFilter from '@/components/DropDownFilter.vue';
+import { getPublicImg } from '@/utils/getPublicImg'
+
 
 
 import { Swiper, SwiperSlide } from "swiper/vue";
@@ -706,22 +708,38 @@ const particlesLoaded = async (container) => {
 };
 
 const images = [
-  "https://swiperjs.com/demos/images/nature-1.jpg",
-  "https://swiperjs.com/demos/images/nature-2.jpg",
-  "https://swiperjs.com/demos/images/nature-3.jpg",
-  "https://swiperjs.com/demos/images/nature-4.jpg",
-  "https://swiperjs.com/demos/images/nature-5.jpg",
-  "https://swiperjs.com/demos/images/nature-6.jpg",
-  "https://swiperjs.com/demos/images/nature-7.jpg",
+  'weapons/w4.png',
+  "weapons/w6.png",
+  "weapons/w5.png",
+  "weapons/w2.png",
+  "weapons/w1.png",
+  "weapons/w3.png",
+  "weapons/w7.png",
 ];
 
+
+const imgs = [
+  getPublicImg('weapons/w1.png'),
+  getPublicImg('weapons/w2.png'),
+  getPublicImg('weapons/w3.png'),
+  getPublicImg('weapons/w4.png'),
+  getPublicImg('weapons/w5.png'),
+  getPublicImg('weapons/w6.png'),
+  getPublicImg('weapons/w7.png'),
+  getPublicImg('weapons/w7.png'),
+  getPublicImg('weapons/w9.png'),
+
+  // 可依需求多加
+];
+
+// ✅ 正確的 posts 陣列合併方式
 const posts = ref(
   Array.from({ length: 9 }, (_, index) => ({
-    id: index + 1, // 新增 id，從 1 開始
-    postImage: `https://picsum.photos/400/280?random=${index + 1}`, // 讓每張圖片都不同
+    id: index + 1,
+    postImage: imgs[index % imgs.length], // 從 imgs 陣列取圖
     isFeatured: true,
     userName: "使用者名稱",
-    postTitle: "手裡劍",
+    postTitle: `手裡劍 `,
     isHot: Math.random() > 0.5,
     description:
       "四爪對稱手裡劍，結構精準銳利，中心圓孔設計，兼具工藝美感與穩定投擲性能。",
@@ -729,6 +747,9 @@ const posts = ref(
     stars: Math.floor(Math.random() * 50),
   }))
 );
+
+
+
 
 const currentIndex = ref(1);
 const cardWidth = 500;
