@@ -579,7 +579,7 @@
     />
 
     <!-- 搜尋列 -->
-    <div class="flex  justify-center md:justify-between items-center md:ml-[200px] lg:ml-[120px] my-6 mt-10">
+    <div class="flex  justify-center md:justify-between items-center  lg:ml-[120px] xl:ml-[200px] my-6 mt-10">
   <div class="flex items-center space-x-2">
     <input
       type="text"
@@ -593,7 +593,7 @@
     </button>
   </div>
 
-      <div class="ml-auto  md:mr-[250px] lg:mr-[120px] hidden md:block">
+      <div class="ml-auto   lg:mr-[120px]  xl:mr-[200px] hidden md:block">
        <DropDownFilter title="活動類型" :items="typeItems" v-model="selectedType" />
 
        </div>
