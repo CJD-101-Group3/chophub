@@ -140,7 +140,7 @@ const displayTicketId = computed(() => {
                                 </a>
                             </div>
                             <div v-else class="text-center">
-                                <a href="https://maps.google.com" target="_blank" class="w-full block bg-[#4F4F4F] hover:bg-gray-600 hover:text-white text-white font-bold py-4 px-6 rounded-lg text-xl">
+                                <a href="https://maps.app.goo.gl/mnR8fnye6uwmS9Ch6" target="_blank" class="w-full block bg-[#F2994A] hover:bg-orange-500 hover:text-white text-white font-bold py-4 px-6 rounded-lg text-xl">
                                     規劃路線 (開啟地圖)
                                 </a>
                             </div>

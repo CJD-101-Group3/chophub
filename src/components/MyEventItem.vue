@@ -101,7 +101,7 @@ function confirmCancellation() {
         </button>
         <!-- 查看票券按鈕 -->
         <a :href="`/TicketDetailPage/${id}`"
-          class="bg-[#4F4F4F] hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 hover:text-white">
+          class="bg-[#F2994A] hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 hover:text-white">
           查看票券詳情
         </a>
       </div>

@@ -46,14 +46,12 @@ function goToDetail() {
 </script>
 
 <template>
-  <div class="flex flex-col w-full md:w-[387px] bg-[#FEFEFE] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2 shadow-[15px_15px_13px_rgba(255,255,255,0.5)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] md:transition-shadow">
+  <!-- 【修改】移除了 md:w-[387px]，讓寬度完全由父層的 grid 控制 -->
+  <div class="flex flex-col w-full max-w-[350px] bg-[#FEFEFE] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2 shadow-[15px_15px_13px_rgba(255,255,255,0.5)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] md:transition-shadow">
     
     <div class="relative">
       <img :src="imageSource" alt="Event Image" class="w-full h-[215px] object-cover" />
       
-      <!-- 
-        【修改】將星星圖示尺寸從 w-14 h-14 (56px) 調整為 w-10 h-10 (40px)
-      -->
       <img
         :src="favoriteStarSrc"
         alt="Featured Event"
@@ -63,7 +61,8 @@ function goToDetail() {
     </div>
 
     <div class="flex flex-col flex-grow p-6">
-      <h2 class="text-[#F2994A] text-[28px] font-bold leading-[26.4px] mb-2">
+      <!-- 【修改】將字體大小改為響應式 -->
+      <h2 class="text-[#F2994A] text-2xl md:text-[28px] font-bold leading-tight mb-2">
         {{ title }}
       </h2>
       <div class="text-[#4F4F4F] text-base mb-4">
@@ -82,7 +81,9 @@ function goToDetail() {
         </div>
         <span>{{ reviewCount }} reviews</span>
       </div>
-      <div class="flex-grow"></div>
+      
+      <!-- 這個空的 div 用來推開按鈕，是正確的用法 -->
+      <div class="flex-grow"></div> 
 
       <button
         @click="goToDetail"
