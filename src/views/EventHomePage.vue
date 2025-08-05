@@ -5,7 +5,6 @@ import GeneralButton from '../components/GeneralButton.vue';
 import DropDownFilter from '@/components/DropDownFilter.vue';
 import EventCard from '@/components/EventCard.vue';
 import Pagination from '@/components/Pagination.vue';
-import { getPublicImg } from '@/utils/getPublicImg'
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -61,13 +60,10 @@ const selectedType = ref('all');
 const selectedTime = ref('default');
 const selectedLocation = ref('all');
 
-const banner = getPublicImg('events/hero-background.jpg');
-const image01 = getPublicImg('events/knife-exhibition.png');
-const image02 = getPublicImg('events/littlenknife.jpg');
-const image03 = getPublicImg('events/onlineevents.jpg');
-const image04 = getPublicImg('events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg');
-const image05 = getPublicImg('events/forgingman.png');
-const image06 = getPublicImg('events/viking-forges-weapons-swords-smithy-man-warrior-s-clothes-is-smithy.jpg');
+const images = {
+   banner: `${import.meta.env.BASE_URL}events/hero-background.jpg`,
+};
+
 
 // --- 原始活動資料 ---
 const events = ref([
@@ -80,7 +76,7 @@ const events = ref([
       rating: 5,
       reviews: 121,
       isFeatured: true,
-      image: image01
+      image: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?q=80&w=1887'
    },
    {
       id: 2,
@@ -91,7 +87,7 @@ const events = ref([
       rating: 4,
       reviews: 76,
       isFeatured: true,
-      image: image02
+      image: '/events/knife-exhibition.png'
    },
    {
       id: 3,
@@ -102,7 +98,7 @@ const events = ref([
       rating: 4,
       reviews: 82,
       isFeatured: false,
-      image: image03
+      image: ''
    },
    {
       id: 4,
@@ -113,7 +109,7 @@ const events = ref([
       rating: 4,
       reviews: 64,
       isFeatured: true,
-      image: image04
+      image: '/events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg'
    },
    {
       id: 5,
@@ -124,7 +120,7 @@ const events = ref([
       rating: 5,
       reviews: 97,
       isFeatured: false,
-      image: image05
+      image: '/events/forgingman.png'
    },
    {
       id: 6,
@@ -135,7 +131,7 @@ const events = ref([
       rating: 4.5,
       reviews: 43,
       isFeatured: false,
-      image: image06
+      image: '/events/viking-forges-weapons-swords-smithy-man-warrior-s-clothes-is-smithy.jpg'
    }
 ]);
 
@@ -157,7 +153,6 @@ const eventsWithFullImagePaths = computed(() => {
 // --- 核心篩選邏輯 ---
 const filteredEvents = computed(() => {
    let result = eventsWithFullImagePaths.value;
-   // let result = events.value;
 
    if (selectedType.value !== 'all') {
       result = result.filter(event => event.type === selectedType.value);
@@ -193,10 +188,9 @@ console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
 
 <template>
    <Theheader />
-   <main class="bg-[#282828] flex-1 overflow-y-auto">
-      <div class="w-full mx-auto  flex flex-col items-center space-y-6 md:space-y-8 relative">
-      <div class="relative w-full">
-         <img :src="banner" alt="鑄造師" class="block w-full z-index-[-1] opacity-[60%]" />
+   <main class="bg-[#282828] flex-1 flex flex-col items-center overflow-y-auto space-y-4 md:space-y-6">
+      <div class="relative">
+         <img :src="images.banner" alt="鑄造師" class="block z-index-[-1] opacity-[60%]" />
          <p class="absolute top-[40%] left-[13%] text-[#fff] text-xl font-bold tracking-widest md:text-4xl lg:text-6xl">
             冷鋼烈火 ·
             共赴匠魂之旅</p>
@@ -218,20 +212,12 @@ console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
          <DropDownFilter title="活動地點" :items="locationItems" v-model="selectedLocation" />
       </div>
 
-      <div v-if="filteredEvents.length > 0"
-         class="grid  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
-
-
-         <EventCard v-for="event in filteredEvents" :key="event.id" :title="event.title"
-            :event-type="event.type" :event-date="event.date" :rating="event.rating"
-            :review-count="event.reviews" :is-featured="event.isFeatured" :event-image="event.image"
-            @learn-more="handleLearnMore"
-            class="shadow-[8px_8px_15px_rgba(255,255,255,0.4)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] transition-shadow duration-300 " />
-
-
+      <div v-if="filteredEvents.length > 0" class="inline-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-5">
+         <EventCard v-for="event in filteredEvents" :key="event.id" :title="event.title" :event-type="event.type"
+            :event-date="event.date" :rating="event.rating" :review-count="event.reviews"
+            :is-featured="event.isFeatured" :event-image="event.image" @learn-more="handleLearnMore"
+            class="shadow-[8px_8px_15px_rgba(255,255,255,0.4)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] transition-shadow duration-300" />
       </div>
-
-
 
       <div v-else class="text-white text-center py-10">
          <p>找不到符合條件的活動，請嘗試調整篩選條件。</p>
@@ -241,7 +227,6 @@ console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
 
          <Pagination :total-pages="mockTotalPages" v-model:currentPage="currentPage" />
 
-      </div>
       </div>
    </main>
 

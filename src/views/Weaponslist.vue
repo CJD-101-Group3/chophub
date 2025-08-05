@@ -610,10 +610,25 @@
     <!-- 主內容區：左分類 + 右商品 -->
     <div class="relative container mx-auto max-w-8xl px-4">
       <div class="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-6">
+
+        <!-- 手機版下拉式選單-->
+        <select
+          id="categorySelect"
+          class="block md:hidden w-full p-3 rounded-md border border-gray-300 text-black bg-white mb-6"
+          onchange="handleCategoryChange(this.value)"
+        >
+          <option value="" selected disabled>請選擇分類</option>
+          <option value="劍類">劍類</option>
+          <option value="斧頭類">斧頭類</option>
+          <option value="長柄武器">長柄武器</option>
+          <option value="弓箭類">弓箭類</option>
+          <option value="盾牌">盾牌</option>
+        </select>
+
         <!-- 左側分類選單 -->
         <aside
-          class="backdrop-blur-md p-6 rounded-xl text-white max-w-[280px] bg-[#FFFFFF] h-[600px] "
-        >
+          class="hidden md:block backdrop-blur-md p-6 rounded-xl text-white max-w-[280px] bg-[#FFFFFF] h-[600px]"
+>
           <h2 class="text-xl font-semibold mb-6 tracking-wide text-black">
             分類
           </h2>
@@ -658,7 +673,7 @@
 
         <!-- 右側商品卡片區 -->
         <main>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
             <WeaponCard v-for="post in posts" :key="post.id" v-bind="post" />
           </div>
         </main>

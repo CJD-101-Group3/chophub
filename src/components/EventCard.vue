@@ -1,50 +1,97 @@
+<script setup>
+import { defineProps, ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+
+// --- 匯入所有圖示 ---
+import bigStarIcon from '@/assets/icon/bigstar.svg';
+import bigStarActiveIcon from '@/assets/icon/bigstar_h.svg';
+import filledStarIcon from '@/assets/icon/starevaluate1.svg';
+import emptyStarIcon from '@/assets/icon/starevaluate2.svg';
+import defaultEventImage from '@/assets/icon/activity1.png';
+
+// --- 定義 Props ---
+const props = defineProps({
+  id: { type: [String, Number], required: true },
+  eventImage: { type: String, default: '' },
+  isFeatured: { type: Boolean, default: false },
+  title: { type: String, default: '鍛造群俠會 - 刀匠線上交流' },
+  eventType: { type: String, default: '線上活動' },
+  eventDate: { type: String, default: '2025/7/23(三) 10:00AM' },
+  rating: { type: Number, default: 4 },
+  reviewCount: { type: Number, default: 82 },
+});
+console.log(`卡片標題: '${props.title}', 收到的圖片 prop:`, props.eventImage);
+
+
+// --- 收藏狀態 ---
+const isFavorited = ref(false);
+const favoriteStarSrc = computed(() => {
+  return isFavorited.value ? bigStarActiveIcon : bigStarIcon;
+});
+function toggleFavorite() {
+  isFavorited.value = !isFavorited.value;
+}
+
+// --- 計算圖片來源 ---
+const imageSource = computed(() => {
+  return props.eventImage || defaultEventImage;
+});
+
+// --- 點擊跳轉詳情頁 ---
+const router = useRouter();
+function goToDetail() {
+  router.push(`/event/${props.id}`);
+}
+
+</script>
+
 <template>
-  <!-- 
-    這是放置所有活動卡片的父層容器。
-    我們使用 CSS Grid 來實現完美的響應式佈局。
-    - grid: 啟用網格佈局。
-    - grid-cols-1: 在手機尺寸上，每行顯示 1 個卡片。
-    - sm:grid-cols-2: 在 sm (640px) 寬度以上，每行顯示 2 個。
-    - lg:grid-cols-3: 在 lg (1024px) 寬度以上，每行顯示 3 個。
-    - xl:grid-cols-4: 在 xl (1280px) 寬度以上，每行顯示 4 個。
-    - gap-8: 設定卡片之間的間距為 8 (2rem 或 32px)。
-    - p-8: 在容器周圍增加內邊距，避免卡片貼邊。
-  -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 p-8">
+  <div class="flex flex-col w-full md:w-[387px] bg-[#FEFEFE] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2 shadow-[15px_15px_13px_rgba(255,255,255,0.5)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] md:transition-shadow">
     
-    <!-- 
-      使用 v-for 迴圈來渲染您的 EventCard 元件。
-      並監聽從卡片發出的 @view-details 事件。
-    -->
-    <EventCard
-      v-for="event in events"
-      :key="event.id"
-      :event="event"
-      @view-details="showEventDetails"
-    />
-    
+    <div class="relative">
+      <img :src="imageSource" alt="Event Image" class="w-full h-[215px] object-cover" />
+      
+      <!-- 
+        【修改】將星星圖示尺寸從 w-14 h-14 (56px) 調整為 w-10 h-10 (40px)
+      -->
+      <img
+        :src="favoriteStarSrc"
+        alt="Featured Event"
+        class="absolute top-5 right-5 w-10 h-10 cursor-pointer"
+        @click="toggleFavorite"
+      />
+    </div>
+
+    <div class="flex flex-col flex-grow p-6">
+      <h2 class="text-[#F2994A] text-[28px] font-bold leading-[26.4px] mb-2">
+        {{ title }}
+      </h2>
+      <div class="text-[#4F4F4F] text-base mb-4">
+        <p>{{ eventType }}</p>
+        <p>{{ eventDate }}</p>
+      </div>
+      <div class="flex items-center gap-x-2 text-base text-[#4F4F4F] mb-6">
+        <div class="flex items-center">
+          <template v-for="i in 5" :key="i">
+            <img 
+              :src="i <= rating ? filledStarIcon : emptyStarIcon" 
+              alt="star" 
+              class="w-5 h-5"
+            />
+          </template>
+        </div>
+        <span>{{ reviewCount }} reviews</span>
+      </div>
+      <div class="flex-grow"></div>
+
+      <button
+        @click="goToDetail"
+        class="w-full bg-[#F2994A] text-white font-semibold rounded-lg text-lg h-[56px] flex items-center justify-center 
+        focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none 
+        hover:outline-none hover:ring-0 hover:border-transparent hover:shadow-none"
+      >
+        了解詳情
+      </button>
+    </div>
   </div>
 </template>
-
-<script setup>
-// 引入您的活動卡片元件
-import EventCard from '@/components/EventCard.vue';
-import { ref } from 'vue';
-
-// 假設這是您的活動數據
-const events = ref([
-  { id: 1, title: '山城工藝體驗：一日鐵匠之旅', type: '工作坊', date: '2024-10-26', rating: 5, reviews: 128, isFeatured: true },
-  { id: 2, title: '現代金工：打造你的專屬銀戒', type: '課程', date: '2024-11-15', rating: 4, reviews: 92, isFeatured: false },
-  { id: 3, title: '古法鑄劍術展覽與講座', type: '展覽', date: '2024-11-20', rating: 5, reviews: 210, isFeatured: true },
-  { id: 4, title: '週末兵器鍛造入門', type: '工作坊', date: '2024-12-01', rating: 4, reviews: 76, isFeatured: false },
-]);
-
-// 處理卡片點擊後續動作的函式
-function showEventDetails(eventId) {
-  console.log(`準備顯示 ID 為 ${eventId} 的活動詳情`);
-  // 可以在這裡執行路由跳轉等操作
-  // import { useRouter } from 'vue-router';
-  // const router = useRouter();
-  // router.push(`/events/${eventId}`);
-}
-</script>
