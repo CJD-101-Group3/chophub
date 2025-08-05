@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 import userIcon from '@/assets/icon/smalluser.svg';
 import closeIcon from '@/assets/icon/postclose.svg';
 import imageIcon from '@/assets/icon/postpicture.svg';
-import moreIcon from '@/assets/icon/postmore.svg';
+// import moreIcon from '@/assets/icon/postmore.svg';
 
 const emit = defineEmits(['close']);
 
@@ -86,7 +86,7 @@ function handleSubmit() {
           <span class="text-gray-500">新增主圖</span>
           <div class="flex items-center gap-x-4">
             <button type="button" @click="triggerFileInput"><img :src="imageIcon" alt="Upload Image" class="w-6 h-6"></button>
-            <button type="button"><img :src="moreIcon" alt="More Options" class="w-6 h-6"></button>
+            <!-- <button type="button"><img :src="moreIcon" alt="More Options" class="w-6 h-6"></button> -->
           </div>
         </div>
         <button type="submit" class="w-full bg-[#F2994A] text-white font-bold py-3 rounded-lg text-lg hover:brightness-110 transition">
