@@ -68,7 +68,7 @@ const handleLogout = () => {
                       <span class="font-semibold text-xl transition-colors">{{ userStore.userInfo.name }}</span>
                     </RouterLink>
                     <!-- 您也可以在這裡放一個登出按鈕，如果設計需要的話 -->
-                    <button @click="handleLogout" class="ml-4 p-2 rounded-[8px] hover:bg-orange-400">登出</button>
+                    <button @click="handleLogout" class="font-medium ml-4 p-2 rounded-[8px] hover:bg-orange-400">登出</button>
                 </template>
             </div>
         </nav>
