@@ -1,5 +1,6 @@
 <script setup>
 import { useRouter } from 'vue-router';
+import { getPublicImg } from '@/utils/getPublicImg';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 
@@ -18,6 +19,8 @@ const goBack = () => {
   router.back();
 };
 
+const hammerIconUrl = getPublicImg('users/hammericon.png');
+const applicationFormUrl = getPublicImg('files/ChopHub-Application-Form.pdf');
 </script>
 
 <template>
@@ -561,7 +564,7 @@ const goBack = () => {
         <h1 class="text-2xl lg:text-3xl font-bold text-gray-800 flex items-center justify-center gap-3 mb-6 lg:mb-8">
           刀匠申請須知
           <!-- 小鎚子 圖標 -->
-          <img src="@/assets/users/hammericon.png" alt="鎚子圖標" class="w-10 h-10">
+          <img :src="hammerIconUrl" alt="鎚子圖標" class="w-10 h-10">
         </h1>
         
         <!-- 說明文字 -->
@@ -606,7 +609,7 @@ const goBack = () => {
               TODO: 請將 href 替換為您實際的表單下載路徑 
               download 屬性會提示瀏覽器下載該文件
             -->
-            <a href="/files/ChopHub-Application-Form.pdf" download class="text-red-600 hover:text-red-700 font-semibold underline">
+            <a :href="applicationFormUrl" download class="text-red-600 hover:text-red-700 font-semibold underline">
               刀匠申請表單
             </a>
           </p>

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router'; // 1. 引入 useRoute
+import { getPublicImg } from '@/utils/getPublicImg'; // 引入路徑輔助函數
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 
@@ -38,7 +39,7 @@ const activeTab = computed(() => {
 // --- 會員資料 ---
 const memberInfo = ref({
   name: '露比匠',
-  avatarUrl: '/src/assets/users/userp.png',
+  avatarUrl: getPublicImg('users/userp.png'), // 將錯誤路徑修正為使用輔助函數
 });
 
 // --- 此頁面專用的資料 ---

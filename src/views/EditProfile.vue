@@ -1,6 +1,8 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { getPublicImg } from '@/utils/getPublicImg'; // 
+
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 
@@ -40,7 +42,7 @@ const countries = ref([
 
 const memberInfo = ref({
   name: '露比匠',
-  avatarUrl: '/src/assets/users/userp.png',
+  avatarUrl: getPublicImg('users/userp.png'), // 
   email: 'rubi520@gmail.com',
   password: 'r******4',
   backupEmail: 'rubija@gmail.com',
@@ -634,7 +636,7 @@ profileForm.password = '';
         <div class="space-y-8 max-w-2xl mx-auto">
           
           <div class="relative w-72 h-72 mx-auto group">
-            <img :src="profileForm.avatarUrl" alt="User Avatar" class="w-full h-full object-cover rounded-full shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
+            <img :src="profileForm.avatarUrl" alt="User Avatar" class="w-full h-full object-cover rounded-full border-4 border-white">
             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 rounded-full flex items-center justify-center gap-4 p-2 transition-opacity duration-300">
               <button class="text-sm bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-md transition-all opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 duration-300">圖片上傳</button>
               <!-- <button class="text-sm bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-md transition-all opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 duration-300 delay-100">圖片移除</button> -->

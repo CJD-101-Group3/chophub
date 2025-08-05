@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
-import activity1 from '@/assets/activities/activities1.png';
+import { getPublicImg } from '@/utils/getPublicImg'; // 引入路徑輔助函數
 
 // --- Layout State ---
 const isDropdownOpen = ref(false);
@@ -19,7 +19,7 @@ const menuItems = ref([
 
 const memberInfo = ref({
   name: '露比匠',
-  avatarUrl: '/src/assets/users/userp.png',
+  avatarUrl: getPublicImg('users/userp.png'),
 });
 
 // --- Page-specific State & Logic ---
@@ -28,11 +28,11 @@ const contentTabs = ['已報名', '未完成', '已取消', '收藏'];
 const activeContentTab = ref('已報名');
 
 const allActivities = ref([
-  { id: 1, title: '【鍛造群俠會】刀匠線上交流', type: '線上活動', date: '2025/7/23(三) 10:00am', imageUrl: activity1, status: '已報名' },
-  { id: 2, title: '【古兵器講座】羅馬短劍的歷史', type: '線上活動', date: '2025/8/15(五) 19:30pm', imageUrl: activity1, status: '已報名' },
-  { id: 3, title: '【新手入門】保養你的第一把刀', type: '線下活動', date: '2025/6/10(二) 14:00pm', imageUrl: activity1, status: '已完成' },
-  { id: 4, title: '【年度拍賣會】稀有藏品預覽', type: '線上活動', date: '2025/4/01(一) 09:00am', imageUrl: activity1, status: '已取消' },
-  { id: 5, title: '【鍛造群俠會】刀匠線上交流', type: '線上活動', date: '2025/7/23(三) 10:00am', imageUrl: activity1, status: '收藏' },
+  { id: 1, title: '【鍛造群俠會】刀匠線上交流', type: '線上活動', date: '2025/7/23(三) 10:00am', imageUrl: getPublicImg('activities/activities1.png'), status: '已報名' },
+  { id: 2, title: '【古兵器講座】羅馬短劍的歷史', type: '線上活動', date: '2025/8/15(五) 19:30pm', imageUrl: getPublicImg('activities/activities1.png'), status: '已報名' },
+  { id: 3, title: '【新手入門】保養你的第一把刀', type: '線下活動', date: '2025/6/10(二) 14:00pm', imageUrl: getPublicImg('activities/activities1.png'), status: '已完成' },
+  { id: 4, title: '【年度拍賣會】稀有藏品預覽', type: '線上活動', date: '2025/4/01(一) 09:00am', imageUrl: getPublicImg('activities/activities1.png'), status: '已取消' },
+  { id: 5, title: '【鍛造群俠會】刀匠線上交流', type: '線上活動', date: '2025/7/23(三) 10:00am', imageUrl: getPublicImg('activities/activities1.png'), status: '收藏' },
 ]);
 
 const filteredActivities = computed(() => {

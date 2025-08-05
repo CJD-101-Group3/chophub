@@ -1,22 +1,23 @@
 <script setup>
 import { ref } from 'vue';
+import { getPublicImg } from '@/utils/getPublicImg'; // 引入路徑輔助函數
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 // **【步驟 4.1】** 引入你剛剛建立的 SocialIcon 元件
 import SocialIcon from '../components/SocialIcon.vue'; 
 
 // 引入圖片資源
-import artisanAvatar from '../assets/users/userp.png';
-import artisanCardBg from '../assets/users/artisan-card-bg.png';
-import weapon1 from '../assets/weapons/weapon1.png';
-import weapon2 from '../assets/weapons/weapon2.png';
-import weapon3 from '../assets/weapons/weapon3.png';
-import weapon4 from '../assets/weapons/weapon4.png';
-import weapon5 from '../assets/weapons/weapon5.png';
-import badge1 from '../assets/badges/badge1.png';
-import badge2 from '../assets/badges/badge2.png';
-import badge3 from '../assets/badges/badge3.png';
-import badge4 from '../assets/badges/badge4.png';
+// import artisanAvatar from '../assets/users/userp.png';
+// import artisanCardBg from '../assets/users/artisan-card-bg.png';
+// import weapon1 from '../assets/weapons/weapon1.png';
+// import weapon2 from '../assets/weapons/weapon2.png';
+// import weapon3 from '../assets/weapons/weapon3.png';
+// import weapon4 from '../assets/weapons/weapon4.png';
+// import weapon5 from '../assets/weapons/weapon5.png';
+// import badge1 from '../assets/badges/badge1.png';
+// import badge2 from '../assets/badges/badge2.png';
+// import badge3 from '../assets/badges/badge3.png';
+// import badge4 from '../assets/badges/badge4.png';
 
 const particlesLoaded = async (container) => {
   console.log("Particles container loaded", container);
@@ -25,16 +26,16 @@ const particlesLoaded = async (container) => {
 // --- 刀匠的所有展示資料都集中管理 ---
 const artisanProfile = ref({
   name: 'Hattori Hanzo',
-  avatarUrl: artisanAvatar,
+  avatarUrl: getPublicImg('users/userp.png'), 
   mainBadge: {
     name: '黑鐵級刀匠',
-    iconUrl: badge2,
+    iconUrl: getPublicImg('badges/badge2.png'),
   },
   joinDate: '2024/03/01',
   location: '日本・伊賀',
   intro: '千錘百鍊，鋼魂不滅。\n服部半藏，專精於日式直刃鍛造，擁有超過 20 年工藝經驗，致力於融合古法鍛造與現代力學美學。擅長使用玉鋼、反覆摺疊鍛打與水冷退火技法。其作品曾於《冷鋼祭》奪下優勝，並被多位收藏家收藏。',
   card: {
-    imageUrl: artisanCardBg,
+    imageUrl: getPublicImg('users/artisan-card-bg.png'),
     quote: '「火不熄，我不止」',
     details: '鍛造資歷 20 年\n專長：摺疊鋼 / 日式直刃 / 劈砍雕刻\n常用鋼材：白紙鋼、玉鋼\n流派：伊賀古法流',
   },
@@ -46,11 +47,11 @@ const artisanProfile = ref({
     { id: 5, platform: 'Podcast', handle: '專訪：聽見火光的聲音', link: '#' },
   ],
   featuredWorks: [
-    { id: 1, imageUrl: weapon1, link: '#' },
-    { id: 2, imageUrl: weapon2, link: '#' },
-    { id: 3, imageUrl: weapon3, link: '#' },
-    { id: 4, imageUrl: weapon4, link: '#' },
-    { id: 5, imageUrl: weapon5, link: '#' },
+    { id: 1, imageUrl: getPublicImg('weapons/weapon1.png'), link: '#' },
+    { id: 2, imageUrl: getPublicImg('weapons/weapon2.png'), link: '#' },
+    { id: 3, imageUrl: getPublicImg('weapons/weapon3.png'), link: '#' },
+    { id: 4, imageUrl: getPublicImg('weapons/weapon4.png'), link: '#' },
+    { id: 5, imageUrl: getPublicImg('weapons/weapon5.png'), link: '#' },
   ],
   featuredPosts: [
     { id: 1, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
@@ -61,10 +62,10 @@ const artisanProfile = ref({
     { id: 6, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
   ],
   achievements: [
-    { id: 1, name: '百鍊成鋒', imageUrl: badge1 },
-    { id: 2, name: '黑鐵級刀匠', imageUrl: badge2 },
-    { id: 3, name: '赤火初煉者', imageUrl: badge3 },
-    { id: 4, name: '登入王', imageUrl: badge4 },
+    { id: 1, name: '百鍊成鋒', imageUrl: getPublicImg('badges/badge1.png') },
+    { id: 2, name: '黑鐵級刀匠', imageUrl: getPublicImg('badges/badge2.png') },
+    { id: 3, name: '赤火初煉者', imageUrl: getPublicImg('badges/badge3.png') },
+    { id: 4, name: '登入王', imageUrl: getPublicImg('badges/badge4.png') },
   ],
 });
 </script>
