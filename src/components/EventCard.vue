@@ -1,45 +1,50 @@
 <template>
   <!-- 
-    父層容器負責佈局：
-    - grid: 啟用 CSS Grid。
-    - grid-cols-1: 手機上每行 1 張卡片。
-    - md:grid-cols-2: 768px 以上每行 2 張。
-    - xl:grid-cols-3: 1280px 以上每行 3 張。
-    - gap-8: 設定卡片間的間距。
-    - p-8: 設定容器的內邊距。
+    這是放置所有活動卡片的父層容器。
+    我們使用 CSS Grid 來實現完美的響應式佈局。
+    - grid: 啟用網格佈局。
+    - grid-cols-1: 在手機尺寸上，每行顯示 1 個卡片。
+    - sm:grid-cols-2: 在 sm (640px) 寬度以上，每行顯示 2 個。
+    - lg:grid-cols-3: 在 lg (1024px) 寬度以上，每行顯示 3 個。
+    - xl:grid-cols-4: 在 xl (1280px) 寬度以上，每行顯示 4 個。
+    - gap-8: 設定卡片之間的間距為 8 (2rem 或 32px)。
+    - p-8: 在容器周圍增加內邊距，避免卡片貼邊。
   -->
-  <div class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto p-8">
-      <h1 class="text-4xl font-bold text-gray-800 mb-8">精選活動</h1>
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        
-        <!-- 使用 v-for 迴圈渲染您的卡片 -->
-        <YourEventCard
-          v-for="event in featuredEvents"
-          :key="event.id"
-          :id="event.id"
-          :event-image="event.eventImage"
-          :title="event.title"
-          :event-type="event.eventType"
-          :event-date="event.eventDate"
-          :rating="event.rating"
-          :review-count="event.reviewCount"
-        />
-
-      </div>
-    </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 p-8">
+    
+    <!-- 
+      使用 v-for 迴圈來渲染您的 EventCard 元件。
+      並監聽從卡片發出的 @view-details 事件。
+    -->
+    <EventCard
+      v-for="event in events"
+      :key="event.id"
+      :event="event"
+      @view-details="showEventDetails"
+    />
+    
   </div>
 </template>
 
 <script setup>
-// 引入您優化後的卡片元件
-import YourEventCard from '@/components/YourEventCard.vue';
+// 引入您的活動卡片元件
+import EventCard from '@/components/EventCard.vue';
 import { ref } from 'vue';
 
-// 假設的活動數據
-const featuredEvents = ref([
-  { id: 'evt001', eventImage: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678', title: '鍛造群俠會 - 線上交流', eventType: '線上活動', eventDate: '2025/7/23(三) 10:00AM', rating: 4, reviewCount: 82 },
-  { id: 'evt002', eventImage: 'https://images.unsplash.com/photo-1511578314322-379afb476865', title: '一日鐵匠實體工作坊', eventType: '實體工作坊', eventDate: '2025/8/15(五) 09:00AM', rating: 5, reviewCount: 156 },
-  { id: 'evt003', eventImage: '', title: '金工藝術展覽', eventType: '展覽', eventDate: '2025/9/01 - 9/30', rating: 4, reviewCount: 45 },
+// 假設這是您的活動數據
+const events = ref([
+  { id: 1, title: '山城工藝體驗：一日鐵匠之旅', type: '工作坊', date: '2024-10-26', rating: 5, reviews: 128, isFeatured: true },
+  { id: 2, title: '現代金工：打造你的專屬銀戒', type: '課程', date: '2024-11-15', rating: 4, reviews: 92, isFeatured: false },
+  { id: 3, title: '古法鑄劍術展覽與講座', type: '展覽', date: '2024-11-20', rating: 5, reviews: 210, isFeatured: true },
+  { id: 4, title: '週末兵器鍛造入門', type: '工作坊', date: '2024-12-01', rating: 4, reviews: 76, isFeatured: false },
 ]);
+
+// 處理卡片點擊後續動作的函式
+function showEventDetails(eventId) {
+  console.log(`準備顯示 ID 為 ${eventId} 的活動詳情`);
+  // 可以在這裡執行路由跳轉等操作
+  // import { useRouter } from 'vue-router';
+  // const router = useRouter();
+  // router.push(`/events/${eventId}`);
+}
 </script>
