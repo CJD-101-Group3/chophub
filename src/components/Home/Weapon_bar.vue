@@ -1,6 +1,6 @@
 <template>
     <RouterLink to="/Weaponslist">
-    <div class="absolute w-[40vw] bottom-[12%] translate-x-[5%] z-30 group">
+    <div class="hidden md:block absolute w-[40vw] bottom-[12%] translate-x-[5%] z-30 group">
         <img
             src="/Home_img/Weapons.png"
             alt="武器架"

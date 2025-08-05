@@ -2,7 +2,7 @@
     <!-- 夜間遮罩 -->
     <div
         v-if="!isDay"
-        class="absolute inset-0 bg-[#BB5E00]/40 pointer-events-none z-[5] transition-opacity duration-500"></div>
+        class="hidden md:block absolute inset-0 bg-[#BB5E00]/40 pointer-events-none z-[5] transition-opacity duration-500"></div>
 
     <!-- 窗戶圖片 -->
     <img

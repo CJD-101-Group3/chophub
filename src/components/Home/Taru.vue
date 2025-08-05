@@ -1,7 +1,7 @@
 <template>
     <div
-        class="absolute w-[20vw] bottom-0 left-1/2 translate-x-[-90%] z-30 group cursor-pointer"
-        :class=" jumped "
+        class="hidden md:block absolute w-[20vw] bottom-0 left-1/2 translate-x-[-90%] z-30 group cursor-pointer"
+        :class="jumped"
         @click="toggleJump">
         <img
             src="/Home_img/Taru.png"
@@ -22,26 +22,26 @@ function toggleJump() {
 </script>
 
 <style scoped>
-/* 小幅度左右跳動動畫 */
 @keyframes double-hop {
     0% {
-        transform: translateY(-8%);
+        transform: rotate(0deg);
     }
     25% {
-        transform: translateY(-0%);
+        transform: rotate(10deg);
     }
     50% {
-        transform: translateY(-5%);
+        transform: rotate(-30deg);
     }
     75% {
-        transform: translateY(0%);
+        transform: rotate(-10deg);
     }
     100% {
-        transform: translateY(-2%);
+        transform: rotate(0deg);
     }
 }
 
 .jump-taru {
-    animation: double-hop 1s ease-in-out;
+    animation: double-hop 0.5s ease-in-out;
+    transform-origin: bottom center;
 }
 </style>

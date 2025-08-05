@@ -1,20 +1,22 @@
 <template>
-    <div class="absolute bottom-[8%] left-1/2 translate-x-[-50%] z-20 w-[35vw] ">
+    <div
+        class="absolute left-1/2 translate-x-[-50%] z-20 bottom-[5%] w-[50vw] sm:bottom-[11%] sm:w-[37vw] md:bottom-[11%] md:w-[15vw]">
+
         <!-- 對話泡泡 -->
         <div
             :key="message"
-            class="absolute top-[-20%] left-[30%] translate-x-[-50%] px-4 py-2 bg-white border-2 border-black rounded-lg text-black w-max shadow-lg animate-fade-in"style="font-size: 1.5vw">
+            class="absolute top-[-19%] left-[3%] translate-x-[-50%] px-4 py-2 bg-white border-2 border-black rounded-lg text-black w-max shadow-lg animate-fade-in text-[5vw] sm:text-[3vw] md:text-[1.5vw]">
             {{ message }}
-            <!-- 小尾巴 -->
+
             <div
                 class="absolute left-1/2 translate-x-[-50%] top-full w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-black"></div>
         </div>
 
-
+        <!-- 圖像本體 -->
         <div class="relative w-full">
             <!-- 陰影 -->
             <div
-                class="absolute bottom-[5%] left-1/2 translate-x-[-30%] w-[6vw] h-[4vw] bg-black/20 rounded-full blur-[2px] z-0"></div>
+                class="absolute bottom-[5%] left-1/2 translate-x-[-30%] w-[12vw] h-[8vw] md:w-[6vw] md:h-[4vw] bg-black/20 rounded-full blur-[2px] z-0"></div>
 
             <!-- Smith 本人 -->
             <img src="/Home_img/Smith_1.png" alt="Smith" class="w-full relative z-10" />

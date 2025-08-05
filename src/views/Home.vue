@@ -9,6 +9,8 @@ import Event from '@/components/Home/Event.vue'
 import Window from '@/components/Home/Window.vue'
 import Lamp from '@/components/Home/Lamp.vue'
 import Taru from '@/components/Home/Taru.vue'
+import BG_img from '../components/Home/BG_img.vue'
+import Iron from '../components/Home/Iron.vue'
 import { ref } from 'vue'
 
 const isDay = ref(true)
@@ -21,9 +23,9 @@ const toggleWindow = () => {
 <template>
     <Theheader />
     <div class="w-full bg-black flex justify-center">
-        <div class="relative w-full max-w-[1920px] aspect-[16/7]">
+        <div class="relative w-full max-w-[1920px] md:aspect-[16/7]">
             <!-- 背景圖 -->
-            <img src="/Home_img/BG_img.png" alt="Home Background" class="absolute inset-0 w-full h-full object-fill" />
+            <BG_img/>
 
             <!-- Smith_wrapper -->
             <Smith_wrapper />
@@ -37,10 +39,7 @@ const toggleWindow = () => {
                 alt="鐵砧"
                 class="absolute w-[17vw] bottom-[6%] left-1/2 translate-x-[-10%] z-30" />
             <!-- 鐵塊 -->
-            <img
-                src="/Home_img/Iron1.png"
-                alt="鐵塊"
-                class="absolute w-[8vw] bottom-[21%] left-1/2 translate-x-[43%] z-30" />
+            <Iron/>
             <!-- 武器架 -->
             <Weapon_bar />
             <!-- 留言板 -->

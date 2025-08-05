@@ -1,6 +1,6 @@
 <template>
     <RouterLink to="/post">
-    <div class="absolute w-[24vw] bottom-[34%] left-1/2 translate-x-[85%] z-30 group">
+    <div class="hidden md:block absolute w-[24vw] bottom-[34%] left-1/2 translate-x-[85%] z-30 group">
         <img
             src="/Home_img/Board.png"
             alt="留言板"

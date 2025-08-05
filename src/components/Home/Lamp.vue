@@ -1,6 +1,6 @@
 <template>
     <div
-        class="absolute w-[20vw] bottom-[68%] left-[30%] z-30 cursor-pointer"
+        class="hidden md:block absolute w-[20vw] bottom-[68%] left-[30%] z-30 cursor-pointer"
         :class="{ 'animate-sway-once': isShaking }"
         @click="handleClick">
         <!-- 夜間光暈 -->

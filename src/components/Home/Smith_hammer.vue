@@ -1,9 +1,8 @@
 <template>
-    <div class="absolute bottom-[-1%] left-1/2 translate-x-[-39%] z-0 w-[43vw]">
-            <!-- 揮槌動畫 -->
-            <img :src="currentImage" alt="Smith hammer" class="w-full relative z-0" />
-            
-        </div>
+    <div class="">
+        <!-- 揮槌動畫 -->
+        <img :src="currentImage" alt="Smith hammer" class="w-full relative z-15 max-w-[300px] mx-auto" />
+    </div>
 </template>
 
 <script setup>
@@ -12,12 +11,7 @@ import { ref, onMounted } from 'vue'
 // 對話輪播
 
 // 揮槌圖片陣列
-const hammerFrames = [
-    '/Home_img/Hand_1.png',
-    '/Home_img/Hand_2.png',
-    '/Home_img/Hand_3.png',
-    '/Home_img/Hand_2.png',
-]
+const hammerFrames = ['/Home_img/Hand_1.png', '/Home_img/Hand_2.png', '/Home_img/Hand_3.png', '/Home_img/Hand_2.png']
 
 const currentImage = ref(hammerFrames[0])
 let imgIndex = 0
