@@ -31,7 +31,7 @@ const handleLogout = () => {
     <header
         class="w-full h-[74px] bg-[#282828] flex items-center justify-between px-6 border-b-[0.5px] border-gray-700">
         <!-- Logo -->
-        <RouterLink to="/Home">
+        <RouterLink to="/">
             <div class="flex items-center space-x-2">
                 <img :src="logo" alt="LOGO" class="w-[70px] h-[70px]" />
             </div>
