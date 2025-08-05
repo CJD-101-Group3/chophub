@@ -199,7 +199,7 @@ function postComment() {
                 <div class="flex items-center text-xs text-zinc-500 dark:text-zinc-400 mt-2 gap-3">
                   <span>{{ comment.time }}</span>
                   <button class="font-semibold">讚</button>
-                  <button class="font-semibold">檢舉</button>
+                  <!-- <button class="font-semibold">檢舉</button> -->
                 </div>
               </div>
             </div>
