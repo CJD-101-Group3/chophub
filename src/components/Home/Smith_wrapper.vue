@@ -1,7 +1,6 @@
 <template>
     <div
         class="absolute left-1/2 translate-x-[-50%] z-20 bottom-[5%] w-[50vw] sm:bottom-[11%] sm:w-[37vw] md:bottom-[11%] md:w-[15vw]">
-
         <!-- 對話泡泡 -->
         <div
             :key="message"
@@ -19,7 +18,13 @@
                 class="absolute bottom-[5%] left-1/2 translate-x-[-30%] w-[12vw] h-[8vw] md:w-[6vw] md:h-[4vw] bg-black/20 rounded-full blur-[2px] z-0"></div>
 
             <!-- Smith 本人 -->
-            <img src="/Home_img/Smith_1.png" alt="Smith" class="w-full relative z-10" />
+            <img src="/Home_img/Smith_1.png" alt="Smith" class="w-full relative z-20" />
+            <!-- 手 -->
+            <img
+                src="/Home_img/Hand_0.png"
+                alt="Smith 手"
+                class="absolute bottom-[50%] left-1/2 z-10 w-[28vw] translate-x-[-53%] sm:bottom-[50%] sm:w-[21vw]
+                md:bottom-[50%] md:w-[9vw] md:translate-x-[18%] animate-swing-hand" />
         </div>
     </div>
 </template>
@@ -63,5 +68,35 @@ onMounted(() => {
         opacity: 1;
         transform: scale(1);
     }
+}
+
+@keyframes swingHand {
+    0%,
+    100% {
+        transform: translateX(18%) rotate(0deg);
+    }
+    10% {
+        transform: translateX(18%) rotate(5deg);
+    }
+    20% {
+        transform: translateX(18%) rotate(0deg);
+    }
+    30% {
+        transform: translateX(18%) rotate(7deg);
+    }
+    40% {
+        transform: translateX(18%) rotate(0deg);
+    }
+    50% {
+        transform: translateX(18%) rotate(5deg);
+    }
+    60% {
+        transform: translateX(18%) rotate(0deg);
+    }
+}
+
+.animate-swing-hand {
+    animation: swingHand 4s ease-in-out infinite;
+    transform-origin: left bottom;
 }
 </style>

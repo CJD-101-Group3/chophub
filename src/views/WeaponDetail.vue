@@ -3,6 +3,8 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { getPublicImg } from '@/utils/getPublicImg'
+const Karambit = getPublicImg('models/model1.glb');
 
 import Theheader from "../components/Theheader.vue";
 import Thefooter from "../components/Thefooter.vue";
@@ -41,7 +43,7 @@ onMounted(() => {
   controls.maxPolarAngle = Math.PI / 2;
   controls.minDistance = 1;
   const loader = new GLTFLoader();
-  loader.load('/models/model1.glb', (gltf) => { model = gltf.scene; model.position.set(0, 1, 0); model.rotation.y = Math.PI / 2; scene.add(model); }, undefined, (error) => console.error(error));
+  loader.load(Karambit, (gltf) => { model = gltf.scene; model.position.set(0, 1, 0); model.rotation.y = Math.PI / 2; scene.add(model); }, undefined, (error) => console.error(error));
   let model;
   const animate = () => { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); };
   animate();

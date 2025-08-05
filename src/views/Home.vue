@@ -10,7 +10,7 @@ import Window from '@/components/Home/Window.vue'
 import Lamp from '@/components/Home/Lamp.vue'
 import Taru from '@/components/Home/Taru.vue'
 import BG_img from '../components/Home/BG_img.vue'
-import Iron from '../components/Home/Iron.vue'
+import Anvil from '../components/Home/Anvil.vue'
 import { ref } from 'vue'
 
 const isDay = ref(true)
@@ -32,14 +32,9 @@ const toggleWindow = () => {
             <!-- Smith_hammer -->
             <!-- <Smith_hammer /> -->
             <!-- 手0 -->
-            <Hand1 />
+            <!-- <Hand1 /> -->
             <!-- 鐵砧 -->
-            <img
-                src="/Home_img/Anv.png"
-                alt="鐵砧"
-                class="absolute w-[17vw] bottom-[6%] left-1/2 translate-x-[-10%] z-30" />
-            <!-- 鐵塊 -->
-            <Iron/>
+            <Anvil/>
             <!-- 武器架 -->
             <Weapon_bar />
             <!-- 留言板 -->
