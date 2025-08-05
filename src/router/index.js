@@ -40,7 +40,6 @@ const routes = [
     { path: '/events', component: events},
     { path: '/EventPayment', component: EventPayment},
     { path: '/Register', component: Register},
-    { path: '/Home', component: Home},
     { path: '/PaymentSuccess', component: PaymentSuccess},
     { path: '/EventReview', component: EventReview},
     { path: '/UserProfile', component: UserProfile},
@@ -59,7 +58,7 @@ const routes = [
     { path: '/PostActivity', component: PostActivity},
     { path: '/post/:id', component: PostDetail },
     { path: '/Weaponslist/:WeaponDetail', component:WeaponDetail},
-    { path: '/TicketDetailPage', component:TicketDetailPage},
+    { path: '/TicketDetailPage/:id', name: 'TicketDetail', component:TicketDetailPage},
     // 請在這支上新添路由，不要添加在PageNotFound頁面底下
     { path: '/:pathMatch(.*)*', component:PageNotFound},
 
