@@ -602,7 +602,7 @@ const artisanProfile = ref({
         <!-- 頂部個人資訊 -->
         <section class="text-center space-y-4 lg:flex lg:gap-8 lg:text-left lg:items-center">
           <img :src="artisanProfile.avatarUrl" alt="Artisan Avatar" 
-            class="w-full max-w-sm mx-auto rounded-lg shadow-lg lg:w-60 lg:h-60 lg:mx-0 lg:flex-shrink-0 object-cover">
+            class="w-full max-w-sm mx-auto rounded-lg shadow-[0_0_30px_rgba(255,255,255,0.4)] lg:w-60 lg:h-60 lg:mx-0 lg:flex-shrink-0 object-cover">
           <div class="space-y-3">
             <h1 class="text-4xl lg:text-5xl font-bold text-white">{{ artisanProfile.name }}</h1>
             <div class="flex items-center justify-center lg:justify-start gap-2 text-xl font-semibold text-white">
@@ -618,18 +618,18 @@ const artisanProfile = ref({
 
         <!-- 刀匠簡介 -->
         <section>
-          <h2 class="text-2xl font-bold text-white mb-3">刀匠簡介：</h2>
-          <p class="text-white whitespace-pre-line leading-relaxed">{{ artisanProfile.intro }}</p>
+          <h2 class="text-3xl font-bold text-white mb-8">刀匠簡介：</h2>
+          <p class="text-xl text-white whitespace-pre-line leading-relaxed">{{ artisanProfile.intro }}</p>
         </section>
 
         <!-- 刀匠卡片 -->
         
-        <section class="relative rounded-lg overflow-hidden shadow-lg">
+        <section class="relative rounded-lg overflow-hidden shadow-[0_0_30px_rgba(255,255,255,0.4)]">
           <router-link to="/" class="block cursor-pointer relative z-10">
             <img :src="artisanProfile.card.imageUrl" alt="Artisan at work" class="w-full h-56 md:h-72 object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 lg:p-8 text-white pointer-events-none">
-              <p class="text-3xl lg:text-4xl font-bold mb-4">{{ artisanProfile.card.quote }}</p>
-              <p class="text-sm lg:text-base whitespace-pre-line leading-snug">{{ artisanProfile.card.details }}</p>
+              <p class="text-3xl lg:text-4xl font-bold mb-12">{{ artisanProfile.card.quote }}</p>
+              <p class="text-sm lg:text-xl whitespace-pre-line leading-snug">{{ artisanProfile.card.details }}</p>
             </div>
           </router-link>
         </section>
@@ -734,10 +734,10 @@ const artisanProfile = ref({
   background: transparent;
 }
 .overflow-x-auto::-webkit-scrollbar-thumb {
-  background-color: #bdc3c7;
+  background-color: #F2994A;
   border-radius: 10px;
 }
 .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-  background-color: #95a5a6;
+  background-color: #E88C3A;
 }
 </style>

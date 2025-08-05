@@ -3,16 +3,25 @@ import { ref } from 'vue';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 
+
+// 定義響應式變量
+const particlesLoaded = async (container) => {
+  console.log("Particles container loaded", container);
+};
+
+
 // --- 通用佈局相關的資料 ---
 const isDropdownOpen = ref(false);
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
 
 const activeTab = ref('貼文相關');
+
+// **【修改處】** 從 menuItems 陣列中移除 '我的活動'
 const menuItems = ref([
   { name: '會員資訊', href: '/UserProfile' },
   { name: '貼文相關', href: '/PostActivity' },
   { name: '收藏相關', href: '/UserCollections' },
-  { name: '我的活動', href: '/MyActivities' },
+  // { name: '我的活動', href: '/MyActivities' }, // <--- 已移除
   { name: '其他設定', href: '/OtherSettings' },
 ]);
 
@@ -48,24 +57,545 @@ const myCollectedPosts = ref([
 
 const reportedRecords = ref([
   { id: 1, date: '2025/07/17', type: '貼文', reason: '這個問題根本不配來問！內容空泛且態度不佳。', result: '警告一次' },
-  { id: 2, date: '2025/07/16', type: '留言', reason: '涉及人身攻擊', result: '刪除留言' },
+  { id: 2, date: '2025/07/16', type: '貼文', reason: '涉及人身攻擊', result: '警告一次' },
 ]);
 
 const myReports = ref([
   { id: 1, date: '2025/07/17', type: '貼文', reason: '「這篇好廢，回覆好嗆」', result: '待審核' },
-  { id: 2, date: '2025/07/15', type: '留言', reason: '「廣告連結」', result: '已處理' },
+  { id: 2, date: '2025/07/15', type: '貼文', reason: '「這篇好廢，回覆好嗆」', result: '已處理' },
 ]);
 
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-gray-50">
+          <div class="absolute inset-0 -z-10">
+      <vue-particles
+      id="tsparticles"
+      @particles-loaded="particlesLoaded"
+      :options="{
+        autoPlay: true,
+        background: {
+          color: {
+            value: '#28282828',
+          },
+          image: '',
+          position: '50% 50%',
+          repeat: 'no-repeat',
+          size: '20%',
+          opacity: 1,
+        },
+        backgroundMask: {
+          composite: 'destination-out',
+          cover: {
+            opacity: 1,
+            color: {
+              value: '',
+            },
+          },
+          enable: false,
+        },
+        clear: true,
+        defaultThemes: {},
+        delay: 0,
+        fullScreen: {
+          enable: true,
+          zIndex: 0,
+        },
+        detectRetina: true,
+        duration: 0,
+        fpsLimit: 120,
+        interactivity: {
+          detectsOn: 'window',
+          events: {
+            onClick: {
+              enable: true,
+              mode: 'repulse',
+            },
+            onDiv: {
+              selectors: {},
+              enable: false,
+              mode: {},
+              type: 'circle',
+            },
+            onHover: {
+              enable: true,
+              mode: 'bubble',
+              parallax: {
+                enable: false,
+                force: 2,
+                smooth: 10,
+              },
+            },
+            resize: {
+              delay: 0.5,
+              enable: true,
+            },
+          },
+          modes: {
+            trail: {
+              delay: 1,
+              pauseOnStop: false,
+              quantity: 1,
+            },
+            attract: {
+              distance: 200,
+              duration: 0.4,
+              easing: 'ease-out-quad',
+              factor: 1,
+              maxSpeed: 50,
+              speed: 1,
+            },
+            bounce: {
+              distance: 200,
+            },
+            bubble: {
+              distance: 250,
+              duration: 2,
+              mix: false,
+              opacity: 0,
+              size: 0,
+              divs: {
+                distance: 200,
+                duration: 0.4,
+                mix: false,
+                selectors: {},
+              },
+            },
+            connect: {
+              distance: 80,
+              links: {
+                opacity: 0.5,
+              },
+              radius: 60,
+            },
+            grab: {
+              distance: 400,
+              links: {
+                blink: false,
+                consent: false,
+                opacity: 1,
+              },
+            },
+            push: {
+              default: true,
+              groups: [],
+              quantity: 4,
+            },
+            remove: {
+              quantity: 2,
+            },
+            repulse: {
+              distance: 400,
+              duration: 0.4,
+              factor: 100,
+              speed: 1,
+              maxSpeed: 50,
+              easing: 'ease-out-quad',
+              divs: {
+                distance: 200,
+                duration: 0.4,
+                factor: 100,
+                speed: 1,
+                maxSpeed: 50,
+                easing: 'ease-out-quad',
+                selectors: {},
+              },
+            },
+            slow: {
+              factor: 3,
+              radius: 200,
+            },
+            particle: {
+              replaceCursor: false,
+              pauseOnStop: false,
+              stopDelay: 0,
+            },
+            light: {
+              area: {
+                gradient: {
+                  start: {
+                    value: '#F2994A',
+                  },
+                  stop: {
+                    value: '#000000',
+                  },
+                },
+                radius: 1000,
+              },
+              shadow: {
+                color: {
+                  value: '#000000',
+                },
+                length: 2000,
+              },
+            },
+          },
+        },
+        manualParticles: [],
+        particles: {
+          bounce: {
+            horizontal: {
+              value: 1,
+            },
+            vertical: {
+              value: 1,
+            },
+          },
+          collisions: {
+            absorb: {
+              speed: 2,
+            },
+            bounce: {
+              horizontal: {
+                value: 1,
+              },
+              vertical: {
+                value: 1,
+              },
+            },
+            enable: false,
+            maxSpeed: 50,
+            mode: 'bounce',
+            overlap: {
+              enable: true,
+              retries: 0,
+            },
+          },
+          color: {
+            value: '#F2994A',
+            animation: {
+              h: {
+                count: 0,
+                enable: false,
+                speed: 1,
+                decay: 0,
+                delay: 0,
+                sync: true,
+                offset: 0,
+              },
+              s: {
+                count: 0,
+                enable: false,
+                speed: 1,
+                decay: 0,
+                delay: 0,
+                sync: true,
+                offset: 0,
+              },
+              l: {
+                count: 0,
+                enable: false,
+                speed: 1,
+                decay: 0,
+                delay: 0,
+                sync: true,
+                offset: 0,
+              },
+            },
+          },
+          effect: {
+            close: true,
+            fill: true,
+            options: {},
+            type: {},
+          },
+          groups: {},
+          move: {
+            angle: {
+              offset: 0,
+              value: 90,
+            },
+            attract: {
+              distance: 200,
+              enable: false,
+              rotate: {
+                x: 3000,
+                y: 3000,
+              },
+            },
+            center: {
+              x: 50,
+              y: 50,
+              mode: 'percent',
+              radius: 0,
+            },
+            decay: 0,
+            distance: {},
+            direction: 'none',
+            drift: 0,
+            enable: true,
+            gravity: {
+              acceleration: 9.81,
+              enable: false,
+              inverse: false,
+              maxSpeed: 50,
+            },
+            path: {
+              clamp: true,
+              delay: {
+                value: 0,
+              },
+              enable: false,
+              options: {},
+            },
+            outModes: {
+              default: 'out',
+              bottom: 'out',
+              left: 'out',
+              right: 'out',
+              top: 'out',
+            },
+            random: false,
+            size: false,
+            speed: {
+              min: 0.1,
+              max: 1,
+            },
+            spin: {
+              acceleration: 0,
+              enable: false,
+            },
+            straight: false,
+            trail: {
+              enable: false,
+              length: 10,
+              fill: {},
+            },
+            vibrate: false,
+            warp: false,
+          },
+          number: {
+            density: {
+              enable: true,
+              width: 1920,
+              height: 1080,
+            },
+            limit: {
+              mode: 'delete',
+              value: 0,
+            },
+            value: 160,
+          },
+          opacity: {
+            value: {
+              min: 0.1,
+              max: 1,
+            },
+            animation: {
+              count: 0,
+              enable: true,
+              speed: 1,
+              decay: 0,
+              delay: 0,
+              sync: false,
+              mode: 'auto',
+              startValue: 'random',
+              destroy: 'none',
+            },
+          },
+          reduceDuplicates: false,
+          shadow: {
+            blur: 0,
+            color: {
+              value: '#000',
+            },
+            enable: false,
+            offset: {
+              x: 0,
+              y: 0,
+            },
+          },
+          shape: {
+            close: true,
+            fill: true,
+            options: {},
+            type: 'circle',
+          },
+          size: {
+            value: {
+              min: 2,
+              max: 3,
+            },
+            animation: {
+              count: 0,
+              enable: false,
+              speed: 5,
+              decay: 0,
+              delay: 0,
+              sync: false,
+              mode: 'auto',
+              startValue: 'random',
+              destroy: 'none',
+            },
+          },
+          stroke: {
+            width: 0,
+          },
+          zIndex: {
+            value: 0,
+            opacityRate: 1,
+            sizeRate: 1,
+            velocityRate: 1,
+          },
+          destroy: {
+            bounds: {},
+            mode: 'none',
+            split: {
+              count: 1,
+              factor: {
+                value: 3,
+              },
+              rate: {
+                value: {
+                  min: 4,
+                  max: 9,
+                },
+              },
+              sizeOffset: true,
+              particles: {},
+            },
+          },
+          roll: {
+            darken: {
+              enable: false,
+              value: 0,
+            },
+            enable: false,
+            enlighten: {
+              enable: false,
+              value: 0,
+            },
+            mode: 'vertical',
+            speed: 25,
+          },
+          tilt: {
+            value: 0,
+            animation: {
+              enable: false,
+              speed: 0,
+              decay: 0,
+              sync: false,
+            },
+            direction: 'clockwise',
+            enable: false,
+          },
+          twinkle: {
+            lines: {
+              enable: false,
+              frequency: 0.05,
+              opacity: 1,
+            },
+            particles: {
+              enable: false,
+              frequency: 0.05,
+              opacity: 1,
+            },
+          },
+          wobble: {
+            distance: 5,
+            enable: false,
+            speed: {
+              angle: 50,
+              move: 10,
+            },
+          },
+          life: {
+            count: 0,
+            delay: {
+              value: 0,
+              sync: false,
+            },
+            duration: {
+              value: 0,
+              sync: false,
+            },
+          },
+          rotate: {
+            value: 0,
+            animation: {
+              enable: false,
+              speed: 0,
+              decay: 0,
+              sync: false,
+            },
+            direction: 'clockwise',
+            path: false,
+          },
+          orbit: {
+            animation: {
+              count: 0,
+              enable: false,
+              speed: 1,
+              decay: 0,
+              delay: 0,
+              sync: false,
+            },
+            enable: false,
+            opacity: 1,
+            rotation: {
+              value: 45,
+            },
+            width: 1,
+          },
+          links: {
+            blink: false,
+            color: {
+              value: '#fff',
+            },
+            consent: false,
+            distance: 100,
+            enable: false,
+            frequency: 1,
+            opacity: 1,
+            shadow: {
+              blur: 5,
+              color: {
+                value: '#000',
+              },
+              enable: false,
+            },
+            triangles: {
+              enable: false,
+              frequency: 1,
+            },
+            width: 1,
+            warp: false,
+          },
+          repulse: {
+            value: 0,
+            enabled: false,
+            distance: 1,
+            duration: 1,
+            factor: 1,
+            speed: 1,
+          },
+        },
+        pauseOnBlur: true,
+        pauseOnOutsideViewport: true,
+        responsive: [],
+        smooth: false,
+        style: {},
+        themes: [],
+        zLayers: 100,
+        key: 'nasa',
+        name: 'NASA',
+        motion: {
+          disable: false,
+          reduce: {
+            factor: 4,
+            value: true,
+          },
+        },
+      }"
+    />
+    </div>
+  <div class="flex flex-col min-h-screen ">
     <Theheader />
 
     <div class="flex-1 container mx-auto p-4 lg:flex lg:gap-8 lg:p-8">
       <!-- 左側邊欄 -->
       <aside class="hidden lg:block lg:w-72 flex-shrink-0">
-        <div class="bg-white p-4 rounded-lg shadow-md sticky top-24">
+        <div class="bg-white p-4 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)] sticky top-24">
           <div class="flex flex-col items-center text-center border-b pb-4 mb-4">
             <img :src="memberInfo.avatarUrl" alt="Avatar" class="w-40 h-40 rounded-full object-cover mb-3"/>
             <h2 class="text-xl font-bold text-gray-800">{{ memberInfo.name }}</h2>
@@ -102,7 +632,7 @@ const myReports = ref([
           </button>
           <transition name="fade">
             <div v-if="isDropdownOpen" class="absolute z-10 w-full mt-2 bg-white border rounded-md shadow-lg">
-              <a v-for="item in menuItems" :key="item.name" :href="item.href" class="block px-4 py-3 text-gray-700 hover:bg-[#F2994A] hover:text-white">{{ item.name }}</a>
+              <router-link v-for="item in menuItems" :key="item.name" :to="item.href" class="block px-4 py-3 text-gray-700 hover:bg-[#F2994A] hover:text-white">{{ item.name }}</router-link>
             </div>
           </transition>
         </div>
@@ -111,13 +641,13 @@ const myReports = ref([
         <div class="space-y-8">
           
           <div class="text-center lg:text-left">
-            <h1 class="text-3xl font-bold text-gray-800">{{ memberInfo.name }}，</h1>
-            <p class="text-lg text-gray-600">因為有你的分享，ChopHub更加精采！</p>
+            <h1 class="text-3xl font-bold text-white">{{ memberInfo.name }}，</h1>
+            <p class="text-lg text-white">因為有你的分享，ChopHub更加精采！</p>
           </div>
 
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-3">貼文相關紀錄</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
+          <div class="bg-white p-6 rounded-lg" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-3">貼文相關紀錄</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-lg text-gray-600">
               <div>發文篇數：<span class="font-semibold text-gray-800">{{ postStats.posts }}</span></div>
               <div>回覆總數：<span class="font-semibold text-gray-800">{{ postStats.replies }}</span></div>
               <div>收藏總數：<span class="font-semibold text-gray-800">{{ postStats.collections }}</span></div>
@@ -126,14 +656,12 @@ const myReports = ref([
           </div>
 
           <!-- 我的貼文 -->
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">我的貼文</h2>
-            <!-- 【修改處】為 table 加上 border-separate 以便顯示圓角 -->
+          <div class="bg-white p-6 rounded-lg max-h-96 overflow-y-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">我的貼文</h2>
             <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
               <colgroup><col class="w-7/12"><col class="w-3/12"><col class="w-2/12"></colgroup>
               <thead><tr class="border-b-2"><th class="py-2 px-3">文章標題</th><th class="py-2 px-3">狀態</th><th class="py-2 px-3 text-right">發表日期</th></tr></thead>
               <tbody>
-                <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
                 <tr v-for="post in myPosts" :key="post.id" class="subtle-float-on-hover">
                   <td class="py-3 px-3 truncate">
                     <a :href="post.link" class="text-gray-800 hover:text-gray-800">{{ post.title }}</a>
@@ -144,8 +672,7 @@ const myReports = ref([
               </tbody>
             </table>
             <div class="space-y-4 lg:hidden">
-              <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
-              <a v-for="post in myPosts" :key="post.id" :href="post.link" class="block bg-[#E2E9EF] p-4 rounded-md subtle-float-on-hover">
+              <a v-for="post in myPosts" :key="post.id" :href="post.link" class="block bg-white p-4 rounded-md subtle-float-on-hover">
                 <p class="font-semibold truncate">{{ post.title }}</p>
                 <div class="flex justify-between text-sm text-gray-600 mt-2"><p>狀態：{{ post.status }}</p><p>發表日期：{{ post.date }}</p></div>
               </a>
@@ -153,13 +680,12 @@ const myReports = ref([
           </div>
 
           <!-- 我的回覆摘要 -->
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">我的回覆摘要</h2>
+          <div class="bg-white p-6 rounded-lg max-h-96 overflow-y-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">我的回覆摘要</h2>
             <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
               <colgroup><col class="w-[15%]"><col class="w-[30%]"><col class="w-[55%]"></colgroup>
               <thead><tr class="border-b-2"><th class="py-2 px-3">回覆日期</th><th class="py-2 px-3">貼文標題</th><th class="py-2 px-3">回覆內容摘要</th></tr></thead>
               <tbody>
-                <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
                 <tr v-for="reply in myReplies" :key="reply.id" class="subtle-float-on-hover">
                   <td class="py-3 px-3">{{ reply.date }}</td>
                   <td class="px-3 truncate">
@@ -170,8 +696,7 @@ const myReports = ref([
               </tbody>
             </table>
             <div class="space-y-4 lg:hidden">
-              <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
-              <a v-for="reply in myReplies" :key="reply.id" :href="reply.link" class="block bg-[#E2E9EF] p-4 rounded-md subtle-float-on-hover">
+              <a v-for="reply in myReplies" :key="reply.id" :href="reply.link" class="block bg-white p-4 rounded-md subtle-float-on-hover">
                 <div class="flex justify-between items-center mb-2"><span class="font-semibold truncate">{{ reply.postTitle }}</span><span class="text-sm text-gray-500 flex-shrink-0 ml-2">{{ reply.date }}</span></div>
                 <p class="text-sm text-gray-700 truncate">{{ reply.content }}</p>
               </a>
@@ -179,13 +704,12 @@ const myReports = ref([
           </div>
 
           <!-- 我的收藏貼文 -->
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">我的收藏貼文</h2>
+          <div class="bg-white p-6 rounded-lg max-h-96 overflow-y-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">我的收藏貼文</h2>
             <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
                <colgroup><col class="w-10/12"><col class="w-2/12"></colgroup>
               <thead><tr class="border-b-2"><th class="py-2 px-3">收藏文章標題</th><th class="py-2 px-3 text-right">收藏日期</th></tr></thead>
               <tbody>
-                <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
                 <tr v-for="post in myCollectedPosts" :key="post.id" class="subtle-float-on-hover">
                   <td class="py-3 px-3 truncate">
                     <a :href="post.link" class="text-gray-800 hover:text-gray-800">
@@ -197,24 +721,28 @@ const myReports = ref([
               </tbody>
             </table>
             <div class="space-y-4 lg:hidden">
-              <!-- **【修改處】** 將 class 改為 subtle-float-on-hover -->
-              <a v-for="post in myCollectedPosts" :key="post.id" :href="post.link" class="block bg-[#E2E9EF] p-4 rounded-md subtle-float-on-hover">
+              <a v-for="post in myCollectedPosts" :key="post.id" :href="post.link" class="block bg-white p-4 rounded-md subtle-float-on-hover">
                 <p class="font-semibold truncate"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</p>
                 <p class="text-sm text-gray-600 mt-2 text-right">收藏日期：{{ post.date }}</p>
               </a>
             </div>
           </div>
 
-          <!-- 檢舉專區 (不加上浮效果) -->
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">檢舉專區 - 被檢舉紀錄</h2>
+          <!-- 檢舉專區 -->
+          <div class="bg-white p-6 rounded-lg max-h-96 overflow-y-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">檢舉專區 - 被檢舉紀錄</h2>
             <table class="w-full text-left hidden lg:table">
               <colgroup><col class="w-[15%]"><col class="w-[10%]"><col class="w-[60%]"><col class="w-[15%]"></colgroup>
               <thead><tr class="border-b-2"><th class="py-2">日期</th><th class="py-2">類型</th><th class="py-2">內容摘要</th><th class="py-2 text-right">結果</th></tr></thead>
-              <tbody><tr v-for="record in reportedRecords" :key="record.id" class="border-b last:border-b-0"><td class="py-3">{{ record.date }}</td><td>{{ record.type }}</td><td class="truncate">{{ record.reason }}</td><td class="text-right">{{ record.result }}</td></tr></tbody>
+              <tbody><tr v-for="record in reportedRecords" :key="record.id" class="border-b last:border-b-0 subtle-float-on-hover">
+                <td class="py-3">{{ record.date }}</td>
+                <td>{{ record.type }}</td>
+                <td class="truncate">{{ record.reason }}</td>
+                <td class="text-right">{{ record.result }}</td>
+              </tr></tbody>
             </table>
             <div class="space-y-4 lg:hidden">
-              <div v-for="record in reportedRecords" :key="record.id" class="bg-[#E2E9EF] p-4 rounded-md">
+              <div v-for="record in reportedRecords" :key="record.id" class="bg-white p-4 rounded-md subtle-float-on-hover">
                 <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                   <span class="text-gray-500">日期</span><span>{{ record.date }}</span>
                   <span class="text-gray-500">類型</span><span>{{ record.type }}</span>
@@ -224,16 +752,21 @@ const myReports = ref([
               </div>
             </div>
           </div>
-          
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">檢舉專區 - 舉發紀錄</h2>
+
+          <div class="bg-white p-6 rounded-lg max-h-96 overflow-y-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">檢舉專區 - 舉發紀錄</h2>
             <table class="w-full text-left hidden lg:table">
               <colgroup><col class="w-[15%]"><col class="w-[10%]"><col class="w-[60%]"><col class="w-[15%]"></colgroup>
               <thead><tr class="border-b-2"><th class="py-2">日期</th><th class="py-2">類型</th><th class="py-2">內容摘要</th><th class="py-2 text-right">結果</th></tr></thead>
-              <tbody><tr v-for="report in myReports" :key="report.id" class="border-b last:border-b-0"><td class="py-3">{{ report.date }}</td><td>{{ report.type }}</td><td class="truncate">{{ report.reason }}</td><td class="text-right">{{ report.result }}</td></tr></tbody>
+              <tbody><tr v-for="report in myReports" :key="report.id" class="border-b last:border-b-0 subtle-float-on-hover">
+                <td class="py-3">{{ report.date }}</td>
+                <td>{{ report.type }}</td>
+                <td class="truncate">{{ report.reason }}</td>
+                <td class="text-right">{{ report.result }}</td>
+              </tr></tbody>
             </table>
             <div class="space-y-4 lg:hidden">
-               <div v-for="report in myReports" :key="report.id" class="bg-[#E2E9EF] p-4 rounded-md">
+               <div v-for="report in myReports" :key="report.id" class="bg-white p-4 rounded-md subtle-float-on-hover">
                 <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                   <span class="text-gray-500">日期</span><span>{{ report.date }}</span>
                   <span class="text-gray-500">類型</span><span>{{ report.type }}</span>
@@ -268,9 +801,6 @@ const myReports = ref([
   position: sticky;
 }
 
-/* --- 【修改後的樣式】 --- */
-
-/* 應用於手機版卡片和桌面版表格列的通用樣式 */
 .subtle-float-on-hover {
   transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
   cursor: pointer;
@@ -283,23 +813,19 @@ const myReports = ref([
   position: relative;
 }
 
-/* 手機版卡片 hover 效果 */
 .lg\:hidden .subtle-float-on-hover:hover {
-  border-radius: 0.75rem; /* rounded-xl */
+  border-radius: 0.75rem;
 }
 
-/* 桌面版表格 hover 效果 */
 .lg\:table .subtle-float-on-hover {
-  /* 表格列本身需要一個背景色，才能蓋掉表格的背景 */
   background-color: white; 
 }
 .lg\:table .subtle-float-on-hover:hover {
-  background-color: #f8fafc; /* Tailwind's gray-50 or slate-50 */
+  background-color: #f8fafc;
 }
 
-/* 針對桌面版表格的第一個和最後一個 td 設定圓角 */
 .lg\:table .subtle-float-on-hover:hover td:first-child {
-  border-top-left-radius: 0.5rem; /* rounded-lg */
+  border-top-left-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
 }
 .lg\:table .subtle-float-on-hover:hover td:last-child {

@@ -555,7 +555,7 @@ const goBack = () => {
     <main class="flex-1 flex items-center justify-center p-4">
       
       <!-- 內容資訊卡片 -->
-      <div class="w-full max-w-2xl mx-auto  bg-[#E2E9EF] p-6 lg:p-10 rounded-xl shadow-sm">
+      <div class="w-full max-w-2xl mx-auto  bg-white p-6 lg:p-10 rounded-xl shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
         
         <!-- 標題：新增 justify-center 來讓內容水平置中 -->
         <h1 class="text-2xl lg:text-3xl font-bold text-gray-800 flex items-center justify-center gap-3 mb-6 lg:mb-8">
@@ -616,7 +616,8 @@ const goBack = () => {
         <div class="text-center mt-10">
           <button 
             @click="goBack"
-            class="w-full sm:w-auto bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-3 px-12 rounded-md transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E87A3A]"
+            class="w-full sm:w-auto bg-[#F2994A] text-white font-bold py-3 px-12 rounded-md transition-colors duration-300 border-2 border-transparent
+                   hover:bg-white hover:text-black hover:border-[#F2994A] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E87A3A]"
           >
             回上一頁
           </button>
