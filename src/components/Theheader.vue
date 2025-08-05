@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'; // 1. 引入您的 user store
+import { useRouter } from 'vue-router' // ← 一定要有這行
 import logo from '@/assets/icon/LOGO.png'
 import Basebutton from './Basebutton.vue'
 import userIcon from '@/assets/icon/user.svg' // 將 user icon 重新命名，避免與 store 實例衝突
@@ -10,6 +11,7 @@ import calendar from '@/assets/icon/calendar.svg'
 import aboutus from '@/assets/icon/aboutus.svg'
 const isOpen = ref(false)
 const userStore = useUserStore(); // 2. 建立 user store 的實例
+const router = useRouter() // ← 一定要有這行
 
 // 關閉動畫
 const handleClose = () => {
@@ -19,11 +21,9 @@ const handleClose = () => {
 // **【新功能】** 登出函式
 const handleLogout = () => {
     userStore.logout();
-    // 可選：登出後將使用者導回首頁
-    // import { useRouter } from 'vue-router'
-    // const router = useRouter()
-    // router.push('/Home')
-    handleClose(); // 如果是在手機選單中登出，也需要關閉選單
+    // **【修改處】** 改用命名路由進行跳轉，更可靠！
+    router.push({ name: 'Home' });
+    handleClose();
 };
 </script>
 
@@ -31,7 +31,7 @@ const handleLogout = () => {
     <header
         class="w-full h-[74px] bg-[#282828] flex items-center justify-between px-6 border-b-[0.5px] border-gray-700">
         <!-- Logo -->
-        <RouterLink to="/Home">
+        <RouterLink to="/">
             <div class="flex items-center space-x-2">
                 <img :src="logo" alt="LOGO" class="w-[70px] h-[70px]" />
             </div>
@@ -84,7 +84,7 @@ const handleLogout = () => {
             <button
                 @click="handleClose"
                 class="w-12 h-12 flex items-center justify-center text-5xl font-bold hover:text-white transition duration-500 transform hover:rotate-[180deg] origin-center">
-                ×
+                
             </button>
         </div>
 

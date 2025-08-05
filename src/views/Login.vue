@@ -60,7 +60,7 @@ function handleSubmit() {
   console.log('表單已提交:', credentials);
   
   // 4. 在更新了全局狀態之後，再進行頁面跳轉
-  router.push('/UserProfile');
+  router.push('/');
 }
 
 function goToRegister() {

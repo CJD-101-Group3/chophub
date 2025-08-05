@@ -32,7 +32,7 @@ import TicketDetailPage from '@/views/TicketDetailPage.vue'
 
 
 const routes = [
-    { path: '/', component: Home },
+    { path: '/', name: 'Home',component: Home },
     { path: '/About', component: About },
     { path: '/post', component: Post },
     { path: '/Weaponslist', component: Weaponslist },
