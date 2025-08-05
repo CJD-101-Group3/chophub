@@ -651,10 +651,10 @@ profileForm.password = '';
               <div class="grid grid-cols-3 items-center gap-4"><label for="backupEmail" class="text-gray-600 col-span-1">備用信箱</label><input id="backupEmail" type="email" v-model="profileForm.backupEmail" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
             </div>
             <div class="mt-6 flex gap-4">
-              <button class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-md transition-colors  hover:border-[#F2994A] hover:brightness-110 hover:bg-white hover:text-black">
+              <button class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors  hover:border-[#F2994A] hover:brightness-110 hover:bg-white hover:text-black">
                 儲存
               </button>
-              <button class="flex-1 bg-white hover:bg-gray-100 text-red-600 border border-red-600 font-bold py-2 px-4 rounded-md transition-colors">刪除帳號</button>
+              <button class="flex-1 bg-white hover:bg-gray-100 text-red-600 border border-red-600 font-bold py-2 px-4 rounded-[8px] transition-colors">刪除帳號</button>
             </div>
           </div>
 
@@ -683,10 +683,10 @@ profileForm.password = '';
               </div>
             </div>
             <div class="mt-6 flex gap-4">
-              <button class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-md transition-colors  hover:border-[#F2994A] hover:brightness-110 hover:bg-white hover:text-black">
+              <button class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors  hover:border-[#F2994A] hover:brightness-110 hover:bg-white hover:text-black">
                 儲存
               </button>
-              <button class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-md transition-colors">放棄修改</button>
+              <button class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">放棄修改</button>
             </div>
           </div>
 
