@@ -1,5 +1,5 @@
 <script setup>
-// --- Script 區塊維持不變 ---
+// --- Script 區塊已移除 like 相關功能 ---
 import { defineProps, ref, computed } from 'vue';
 import fireIcon from '@/assets/icon/fire.svg';
 import moreIcon from '@/assets/icon/more.svg';
@@ -18,11 +18,14 @@ const props = defineProps({
   stars: { type: Number, default: 24 },
 });
 
+// 移除了 isLiked 和 localLikes
 const isStarred = ref(false);
 const localStars = ref(props.stars);
 
+// 移除了 smallLikeSrc
 const smallStarSrc = computed(() => isStarred.value ? smallStarActiveIcon : smallStarIcon);
 
+// 移除了 toggleLike 函數
 function toggleStar() {
   isStarred.value = !isStarred.value;
   localStars.value += isStarred.value ? 1 : -1;
@@ -30,13 +33,8 @@ function toggleStar() {
 </script>
 
 <template>
-  <!-- 
-    【修改點】
-    移除了 md:w-[348px]，只保留 w-full。
-    這樣卡片的寬度將由父層的 Grid 系統決定，
-    它會自動填滿分配給它的網格欄位，實現真正的響應式。
-  -->
-  <div class="flex flex-col w-full bg-[#FEFEFE] rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2">
+  <!-- 卡片尺寸維持 90% 縮放 -->
+  <div class="flex flex-col w-full md:w-[348px] bg-[#FEFEFE] rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2">
     
     <div class="relative">
       <img :src="postImage" alt="Post Image" class="w-full h-auto object-cover" />
