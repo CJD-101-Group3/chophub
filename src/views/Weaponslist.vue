@@ -579,7 +579,7 @@
     />
 
     <!-- 搜尋列 -->
-    <div class="flex  justify-center md:justify-between items-center md:ml-[200px] lg:ml-[120px] my-6 mt-10">
+    <div class="flex  justify-center md:justify-between items-center  lg:ml-[120px] xl:ml-[200px] my-6 mt-10">
   <div class="flex items-center space-x-2">
     <input
       type="text"
@@ -593,8 +593,8 @@
     </button>
   </div>
 
-      <div class="ml-auto  md:mr-[250px] lg:mr-[120px] hidden md:block">
-       <DropDownFilter title="活動類型" :items="typeItems" v-model="selectedType" />
+      <div class="ml-auto   lg:mr-[120px]  xl:mr-[200px] hidden md:block">
+       <DropDownFilter title="排序類型" :items="typeItems" v-model="selectedType" />
 
        </div>
 
@@ -633,6 +633,14 @@
             分類
           </h2>
           <ul>
+            
+            <li class="border-b border-black/20 last:border-b-0">
+              <button
+                class="text-black w-full text-left px-4 py-3 rounded-md hover:bg-[#F2994A] hover:text-[#1a1f23] transition duration-300 font-medium"
+              >
+                全部
+              </button>
+            </li>
             <li class="border-b border-black/20 last:border-b-0">
               <button
                 class="text-black w-full text-left px-4 py-3 rounded-md hover:bg-[#F2994A] hover:text-[#1a1f23] transition duration-300 font-medium"
@@ -772,8 +780,8 @@ function prevSlide() {
 
 
 const typeItems = [
-   { label: '所有類型', value: 'all' },
-   { label: '實體活動', value: '實體活動' },
-   { label: '線上活動', value: '線上活動' }
+   { label: '收藏次數', value: 'all' },
+   { label: '上架時間', value: '實體活動' },
+   { label: '瀏覽次數', value: '線上活動' }
 ];
 </script>

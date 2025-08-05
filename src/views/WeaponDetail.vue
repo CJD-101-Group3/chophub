@@ -3,6 +3,8 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { getPublicImg } from '@/utils/getPublicImg'
+const Karambit = getPublicImg('models/model1.glb');
 
 import Theheader from "../components/Theheader.vue";
 import Thefooter from "../components/Thefooter.vue";
@@ -16,65 +18,34 @@ const activeTab = ref('posts');
 onMounted(() => {
   if (!canvasContainer.value) return;
   const container = canvasContainer.value;
-  let scene, camera, renderer, model, controls;
-
-  const init = () => {
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-    
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xeeeeee);
-    
-    camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.set(2, 2, 0);
-
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(width, height);
-    container.appendChild(renderer.domElement);
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 3);
-    scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 10, 7.5);
-    scene.add(directionalLight);
-
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.target.set(0, 1, 0);
-    controls.maxPolarAngle = Math.PI / 2;
-    controls.minDistance = 1;
-
-    const loader = new GLTFLoader();
-    loader.load(
-      '/models/model1.glb', 
-      (gltf) => {
-        model = gltf.scene;
-        model.position.set(0, 1, 0);
-        model.rotation.y = Math.PI / 2;
-        scene.add(model);
-      },
-      undefined,
-      (error) => console.error(error)
-    );
-  };
-
-  const animate = () => {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-  };
-
-  const handleResize = () => {
-    if (container) {
-      const newWidth = container.clientWidth;
-      const newHeight = container.clientHeight;
-      camera.aspect = newWidth / newHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(newWidth, newHeight);
-    }
-  };
-  
-  init();
+  const initialWidth = container.clientWidth;
+  const initialHeight = container.clientHeight;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xeeeeee);
+  const camera = new THREE.PerspectiveCamera(75, initialWidth / initialHeight, 0.1, 1000);
+  camera.position.set(2, 2, 0);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(initialWidth, initialHeight);
+  container.appendChild(renderer.domElement);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 3);
+  scene.add(ambientLight);
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+  directionalLight.position.set(5, 10, 7.5);
+  scene.add(directionalLight);
+  const floorGeometry = new THREE.PlaneGeometry(20, 20);
+  const floorMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, side: THREE.DoubleSide });
+  const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  floor.rotation.x = -Math.PI / 2;
+  scene.add(floor);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.target.set(0, 1, 0);
+  controls.maxPolarAngle = Math.PI / 2;
+  controls.minDistance = 1;
+  const loader = new GLTFLoader();
+  loader.load(Karambit, (gltf) => { model = gltf.scene; model.position.set(0, 1, 0); model.rotation.y = Math.PI / 2; scene.add(model); }, undefined, (error) => console.error(error));
+  let model;
+  const animate = () => { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); };
   animate();
 
   window.addEventListener('resize', handleResize);
@@ -142,7 +113,7 @@ onMounted(() => {
             <div class="flex items-center gap-3 mb-6 text-white">
               <span>創作者：</span>
               <div class="w-10 h-10 rounded-full bg-[#F2994A]"></div>
-              <span>蔡依玲</span>
+              <span>使用者</span>
             </div>
 
             <div class="bg-white rounded-xl p-6 mb-8">
@@ -161,7 +132,7 @@ onMounted(() => {
               <div v-for="n in 10" :key="n" class="flex items-start gap-3">
                 <div class="flex-shrink-0 w-9 h-9 rounded-full bg-[#F2994A] border-2 border-white shadow-sm mt-1"></div>
                 <div class="flex-grow flex flex-col bg-white rounded-xl p-4">
-                  <span class="font-bold text-sm text-gray-900 mb-1">中壢彭于晏 {{ n }}</span>
+                  <span class="font-bold text-sm text-gray-900 mb-1">使用者名稱 {{ n }}</span>
                   <p class="text-base leading-relaxed mb-4 text-gray-700">這是第 {{ n }} 則留言，用來測試滾動功能。這把刀的設計太棒了，重心恰到好處！</p>
                   <div class="flex justify-between items-center text-xs text-gray-500">
                     <span>{{23-n}}週 讚 檢舉</span>

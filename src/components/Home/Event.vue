@@ -1,6 +1,6 @@
 <template>
     <RouterLink to="/EventHomePage">
-        <div class="hidden md:block absolute w-[28vw] bottom-[0%] left-1/2 translate-x-[27%] z-30 group">
+        <div class="hidden md:block absolute w-[16vw] bottom-[0%] left-1/2 translate-x-[80%] z-30 group">
             <img
                 src="/Home_img/Event_board.png"
                 alt="活動黑板"
