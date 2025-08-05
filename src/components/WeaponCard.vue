@@ -1,75 +1,81 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue';
-import filledStarIcon from '@/assets/icon/starevaluate1.svg';
-import emptyStarIcon from '@/assets/icon/starevaluate2.svg';
+// --- Script 區塊維持不變 ---
+import { defineProps, ref, computed } from 'vue';
+import fireIcon from '@/assets/icon/fire.svg';
+import moreIcon from '@/assets/icon/more.svg';
+import smallUserIcon from '@/assets/icon/smalluser.svg';
+import smallStarIcon from '@/assets/icon/smallstar.svg';
+import smallStarActiveIcon from '@/assets/icon/smallstar_h.svg';
 
 const props = defineProps({
-    event: {
-        type: Object,
-        required: true,
-    },
+  id: { type: Number, required: true },
+  postImage: { type: String, required: true },
+  userName: { type: String, default: '使用者名稱' },
+  postTitle: { type: String, default: '手裡劍' },
+  isHot: { type: Boolean, default: false },
+  description: { type: String, default: '四爪對稱手裡劍，結構精準銳利，中心圓孔設計，兼具工藝美感與穩定投擲性能。' },
+  likes: { type: Number, default: 82 },
+  stars: { type: Number, default: 24 },
 });
 
-const emit = defineEmits(['view-details']);
+const isStarred = ref(false);
+const localStars = ref(props.stars);
 
-// 【重要】這裡的 event 是來自 props 的 event 物件，不是全域的 event
-function handleDetailsClick() {
-    emit('view-details', props.event.id);
+const smallStarSrc = computed(() => isStarred.value ? smallStarActiveIcon : smallStarIcon);
+
+function toggleStar() {
+  isStarred.value = !isStarred.value;
+  localStars.value += isStarred.value ? 1 : -1;
 }
 </script>
 
 <template>
-    <!-- 
-      【無需修改】
-      這個根 div 已經設定了 w-full，這意味著它的寬度會 100% 填滿其父層容器
-      （也就是我們上面設定的 grid 欄位）。這是非常好的做法，讓元件變得靈活且可重用。
-    -->
-    <div
-        class="flex flex-col w-full bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-
-        <!-- 內容區塊 -->
-        <div class="flex flex-col flex-grow p-6">
-            <div v-if="event.isFeatured" class="mb-3">
-                <span class="inline-block bg-orange-100 text-orange-600 text-xs font-semibold px-3 py-1 rounded-full">
-                    精選活動
-                </span>
-            </div>
-
-            <!-- 
-              【優化建議】
-              h-20 搭配 overflow-hidden 可能會導致文字在不同行數下被截斷的位置不一致。
-              可以考慮使用 line-clamp 插件來限制顯示的行數，效果會更優雅。
-              例如: class="... line-clamp-3" (需安裝 @tailwindcss/line-clamp)
-            -->
-            <h2 class="text-gray-800 text-2xl font-bold leading-tight mb-2 h-20 overflow-hidden text-ellipsis"
-                :title="event.title">
-                {{ event.title }}
-            </h2>
-
-            <!-- 日期與類型區塊-->
-            <div class="text-gray-600 text-base mb-4 space-y-1">
-                <p>{{ event.type }}</p>
-                <p>{{ event.date }}</p>
-            </div>
-
-            <!-- 評分區塊 -->
-            <div class="flex items-center gap-x-2 text-base text-gray-600 mb-6">
-                <div class="flex items-center">
-                    <template v-for="i in 5" :key="i">
-                        <img :src="i <= event.rating ? filledStarIcon : emptyStarIcon" alt="star" class="w-5 h-5" />
-                    </template>
-                </div>
-                <span>{{ event.reviews }} reviews</span>
-            </div>
-
-            <div class="flex-grow"></div>
-
-            <button @click="handleDetailsClick" class="mt-4 w-full bg-[#F2994A] text-white font-semibold rounded-lg text-lg h-14 flex items-center justify-center 
-            transition-colors duration-200 ease-in-out
-            hover:bg-orange-500 
-            focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-75">
-                了解詳情
-            </button>
-        </div>
+  <!-- 
+    【修改點】
+    移除了 md:w-[348px]，只保留 w-full。
+    這讓卡片的寬度完全由父層的 Grid 系統決定，實現了真正的響應式。
+  -->
+  <div class="flex flex-col w-full bg-[#FEFEFE] rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2">
+    
+    <div class="relative">
+      <img :src="postImage" alt="Post Image" class="w-full h-auto object-cover" />
     </div>
+
+    <div class="flex flex-col flex-grow p-5">
+      <div class="flex items-center justify-between mb-[14px]">
+        <router-link to="/ArtisanShowcase" class="flex items-center gap-x-2.5 group">
+          <img :src="smallUserIcon" alt="User" class="w-8 h-8" />
+          <span class="text-[#F2994C] text-lg font-normal leading-[25.2px] tracking-[0.8px] group-hover:underline">
+            {{ userName }}
+          </span>
+        </router-link>
+        <button class="text-gray-400 focus:outline-none focus:ring-0">
+          <img :src="moreIcon" alt="More options" class="w-6 h-6" />
+        </button>
+      </div>
+      <div class="flex items-center gap-x-2 mb-2.5">
+        <h2 class="text-[#F2994A] text-[25.2px] font-medium leading-[35.28px] tracking-[1.12px]">{{ postTitle }}</h2>
+        <img v-if="isHot" :src="fireIcon" alt="Hot Post" class="w-5 h-5" />
+      </div>
+      <p class="text-[#4F4F4F] text-sm font-normal leading-relaxed mb-5">
+        {{ description }}
+      </p>
+      <div class="flex-grow"></div>
+      
+      <div class="flex justify-end items-center gap-x-6 mb-3.5 text-gray-500">
+
+        <div class="flex items-center gap-x-2.5 cursor-pointer" @click="toggleStar">
+          <img :src="smallStarSrc" alt="Stars" class="w-7 h-7" />
+          <span class="w-8 text-left text-base">{{ localStars }}</span>
+        </div>
+      </div>
+      
+      <router-link 
+        :to="`/post/${id}`"
+        class="w-full bg-[#F2994A] text-[#ffffff] font-semibold rounded-lg text-base h-[59px] flex items-center justify-center focus:outline-none focus:ring-0 hover:text-white"
+      >
+        查看更多
+      </router-link>
+    </div>
+  </div>
 </template>
