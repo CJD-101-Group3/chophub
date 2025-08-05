@@ -138,7 +138,8 @@ function submitReport() {
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-40">
+  <!-- ★★★★★ 修改處：在外層背景加上 @click.self="router.back()" ★★★★★ -->
+  <div @click.self="router.back()" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-40 p-0 lg:p-4">
 
     <button @click="router.back()" class="hidden lg:block absolute top-4 right-4 text-white z-50 p-2 rounded-full bg-black bg-opacity-50 hover:bg-opacity-75 transition">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -146,7 +147,8 @@ function submitReport() {
       </svg>
     </button>
 
-    <div class="w-full h-full lg:h-[90vh] lg:w-[90vw] lg:max-w-[1600px] flex flex-col lg:flex-row shadow-2xl">
+    <!-- ★★★★★ 修改處：在卡片容器加上 lg:rounded-2xl 和 overflow-hidden ★★★★★ -->
+    <div class="w-full h-full lg:h-[90vh] lg:w-[90vw] lg:max-w-[1600px] flex flex-col lg:flex-row shadow-2xl lg:rounded-2xl overflow-hidden">
       
       <div class="hidden lg:flex lg:w-7/12 bg-black items-center justify-center">
         <img :src="post.imageUrl" alt="Post Image" class="max-h-full max-w-full object-contain">
@@ -154,13 +156,11 @@ function submitReport() {
 
       <div class="w-full h-full lg:w-5/12 flex flex-col bg-white dark:bg-zinc-900">
         
-        <!-- ★★★★★ 修改處：手機版 Header 加入勳章 ★★★★★ -->
         <header class="p-4 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-700 lg:hidden">
           <div class="flex items-center gap-3">
             <img :src="post.author.avatar" alt="Author Avatar" class="w-8 h-8 rounded-full object-cover">
             <div class="flex items-center gap-1.5">
               <span class="font-bold text-zinc-800 dark:text-zinc-100">{{ post.author.name }}</span>
-              <!-- 勳章渲染 -->
               <img v-for="(badge, index) in post.author.badges" :key="index" :src="badge" alt="Badge" class="w-5 h-5 object-contain">
             </div>
           </div>
@@ -173,12 +173,10 @@ function submitReport() {
         
         <div class="flex-grow overflow-y-auto">
           <div class="p-4 lg:p-6">
-            <!-- ★★★★★ 修改處：桌面版 Header 加入勳章 ★★★★★ -->
             <div class="hidden lg:flex items-center gap-3 mb-4">
               <img :src="post.author.avatar" alt="Author Avatar" class="w-10 h-10 rounded-full object-cover">
               <div class="flex items-center gap-1.5">
                 <span class="font-bold text-zinc-800 dark:text-zinc-100">{{ post.author.name }}</span>
-                <!-- 勳章渲染 -->
                 <img v-for="(badge, index) in post.author.badges" :key="index" :src="badge" alt="Badge" class="w-5 h-5 object-contain">
               </div>
             </div>
