@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { getPublicImg } from '@/utils/getPublicImg'; // 
+
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 import Basebutton from '../components/Basebutton.vue';
@@ -31,7 +33,6 @@ const menuItems = ref([
   { name: '會員資訊', href: '/UserProfile' },
   { name: '貼文相關', href: '/PostActivity' },
   { name: '收藏相關', href: '/UserCollections' },
-  // { name: '我的活動', href: '/MyActivities' }, // <--- 已移除
   { name: '其他設定', href: '/OtherSettings' },
 ]);
 
@@ -45,7 +46,7 @@ const memberInfo = ref({
   gender: '男生',
   joinDate: '2025/05/20',
   location: '加州',
-  avatarUrl: '/src/assets/users/userp.png',
+  avatarUrl: getPublicImg('users/userp.png'), // 
 });
 
 // 跳轉到編輯頁面的函式
@@ -648,7 +649,7 @@ const goToApplicationGuide = () => {
           <img 
             :src="memberInfo.avatarUrl" 
             alt="User Avatar" 
-            class="w-64 h-64 lg:w-80 lg:h-80 object-cover rounded-full shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]"
+            class="w-64 h-64 lg:w-80 lg:h-80 object-cover rounded-full border-4 border-white"
           >
         </div>
 

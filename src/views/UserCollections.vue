@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { getPublicImg } from '@/utils/getPublicImg';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 
@@ -32,25 +33,25 @@ const menuItems = ref([
 // 會員資料
 const memberInfo = ref({
   name: '露比匠',
-  avatarUrl: '/src/assets/users/userp.png',
+  avatarUrl: getPublicImg('users/userp.png'),
 });
 
 // 收藏的武器資料
 const collectedWeapons = ref([
-  { id: 1, imageUrl: '/src/assets/weapons/weapon1.png', link: '/weapon/1' },
-  { id: 2, imageUrl: '/src/assets/weapons/weapon2.png', link: '/weapon/2' },
-  { id: 3, imageUrl: '/src/assets/weapons/weapon3.png', link: '/weapon/3' },
-  { id: 4, imageUrl: '/src/assets/weapons/weapon4.png', link: '/weapon/4' },
-  { id: 5, imageUrl: '/src/assets/weapons/weapon5.png', link: '/weapon/5' },
+ { id: 1, imageUrl: getPublicImg('weapons/weapon1.png'), link: '/weapon/1' },
+  { id: 2, imageUrl: getPublicImg('weapons/weapon2.png'), link: '/weapon/2' },
+  { id: 3, imageUrl: getPublicImg('weapons/weapon3.png'), link: '/weapon/3' },
+  { id: 4, imageUrl: getPublicImg('weapons/weapon4.png'), link: '/weapon/4' },
+  { id: 5, imageUrl: getPublicImg('weapons/weapon5.png'), link: '/weapon/5' },
 ]);
 
 // 收藏的徽章資料
 const collectedBadges = ref([
-  { id: 1, imageUrl: '/src/assets/badges/badge1.png', name: '黑鐵級刀匠', isEquipped: true },
-  { id: 2, imageUrl: '/src/assets/badges/badge2.png', name: '赤火初煉者', isEquipped: true },
-  { id: 3, imageUrl: '/src/assets/badges/badge3.png', name: '登入王', isEquipped: true },
-  { id: 4, imageUrl: '/src/assets/badges/badge4.png', name: '社群新星', isEquipped: false },
-  { id: 5, imageUrl: '/src/assets/badges/badge5.png', name: '新手村村民', isEquipped: false },
+  { id: 1, imageUrl: getPublicImg('badges/badge1.png'), name: '黑鐵級刀匠', isEquipped: true },
+  { id: 2, imageUrl: getPublicImg('badges/badge2.png'), name: '赤火初煉者', isEquipped: true },
+  { id: 3, imageUrl: getPublicImg('badges/badge3.png'), name: '登入王', isEquipped: true },
+  { id: 4, imageUrl: getPublicImg('badges/badge4.png'), name: '社群新星', isEquipped: false },
+  { id: 5, imageUrl: getPublicImg('badges/badge5.png'), name: '新手村村民', isEquipped: false },
 ]);
 
 const toggleEquip = (badgeId) => {

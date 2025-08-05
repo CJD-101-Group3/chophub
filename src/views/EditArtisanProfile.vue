@@ -1,20 +1,22 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { getPublicImg } from '@/utils/getPublicImg'; // 
+
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 // 引入圖片資源
-import userp from '../assets/users/userp.png';
-import selectedWeaponImage from '../assets/weapons/selected-weapon.png';
-import weapon2 from '../assets/weapons/weapon2.png';
-import weapon3 from '../assets/weapons/weapon3.png';
-import weapon4 from '../assets/weapons/weapon4.png';
-import weapon5 from '../assets/weapons/weapon5.png';
-import badge1 from '../assets/badges/badge1.png';
-import badge2 from '../assets/badges/badge2.png';
-import badge3 from '../assets/badges/badge3.png';
-import badge4 from '../assets/badges/badge4.png';
-import badge5 from '../assets/badges/badge5.png';
+// import userp from '../assets/users/userp.png';
+// import selectedWeaponImage from '../assets/weapons/selected-weapon.png';
+// import weapon2 from '../assets/weapons/weapon2.png';
+// import weapon3 from '../assets/weapons/weapon3.png';
+// import weapon4 from '../assets/weapons/weapon4.png';
+// import weapon5 from '../assets/weapons/weapon5.png';
+// import badge1 from '../assets/badges/badge1.png';
+// import badge2 from '../assets/badges/badge2.png';
+// import badge3 from '../assets/badges/badge3.png';
+// import badge4 from '../assets/badges/badge4.png';
+// import badge5 from '../assets/badges/badge5.png';
 
 
 
@@ -51,7 +53,7 @@ const countries = ref([
 
 const memberInfo = ref({
   name: '露比匠',
-  avatarUrl: userp,
+  avatarUrl: getPublicImg('users/userp.png'), // 
   email: 'rubi520@gmail.com',
   password: 'r******4',
   backupEmail: 'rubija@gmail.com',
@@ -73,7 +75,13 @@ const memberInfo = ref({
 const profileForm = reactive({
   ...memberInfo.value,
   password: '',
-  featuredWeaponUrls: [selectedWeaponImage, weapon2, weapon3, weapon4, weapon5],
+  featuredWeaponUrls: [
+    getPublicImg('weapons/selected-weapon.png'),
+    getPublicImg('weapons/weapon2.png'),
+    getPublicImg('weapons/weapon3.png'),
+    getPublicImg('weapons/weapon4.png'),
+    getPublicImg('weapons/weapon5.png')
+  ],
   socialLinks: [
     { id: 1, platform: 'YOUTUBE', handle: '@Hattori_Hanzo5777' },
     { id: 2, platform: 'X', handle: '@Hattori_Hanzo5777' },
@@ -84,11 +92,11 @@ const profileForm = reactive({
 });
 
 const allBadges = ref([
-  { id: 1, imageUrl: badge1, name: '黑鐵級刀匠' },
-  { id: 2, imageUrl: badge2, name: '赤火初煉者' },
-  { id: 3, imageUrl: badge3, name: '登入王' },
-  { id: 4, imageUrl: badge4, name: '社群新星' },
-  { id: 5, imageUrl: badge5, name: '新手村村民' },
+  { id: 1, imageUrl: getPublicImg('badges/badge1.png'), name: '黑鐵級刀匠' },
+  { id: 2, imageUrl: getPublicImg('badges/badge2.png'), name: '赤火初煉者' },
+  { id: 3, imageUrl: getPublicImg('badges/badge3.png'), name: '登入王' },
+  { id: 4, imageUrl: getPublicImg('badges/badge4.png'), name: '社群新星' },
+  { id: 5, imageUrl: getPublicImg('badges/badge5.png'), name: '新手村村民' },
 ]);
 
 const addSocialLink = () => {
@@ -673,7 +681,7 @@ const removeSocialLink = (index) => {
         <div class="space-y-8 max-w-2xl mx-auto">
           
           <div class="relative w-72 h-72 mx-auto group">
-            <img :src="profileForm.avatarUrl" alt="User Avatar" class="w-full h-full object-cover rounded-full shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
+            <img :src="profileForm.avatarUrl" alt="User Avatar" class="w-full h-full object-cover rounded-full border-4 border-white">
             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 rounded-full flex items-center justify-center gap-4 p-2 transition-opacity duration-300">
               <button class="text-sm bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-md transition-all opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 duration-300">圖片上傳</button>
             </div>
@@ -827,15 +835,15 @@ const removeSocialLink = (index) => {
   height: 8px;
 }
 .overflow-x-auto::-webkit-scrollbar-track {
-  background: #e2e9ef;
+  background: #FFFFFF;
   border-radius: 10px;
 }
 .overflow-x-auto::-webkit-scrollbar-thumb {
-  background-color: #8A9BCE;
+  background-color: #F2994A;
   border-radius: 10px;
-  border: 2px solid #e2e9ef;
+  border: 2px solid #FFFFFF;
 }
 .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-  background-color: #7385b7;
+  background-color: #F2994A;
 }
 </style>

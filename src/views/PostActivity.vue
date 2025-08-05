@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue';
+import { getPublicImg } from '@/utils/getPublicImg'; // 引入路徑輔助函數
+
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 
@@ -27,7 +29,7 @@ const menuItems = ref([
 
 const memberInfo = ref({
   name: '露比匠',
-  avatarUrl: '/src/assets/users/userp.png',
+  avatarUrl: getPublicImg('users/userp.png'),
 });
 
 // --- 此頁面專用的模擬資料 ---
