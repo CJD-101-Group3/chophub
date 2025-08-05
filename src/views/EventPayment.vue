@@ -2,6 +2,7 @@
 import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
 import GeneralButton from '../components/GeneralButton.vue'
+import { getPublicImg } from '@/utils/getPublicImg'
 import { useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
 
@@ -48,8 +49,7 @@ function handleQuantityInput(event) {
   }
 }
 
-const img1 = `${import.meta.env.BASE_URL}events/Khukuri.png`;
-
+const png1 = getPublicImg('events/Khukuri.png')
 
 </script>
 
@@ -85,7 +85,7 @@ const img1 = `${import.meta.env.BASE_URL}events/Khukuri.png`;
 
           <!-- 圖片容器 -->
           <div class="hidden md:flex items-center justify-center p-4">
-            <img :src="img1" alt="尼泊爾彎刀"
+            <img :src="png1" alt="尼泊爾彎刀"
               class="w-full h-auto object-cover rounded-md max-h-[250px] opacity-90 shadow-md">
           </div>
         </div>

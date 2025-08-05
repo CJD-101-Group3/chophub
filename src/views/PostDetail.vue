@@ -11,12 +11,10 @@ import smallStarActiveIcon from '@/assets/icon/smallstar_h.svg';
 import messagesIcon from '@/assets/icon/postshare.svg';
 import shareIcon from '@/assets/icon/postshare.svg';
 
-// ★★★★★ 新增：匯入勳章圖片 ★★★★★
-// 請確保圖片已放置在 src/assets/badges/ 資料夾
+// 匯入勳章圖片
 import badge1 from '@/assets/icon/badge1.png';
 import badge2 from '@/assets/icon/badge2.png';
 import badge3 from '@/assets/icon/badge3.png';
-// ★★★★★ END ★★★★★
 
 
 // --- STATE MANAGEMENT ---
@@ -29,7 +27,6 @@ const post = ref({
   author: {
     name: '中壢彭于晏',
     avatar: 'https://i.pravatar.cc/150?u=pengyuyan',
-    // ★★★★★ 新增：將勳章加入 author 物件 ★★★★★
     badges: [badge1, badge2, badge3],
   },
   title: '【刀鋒淬鍊記】',
@@ -44,9 +41,10 @@ const isLiked = ref(false);
 const isSaved = ref(false);
 
 // --- Comments Data (simulated) ---
+// ★★★ 為每則留言新增 isLikedByUser 狀態 ★★★
 const comments = ref([
-    { id: 1, author: { name: '中壢彭于晏', avatar: 'https://i.pravatar.cc/150?u=pengyuyan' }, content: '武器評價文字武器評價文字...', likes: 82, time: '23週' },
-    { id: 2, author: { name: '館長', avatar: 'https://i.pravatar.cc/150?u=chang' }, content: '這把看起來不錯！', likes: 150, time: '2週' }
+    { id: 1, author: { name: '中壢彭于晏', avatar: 'https://i.pravatar.cc/150?u=pengyuyan' }, content: '武器評價文字武器評價文字...', likes: 82, time: '23週', isLikedByUser: false },
+    { id: 2, author: { name: '館長', avatar: 'https://i.pravatar.cc/150?u=chang' }, content: '這把看起來不錯！', likes: 150, time: '2週', isLikedByUser: true } // 假設這則預設為已按讚
 ]);
 
 // --- New Comment State ---
@@ -77,6 +75,14 @@ function toggleSave() {
   post.value.saves += isSaved.value ? 1 : -1;
 }
 
+// ★★★ 新增：處理留言按讚的函式 ★★★
+function toggleCommentLike(comment) {
+  // 切換指定留言的按讚狀態
+  comment.isLikedByUser = !comment.isLikedByUser;
+  // 根據新的狀態增減按讚數
+  comment.likes += comment.isLikedByUser ? 1 : -1;
+}
+
 function triggerFileInput() {
   fileInput.value.click();
 }
@@ -101,7 +107,8 @@ function postComment() {
     content: newCommentText.value,
     imageUrl: newCommentImage.value,
     likes: 0,
-    time: '剛剛'
+    time: '剛剛',
+    isLikedByUser: false // ★★★ 新增留言時也要有初始狀態 ★★★
   };
 
   comments.value.unshift(newComment);
@@ -118,7 +125,7 @@ function openReportModal() {
 
 function closeReportModal() {
   showReportModal.value = false;
-  reportReason.value = ''; // 關閉時清空內容
+  reportReason.value = '';
 }
 
 function submitReport() {
@@ -126,7 +133,6 @@ function submitReport() {
     alert('請輸入檢舉事由。');
     return;
   }
-  // 在這裡，您可以將檢舉內容送到後端
   console.log('檢舉已送出:', {
     postId: post.value.id,
     reason: reportReason.value
@@ -138,7 +144,7 @@ function submitReport() {
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-40">
+  <div @click.self="router.back()" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-40 p-0 lg:p-4">
 
     <button @click="router.back()" class="hidden lg:block absolute top-4 right-4 text-white z-50 p-2 rounded-full bg-black bg-opacity-50 hover:bg-opacity-75 transition">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -146,7 +152,7 @@ function submitReport() {
       </svg>
     </button>
 
-    <div class="w-full h-full lg:h-[90vh] lg:w-[90vw] lg:max-w-[1600px] flex flex-col lg:flex-row shadow-2xl">
+    <div class="w-full h-full lg:h-[90vh] lg:w-[90vw] lg:max-w-[1600px] flex flex-col lg:flex-row shadow-2xl lg:rounded-2xl overflow-hidden">
       
       <div class="hidden lg:flex lg:w-7/12 bg-black items-center justify-center">
         <img :src="post.imageUrl" alt="Post Image" class="max-h-full max-w-full object-contain">
@@ -154,13 +160,11 @@ function submitReport() {
 
       <div class="w-full h-full lg:w-5/12 flex flex-col bg-white dark:bg-zinc-900">
         
-        <!-- ★★★★★ 修改處：手機版 Header 加入勳章 ★★★★★ -->
         <header class="p-4 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-700 lg:hidden">
           <div class="flex items-center gap-3">
             <img :src="post.author.avatar" alt="Author Avatar" class="w-8 h-8 rounded-full object-cover">
             <div class="flex items-center gap-1.5">
               <span class="font-bold text-zinc-800 dark:text-zinc-100">{{ post.author.name }}</span>
-              <!-- 勳章渲染 -->
               <img v-for="(badge, index) in post.author.badges" :key="index" :src="badge" alt="Badge" class="w-5 h-5 object-contain">
             </div>
           </div>
@@ -173,12 +177,10 @@ function submitReport() {
         
         <div class="flex-grow overflow-y-auto">
           <div class="p-4 lg:p-6">
-            <!-- ★★★★★ 修改處：桌面版 Header 加入勳章 ★★★★★ -->
             <div class="hidden lg:flex items-center gap-3 mb-4">
               <img :src="post.author.avatar" alt="Author Avatar" class="w-10 h-10 rounded-full object-cover">
               <div class="flex items-center gap-1.5">
                 <span class="font-bold text-zinc-800 dark:text-zinc-100">{{ post.author.name }}</span>
-                <!-- 勳章渲染 -->
                 <img v-for="(badge, index) in post.author.badges" :key="index" :src="badge" alt="Badge" class="w-5 h-5 object-contain">
               </div>
             </div>
@@ -248,10 +250,27 @@ function submitReport() {
                   <span class="ml-2 text-zinc-700 dark:text-zinc-300">{{ comment.content }}</span>
                 </p>
                 <img v-if="comment.imageUrl" :src="comment.imageUrl" class="mt-2 rounded-lg max-w-xs object-cover" alt="Comment image">
-                <div class="flex items-center text-xs text-zinc-500 dark:text-zinc-400 mt-2 gap-3">
+                
+                <!-- ★★★ 更新留言下方的互動按鈕 ★★★ -->
+                <div class="flex items-center text-xs text-zinc-500 dark:text-zinc-400 mt-2 gap-4">
                   <span>{{ comment.time }}</span>
-                  <button class="font-semibold">讚</button>
+                  
+                  <!-- 動態按讚按鈕 -->
+                  <button 
+                    @click="toggleCommentLike(comment)" 
+                    class="flex items-center gap-1 font-semibold transition-colors"
+                    :class="comment.isLikedByUser ? 'text-blue-600' : 'hover:text-zinc-900 dark:hover:text-zinc-100'"
+                  >
+                    <img 
+                      :src="comment.isLikedByUser ? smallLikeActiveIcon : smallLikeIcon" 
+                      class="h-4 w-4" 
+                      alt="Like"
+                    />
+                    <!-- 根據按讚數顯示文字或數字 -->
+                    <span>{{ comment.likes > 0 ? comment.likes : '讚' }}</span>
+                  </button>
                 </div>
+
               </div>
             </div>
           </div>

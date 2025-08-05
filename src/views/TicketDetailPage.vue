@@ -1,30 +1,21 @@
 <script setup>
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
+import { getPublicImg } from '@/utils/getPublicImg'
 import { ref, computed } from 'vue';
 import QrcodeVue from 'qrcode.vue';
-
-const eventsWithFullImagePaths = computed(() => {
-    return events.value.map(event => {
-        const newEvent = { ...event };
-
-        // 檢查圖片路徑是否為一個完整的 URL (以 http 開頭)
-        // 如果不是，且路徑存在，我們就為它加上 BASE_URL 前綴
-        if (newEvent.image && !newEvent.image.startsWith('http')) {
-            newEvent.image = `${import.meta.env.BASE_URL}${newEvent.image.startsWith('/') ? newEvent.image.substring(1) : newEvent.image}`;
-        }
-        return newEvent;
-    });
-});
-
 
 // --- 1. 模擬資料庫 ---
 // 我們不再需要 API，所以直接在前端模擬所有需要的資料。
 
+const eimg1 = getPublicImg('events/burning-coal.jpg')
+const eimg2 = getPublicImg('events/forgingseafood-and-man.png')
+
+
 // 模擬活動資料
 const mockEventsDatabase = {
-    '1': { id: 1, title: '【鍛造群俠會】刀匠線上交流', dateTime: '2025/7/23(三) 10:00am', imageUrl: '/events/burning-coal.jpg', ticketCount: 1, eventType: '線上活動' },
-    '2': { id: 2, title: '【匠魂燒鍛】小型鍛刀入門體驗', dateTime: '2024/5/15(五) 14:00pm', imageUrl: '/events/forgingseafood-and-man.png', ticketCount: 2, eventType: '實體工作坊' },
+    '1': { id: 1, title: '【鍛造群俠會】刀匠線上交流', dateTime: '2025/7/23(三) 10:00am', imageUrl: eimg1, ticketCount: 1, eventType: '線上活動' },
+    '2': { id: 2, title: '【匠魂燒鍛】小型鍛刀入門體驗', dateTime: '2024/5/15(五) 14:00pm', imageUrl: eimg2, ticketCount: 2, eventType: '實體工作坊' },
 };
 
 // 模擬已登入的使用者資料 (因為沒有後端，所以也必須模擬)

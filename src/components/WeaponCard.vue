@@ -42,6 +42,7 @@ function toggleStar() {
     </div>
 
     <div class="flex flex-col flex-grow p-5">
+      <!-- ... 卡片內部其他內容維持不變 ... -->
       <div class="flex items-center justify-between mb-[14px]">
         <router-link to="/ArtisanShowcase" class="flex items-center gap-x-2.5 group">
           <img :src="smallUserIcon" alt="User" class="w-8 h-8" />

@@ -5,21 +5,10 @@ import { ref, computed } from 'vue';
 import EventInfoCard from '@/components/EventInfoCard.vue';
 import RegisterBanner from '@/components/RegisterBanner.vue';
 import GeneralButton from '../components/GeneralButton.vue';
+import { getPublicImg } from '@/utils/getPublicImg'
 import { useRouter } from 'vue-router';
 
-const eventsWithFullImagePaths = computed(() => {
-   return events.value.map(event => {
-      // 建立一個事件物件的副本，避免修改原始物件
-      const newEvent = { ...event };
-
-      // 檢查圖片路徑是否為一個完整的 URL (以 http 開頭)
-      // 如果不是，且路徑存在，我們就為它加上 BASE_URL 前綴
-      if (newEvent.image && !newEvent.image.startsWith('http')) {
-         newEvent.image = `${import.meta.env.BASE_URL}${newEvent.image.startsWith('/') ? newEvent.image.substring(1) : newEvent.image}`;
-      }
-      return newEvent;
-   });
-});
+const png01 = getPublicImg('events/katana-exhibition.png')
 
 const eventData = ref({
    title: '【藏鋒夜宴】兵器藏家限定導覽',
@@ -27,7 +16,7 @@ const eventData = ref({
    location: '冷兵器體驗館（台北市大同區火鍛街 88 號）',
    organizer: '鋼火典藏會',
    spotsLeft: 5,
-   imageUrl: '/events/katana-exhibition.png',
+   imageUrl: png01,
    imageAlt: '兵器展'
 });
 
@@ -58,7 +47,7 @@ const totalPrice = computed(() => {
 
 
 const suggestedEvents = ref([
-   {
+{
       id: 2,
       title: '【虛擬兵器匠】線上設計你的奇幻刀劍',
       type: '線上活動',
@@ -67,7 +56,6 @@ const suggestedEvents = ref([
       rating: 4,
       reviews: 76,
       isFeatured: true,
-      image: '/events/knife-exhibition.png'
    },
    {
       id: 3,
@@ -78,7 +66,6 @@ const suggestedEvents = ref([
       rating: 4,
       reviews: 82,
       isFeatured: false,
-      image: ''
    },
    {
       id: 4,
@@ -89,7 +76,6 @@ const suggestedEvents = ref([
       rating: 4,
       reviews: 64,
       isFeatured: true,
-      image: '/events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg'
    },
 ]);
 

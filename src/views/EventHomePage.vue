@@ -5,6 +5,7 @@ import GeneralButton from '../components/GeneralButton.vue';
 import DropDownFilter from '@/components/DropDownFilter.vue';
 import EventCard from '@/components/EventCard.vue';
 import Pagination from '@/components/Pagination.vue';
+import { getPublicImg } from '@/utils/getPublicImg'
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -14,6 +15,7 @@ const router = useRouter();
 function goToMyEvents() {
    router.push('/MyEvents');
 }
+
 
 // --- 下拉選單的選項定義 ---
 
@@ -60,9 +62,14 @@ const selectedType = ref('all');
 const selectedTime = ref('default');
 const selectedLocation = ref('all');
 
-const images = {
-   banner: `${import.meta.env.BASE_URL}events/hero-background.jpg`,
-};
+
+const banner = getPublicImg('events/hero-background.jpg')
+const image1 = getPublicImg('events/littlenknife.jpg');
+const image2 = getPublicImg('events/knife-exhibition.png');
+const image3 = getPublicImg('events/onlineevents.jpg');
+const image4 = getPublicImg('events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg');
+const image5 = getPublicImg('events/forgingman.png');
+const image6 = getPublicImg('events/viking-forges-weapons-swords-smithy-man-warrior-s-clothes-is-smithy.jpg');
 
 
 // --- 原始活動資料 ---
@@ -76,7 +83,7 @@ const events = ref([
       rating: 5,
       reviews: 121,
       isFeatured: true,
-      image: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?q=80&w=1887'
+      image: image1
    },
    {
       id: 2,
@@ -87,7 +94,7 @@ const events = ref([
       rating: 4,
       reviews: 76,
       isFeatured: true,
-      image: '/events/knife-exhibition.png'
+      image: image2
    },
    {
       id: 3,
@@ -98,7 +105,7 @@ const events = ref([
       rating: 4,
       reviews: 82,
       isFeatured: false,
-      image: ''
+      image: image3
    },
    {
       id: 4,
@@ -109,7 +116,7 @@ const events = ref([
       rating: 4,
       reviews: 64,
       isFeatured: true,
-      image: '/events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg'
+      image: image4
    },
    {
       id: 5,
@@ -120,7 +127,7 @@ const events = ref([
       rating: 5,
       reviews: 97,
       isFeatured: false,
-      image: '/events/forgingman.png'
+      image: image5
    },
    {
       id: 6,
@@ -131,28 +138,14 @@ const events = ref([
       rating: 4.5,
       reviews: 43,
       isFeatured: false,
-      image: '/events/viking-forges-weapons-swords-smithy-man-warrior-s-clothes-is-smithy.jpg'
+      image: image6
    }
 ]);
 
-// --- 新增的計算屬性 ---
-const eventsWithFullImagePaths = computed(() => {
-   return events.value.map(event => {
-      // 建立一個事件物件的副本，避免修改原始物件
-      const newEvent = { ...event };
-
-      // 檢查圖片路徑是否為一個完整的 URL (以 http 開頭)
-      // 如果不是，且路徑存在，我們就為它加上 BASE_URL 前綴
-      if (newEvent.image && !newEvent.image.startsWith('http')) {
-         newEvent.image = `${import.meta.env.BASE_URL}${newEvent.image.startsWith('/') ? newEvent.image.substring(1) : newEvent.image}`;
-      }
-      return newEvent;
-   });
-});
 
 // --- 核心篩選邏輯 ---
 const filteredEvents = computed(() => {
-   let result = eventsWithFullImagePaths.value;
+   let result = events.value;
 
    if (selectedType.value !== 'all') {
       result = result.filter(event => event.type === selectedType.value);
@@ -190,7 +183,7 @@ console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
    <Theheader />
    <main class="bg-[#282828] flex-1 flex flex-col items-center overflow-y-auto space-y-4 md:space-y-6">
       <div class="relative">
-         <img :src="images.banner" alt="鑄造師" class="block z-index-[-1] opacity-[60%]" />
+         <img :src="banner" alt="鑄造師" class="block z-index-[-1] opacity-[60%]" />
          <p class="absolute top-[40%] left-[13%] text-[#fff] text-xl font-bold tracking-widest md:text-4xl lg:text-6xl">
             冷鋼烈火 ·
             共赴匠魂之旅</p>

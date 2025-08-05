@@ -19,9 +19,11 @@ const tabs = ref([
 const activeTab = ref('upcoming');
 
 const image1 = getPublicImg('events/burning-coal.jpg')
-const image2 = getPublicImg('filename')
-const image3 = getPublicImg('filename')
-const image4 = getPublicImg('filename')
+const image2 = getPublicImg('events/forgingseafood-and-man.png')
+const image3 = getPublicImg('events/katana-exhibition.png')
+const image4 = getPublicImg('events/forgingman.png')
+const image5 = getPublicImg('events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg')
+
 
 
 // --- MOCK DATA (優化的核心) ---
@@ -32,18 +34,18 @@ const allActivities = ref([
     id: 1,
     title: '【鍛造群俠會】刀匠線上交流',
     dateTime: '2025/7/23(三) 10:00am',
-    imageUrl: '/events/burning-coal.jpg',
+    imageUrl: image1,
     price: 500,
     ticketCount: 1,
     eventType: '線上活動',
     status: 'upcoming',
-    isFavorited: true // --- NEW: 新增收藏狀態 ---
+    isFavorited: true
   },
   {
     id: 2,
     title: '【匠魂燒鍛】小型鍛刀入門體驗',
     dateTime: '2024/5/15(五) 14:00pm',
-    imageUrl: '/events/forgingseafood-and-man.png',
+    imageUrl: image2,
     price: 1200,
     ticketCount: 2,
     eventType: '實體工作坊',
@@ -54,7 +56,7 @@ const allActivities = ref([
     id: 3,
     title: '【工藝知識講堂】冷兵器構造全解析',
     dateTime: '2024/4/01(一) 19:30pm',
-    imageUrl: '/events/katana-exhibition.png',
+    imageUrl: image3,
     price: 500,
     ticketCount: 1,
     eventType: '線上課程',
@@ -65,11 +67,22 @@ const allActivities = ref([
     id: 4,
     title: '【刀劍研磨所】親手拋光你的第一把刀',
     dateTime: '2025/9/01(一) 19:30pm',
-    imageUrl: '/events/forgingman.png',
+    imageUrl: image4,
     price: 1100,
     ticketCount: 1,
     eventType: '實體工作坊',
     status: 'cancelled',
+    isFavorited: true
+  },
+  {
+    id: 5,
+    title: '匠人現場 - 劍柄木雕實作坊',
+    dateTime: '2025/8/12(二) 13:30PM',
+    imageUrl: image5,
+    price: 2800,
+    ticketCount: 1,
+    eventType: '實體活動',
+    status: 'upcoming',
     isFavorited: true
   },
 ]);
