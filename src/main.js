@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
+import { createPinia } from 'pinia' // 1. 引入 createPinia
 import './assets/tailwind.css';
 import router from './router'
 import Particles from "@tsparticles/vue3";
@@ -8,7 +9,8 @@ import { loadSlim } from "@tsparticles/slim"; // if you are going to use `loadSl
 
 
 const app = createApp(App)
-
+const pinia = createPinia() // 2. 建立 Pinia 实例
+app.use(pinia) // 3. 使用 Pinia
 
 app.use(router)
 app.mount('#app')

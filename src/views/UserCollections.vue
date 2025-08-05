@@ -38,11 +38,11 @@ const memberInfo = ref({
 
 // 收藏的武器資料
 const collectedWeapons = ref([
- { id: 1, imageUrl: getPublicImg('weapons/weapon1.png'), link: '/weapon/1' },
-  { id: 2, imageUrl: getPublicImg('weapons/weapon2.png'), link: '/weapon/2' },
-  { id: 3, imageUrl: getPublicImg('weapons/weapon3.png'), link: '/weapon/3' },
-  { id: 4, imageUrl: getPublicImg('weapons/weapon4.png'), link: '/weapon/4' },
-  { id: 5, imageUrl: getPublicImg('weapons/weapon5.png'), link: '/weapon/5' },
+ { id: 1, imageUrl: getPublicImg('weapons/w1.png'), link: '/weapon/1' },
+  { id: 2, imageUrl: getPublicImg('weapons/w2.png'), link: '/weapon/2' },
+  { id: 3, imageUrl: getPublicImg('weapons/w3.png'), link: '/weapon/3' },
+  { id: 4, imageUrl: getPublicImg('weapons/w4.png'), link: '/weapon/4' },
+  { id: 5, imageUrl: getPublicImg('weapons/w5.png'), link: '/weapon/5' },
 ]);
 
 // 收藏的徽章資料

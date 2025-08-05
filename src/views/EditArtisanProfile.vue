@@ -81,11 +81,11 @@ const profileForm = reactive({
   ...memberInfo.value,
   password: '',
   featuredWeaponUrls: [
-    getPublicImg('weapons/selected-weapon.png'),
-    getPublicImg('weapons/weapon2.png'),
-    getPublicImg('weapons/weapon3.png'),
-    getPublicImg('weapons/weapon4.png'),
-    getPublicImg('weapons/weapon5.png')
+    getPublicImg('weapons/w1.png'),
+    getPublicImg('weapons/w2.png'),
+    getPublicImg('weapons/w3.png'),
+    getPublicImg('weapons/w4.png'),
+    getPublicImg('weapons/w5.png')
   ],
   socialLinks: [
     { id: 1, platform: 'YOUTUBE', handle: '@Hattori_Hanzo5777' },
