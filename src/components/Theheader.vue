@@ -8,7 +8,6 @@ import message from '@/assets/icon/message.svg'
 import weapon from '@/assets/icon/sword.svg'
 import calendar from '@/assets/icon/calendar.svg'
 import aboutus from '@/assets/icon/aboutus.svg'
-
 const isOpen = ref(false)
 const userStore = useUserStore(); // 2. 建立 user store 的實例
 
@@ -65,7 +64,7 @@ const handleLogout = () => {
                       to="/UserProfile"
                       class="flex items-center gap-3 text-white hover:text-orange-400 p-2 rounded-full transition-colors"
                     >
-                      <!-- <img :src="userStore.userInfo.avatarUrl" alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-orange-400"> -->
+                      <img src="/users/userp.png"  alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-orange-400">
                       <span class="font-semibold text-xl transition-colors">{{ userStore.userInfo.name }}</span>
                     </RouterLink>
                     <!-- 您也可以在這裡放一個登出按鈕，如果設計需要的話 -->
