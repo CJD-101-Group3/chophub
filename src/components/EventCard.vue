@@ -1,97 +1,45 @@
-<script setup>
-import { defineProps, ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
-
-// --- 匯入所有圖示 ---
-import bigStarIcon from '@/assets/icon/bigstar.svg';
-import bigStarActiveIcon from '@/assets/icon/bigstar_h.svg';
-import filledStarIcon from '@/assets/icon/starevaluate1.svg';
-import emptyStarIcon from '@/assets/icon/starevaluate2.svg';
-import defaultEventImage from '@/assets/icon/activity1.png';
-
-// --- 定義 Props ---
-const props = defineProps({
-  id: { type: [String, Number], required: true },
-  eventImage: { type: String, default: '' },
-  isFeatured: { type: Boolean, default: false },
-  title: { type: String, default: '鍛造群俠會 - 刀匠線上交流' },
-  eventType: { type: String, default: '線上活動' },
-  eventDate: { type: String, default: '2025/7/23(三) 10:00AM' },
-  rating: { type: Number, default: 4 },
-  reviewCount: { type: Number, default: 82 },
-});
-console.log(`卡片標題: '${props.title}', 收到的圖片 prop:`, props.eventImage);
-
-
-// --- 收藏狀態 ---
-const isFavorited = ref(false);
-const favoriteStarSrc = computed(() => {
-  return isFavorited.value ? bigStarActiveIcon : bigStarIcon;
-});
-function toggleFavorite() {
-  isFavorited.value = !isFavorited.value;
-}
-
-// --- 計算圖片來源 ---
-const imageSource = computed(() => {
-  return props.eventImage || defaultEventImage;
-});
-
-// --- 點擊跳轉詳情頁 ---
-const router = useRouter();
-function goToDetail() {
-  router.push(`/event/${props.id}`);
-}
-
-</script>
-
 <template>
-  <div class="flex flex-col w-full md:w-[387px] bg-[#FEFEFE] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2 shadow-[15px_15px_13px_rgba(255,255,255,0.5)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] md:transition-shadow">
-    
-    <div class="relative">
-      <img :src="imageSource" alt="Event Image" class="w-full h-[215px] object-cover" />
-      
-      <!-- 
-        【修改】將星星圖示尺寸從 w-14 h-14 (56px) 調整為 w-10 h-10 (40px)
-      -->
-      <img
-        :src="favoriteStarSrc"
-        alt="Featured Event"
-        class="absolute top-5 right-5 w-10 h-10 cursor-pointer"
-        @click="toggleFavorite"
-      />
-    </div>
+  <!-- 
+    父層容器負責佈局：
+    - grid: 啟用 CSS Grid。
+    - grid-cols-1: 手機上每行 1 張卡片。
+    - md:grid-cols-2: 768px 以上每行 2 張。
+    - xl:grid-cols-3: 1280px 以上每行 3 張。
+    - gap-8: 設定卡片間的間距。
+    - p-8: 設定容器的內邊距。
+  -->
+  <div class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-8">
+      <h1 class="text-4xl font-bold text-gray-800 mb-8">精選活動</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        
+        <!-- 使用 v-for 迴圈渲染您的卡片 -->
+        <YourEventCard
+          v-for="event in featuredEvents"
+          :key="event.id"
+          :id="event.id"
+          :event-image="event.eventImage"
+          :title="event.title"
+          :event-type="event.eventType"
+          :event-date="event.eventDate"
+          :rating="event.rating"
+          :review-count="event.reviewCount"
+        />
 
-    <div class="flex flex-col flex-grow p-6">
-      <h2 class="text-[#F2994A] text-[28px] font-bold leading-[26.4px] mb-2">
-        {{ title }}
-      </h2>
-      <div class="text-[#4F4F4F] text-base mb-4">
-        <p>{{ eventType }}</p>
-        <p>{{ eventDate }}</p>
       </div>
-      <div class="flex items-center gap-x-2 text-base text-[#4F4F4F] mb-6">
-        <div class="flex items-center">
-          <template v-for="i in 5" :key="i">
-            <img 
-              :src="i <= rating ? filledStarIcon : emptyStarIcon" 
-              alt="star" 
-              class="w-5 h-5"
-            />
-          </template>
-        </div>
-        <span>{{ reviewCount }} reviews</span>
-      </div>
-      <div class="flex-grow"></div>
-
-      <button
-        @click="goToDetail"
-        class="w-full bg-[#F2994A] text-white font-semibold rounded-lg text-lg h-[56px] flex items-center justify-center 
-        focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none 
-        hover:outline-none hover:ring-0 hover:border-transparent hover:shadow-none"
-      >
-        了解詳情
-      </button>
     </div>
   </div>
 </template>
+
+<script setup>
+// 引入您優化後的卡片元件
+import YourEventCard from '@/components/YourEventCard.vue';
+import { ref } from 'vue';
+
+// 假設的活動數據
+const featuredEvents = ref([
+  { id: 'evt001', eventImage: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678', title: '鍛造群俠會 - 線上交流', eventType: '線上活動', eventDate: '2025/7/23(三) 10:00AM', rating: 4, reviewCount: 82 },
+  { id: 'evt002', eventImage: 'https://images.unsplash.com/photo-1511578314322-379afb476865', title: '一日鐵匠實體工作坊', eventType: '實體工作坊', eventDate: '2025/8/15(五) 09:00AM', rating: 5, reviewCount: 156 },
+  { id: 'evt003', eventImage: '', title: '金工藝術展覽', eventType: '展覽', eventDate: '2025/9/01 - 9/30', rating: 4, reviewCount: 45 },
+]);
+</script>
