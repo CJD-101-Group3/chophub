@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 
 // --- 組件引入 ---
 import CreatePostModal from '@/components/CreatePostModal.vue';
@@ -10,6 +10,19 @@ import Pagination from '@/components/Pagination.vue';
 
 // --- Icon 引入 ---
 import searchIcon from '@/assets/icon/search.svg';
+
+// --- 【新增】貼文圖片引入 ---
+// 請確保您的圖片放在 src/assets/images/ 路徑下
+// 如果路徑或檔名不同，請在此處修改
+import post01 from '@/assets/post/post01.png';
+import post02 from '@/assets/post/post02.png';
+import post03 from '@/assets/post/post03.png';
+import post04 from '@/assets/post/post04.png';
+import post05 from '@/assets/post/post05.png';
+import post06 from '@/assets/post/post06.png';
+import post07 from '@/assets/post/post07.png';
+import post08 from '@/assets/post/post08.png';
+import post09 from '@/assets/post/post09.png';
 
 // --- 響應式狀態 ---
 const isModalOpen = ref(false);
@@ -22,18 +35,109 @@ const searchTerm = ref('');
 const currentPage = ref(1);
 const totalPages = ref(20);
 
-// --- 貼文假資料 ---
-const posts = ref(Array.from({ length: 9 }, (_, index) => ({
-  id: index + 1,
-  postImage: `https://picsum.photos/400/280?random=${index + 1}`,
-  isFeatured: true,
-  userName: '使用者名稱',
-  postTitle: '手裡劍',
-  isHot: Math.random() > 0.5,
-  description: '四爪對稱手裡劍，結構精準銳利，中心圓孔設計，兼具工藝美感與穩定投擲性能。',
-  likes: Math.floor(Math.random() * 200),
-  stars: Math.floor(Math.random() * 50),
-})));
+// --- 【修改】貼文假資料 ---
+// 將原有的動態生成資料替換為您指定的靜態資料，並更新使用者名稱
+const posts = ref([
+  {
+    id: 1,
+    postImage: post01,
+    isFeatured: true,
+    userName: '中壢彭于晏',
+    postTitle: '刀鋒淬鍊記',
+    isHot: Math.random() > 0.5,
+    description: '每把刀都需經高溫鍛造與淬火處理，才能擁有鋒利與堅韌的雙重特性。',
+    likes: Math.floor(Math.random() * 200),
+    stars: Math.floor(Math.random() * 50),
+  },
+  {
+    id: 2,
+    postImage: post02,
+    isFeatured: true,
+    userName: 'BladeMaker_99',
+    postTitle: '武士刀開刃',
+    isHot: Math.random() > 0.5,
+    description: '刀刃打磨的過程講究角度與手感，最終展現出光滑如鏡的刃口。',
+    likes: Math.floor(Math.random() * 200),
+    stars: Math.floor(Math.random() * 50),
+  },
+  {
+    id: 3,
+    postImage: post03,
+    isFeatured: true,
+    userName: '古兵小誌',
+    postTitle: '冷兵器展覽',
+    isHot: Math.random() > 0.5,
+    description: '展覽收錄來自各地的冷兵器，讓你一次看遍歷史的鋒芒與工藝之美。',
+    likes: Math.floor(Math.random() * 200),
+    stars: Math.floor(Math.random() * 50),
+  },
+  {
+    id: 4,
+    postImage: post04,
+    isFeatured: true,
+    userName: 'FireForge匠心',
+    postTitle: '匠人訪談',
+    isHot: Math.random() > 0.5,
+    description: '走進鐵匠的世界，聽他分享打造兵器時的堅持與心路歷程。',
+    likes: Math.floor(Math.random() * 200),
+    stars: Math.floor(Math.random() * 50),
+  },
+  {
+    id: 5,
+    postImage: post05,
+    isFeatured: true,
+    userName: 'ColdSteel手作',
+    postTitle: '西洋劍製程',
+    isHot: Math.random() > 0.5,
+    description: '每一把西洋劍從鋼材選擇到護手裝配，都需經歷數十道繁複工序。',
+    likes: Math.floor(Math.random() * 200),
+    stars: Math.floor(Math.random() * 50),
+  },
+  {
+    id: 6,
+    postImage: post06,
+    isFeatured: true,
+    userName: '斬鐵測試員',
+    postTitle: '斧頭也浪漫',
+    isHot: Math.random() > 0.5,
+    description: '這把斧頭融合雕刻與木作藝術，完全顛覆你對斧頭的想像！',
+    likes: Math.floor(Math.random() * 200),
+    stars: Math.floor(Math.random() * 50),
+  },
+  {
+    id: 7,
+    postImage: post07,
+    isFeatured: true,
+    userName: '鍛魂者_Yu',
+    postTitle: '兵器保養法',
+    isHot: Math.random() > 0.5,
+    description: '定期清潔、上油與防鏽處理，是維持刀劍狀態的基本保養流程。',
+    likes: Math.floor(Math.random() * 200),
+    stars: Math.floor(Math.random() * 50),
+  },
+  {
+    id: 8,
+    postImage: post08,
+    isFeatured: true,
+    userName: '戰場殘光',
+    postTitle: '手工打造盾',
+    isHot: Math.random() > 0.5,
+    description: '這面圓盾使用多層木板壓製成型，兼具古風美感與實戰強度。',
+    likes: Math.floor(Math.random() * 200),
+    stars: Math.floor(Math.random() * 50),
+  },
+  {
+    id: 9,
+    postImage: post09,
+    isFeatured: true,
+    userName: '武器控_阿鋒',
+    postTitle: '仿古戰槍秀',
+    isHot: Math.random() > 0.5,
+    description: '以古法工藝打造的仿宋代戰槍，每一枝都重現歷史風貌與細節。',
+    likes: Math.floor(Math.random() * 200),
+    stars: Math.floor(Math.random() * 50),
+  },
+]);
 
 // --- 函式 ---
 function selectSort(option) {
