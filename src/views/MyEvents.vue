@@ -1,7 +1,8 @@
 <script setup>
-import Theheader from '../components/Theheader.vue';
-import Thefooter from '../components/Thefooter.vue';
-import MyEventItem from '../components/MyEventItem.vue';
+import Theheader from '@/components/Theheader.vue';
+import Thefooter from '@/components/Thefooter.vue';
+import MyEventItem from '@/components/MyEventItem.vue';
+import { getPublicImg } from '@/utils/getPublicImg'
 import { ref, computed } from 'vue';
 
 // --- STATE MANAGEMENT ---
@@ -17,20 +18,11 @@ const tabs = ref([
 // 2. 預設顯示 '即將到來' 的活動
 const activeTab = ref('upcoming');
 
-// --- 新增的計算屬性 ---
-const eventsWithFullImagePaths = computed(() => {
-  return events.value.map(event => {
-    // 建立一個事件物件的副本，避免修改原始物件
-    const newEvent = { ...event };
+const image1 = getPublicImg('events/burning-coal.jpg')
+const image2 = getPublicImg('filename')
+const image3 = getPublicImg('filename')
+const image4 = getPublicImg('filename')
 
-    // 檢查圖片路徑是否為一個完整的 URL (以 http 開頭)
-    // 如果不是，且路徑存在，我們就為它加上 BASE_URL 前綴
-    if (newEvent.image && !newEvent.image.startsWith('http')) {
-      newEvent.image = `${import.meta.env.BASE_URL}${newEvent.image.startsWith('/') ? newEvent.image.substring(1) : newEvent.image}`;
-    }
-    return newEvent;
-  });
-});
 
 // --- MOCK DATA (優化的核心) ---
 // 為每個活動添加 'status' 屬性來驅動 UI 變化

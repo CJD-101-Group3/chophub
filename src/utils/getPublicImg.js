@@ -6,6 +6,6 @@ export const getPublicImg = (filename) => {
 // <script setup>
 // import { getPublicImg } from '@/utils/getPublicImg'
 
-// const window_img_d = getPublicAsset('filename')
-// const window_img_n = getPublicAsset('Home_img/Window_n.png')
+// const window_img_d = getPublicImg('filename')
+// const window_img_n = getPublicImg('Home_img/Window_n.png')
 // </script>
