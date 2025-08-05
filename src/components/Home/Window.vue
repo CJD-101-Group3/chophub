@@ -21,6 +21,6 @@ const emit = defineEmits(['toggle'])
 
 const toggleWindow = () => emit('toggle')
 
-const window_img_d = `${import.meta.env.VITE_BASE_URL}/Home_img/Window_d.png`
-const window_img_n = `${import.meta.env.VITE_BASE_URL}/Home_img/Window_n.png`
+const window_img_d = `${import.meta.env.BASE_URL}Home_img/Window_d.png`
+const window_img_n = `${import.meta.env.BASE_URL}Home_img/Window_n.png`
 </script>
