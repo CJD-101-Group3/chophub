@@ -14,9 +14,9 @@ import emailIcon from '@/assets/icon/aboutusemail.png';
 import mainLogo from '@/assets/icon/aboutuslogo.png';
 
 const artisans = [
-  { name: '李明', image: artisan1 },
-  { name: '美筍', image: artisan2 },
-  { name: '楊凱', image: artisan3 },
+  { name: '史迪奇', image: artisan1 },
+  { name: '史瑞克', image: artisan2 },
+  { name: '艾冉', image: artisan3 },
 ];
 const mobileArtisans = [
   { id: 'mobile1', image: mobileArtisan1 },

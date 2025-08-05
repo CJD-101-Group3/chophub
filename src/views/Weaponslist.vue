@@ -579,17 +579,27 @@
     />
 
     <!-- 搜尋列 -->
-    <div class="flex items-center space-x-2 md:ml-[200px] my-6 mt-10">
-      <input
-        type="text"
-        placeholder="搜尋..."
-        class="w-[500px] border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F2994A]"
-      />
-      <button
-        class="px-4 py-2 bg-[#F2994A] text-white rounded-lg hover:bg-orange-500 transition"
-      >
-        搜尋
-      </button>
+    <div class="flex  justify-center md:justify-between items-center md:ml-[200px] my-6 mt-10">
+  <div class="flex items-center space-x-2">
+    <input
+      type="text"
+      placeholder="搜尋..."
+      class="w-[300px] md:w-[500px] border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F2994A]"
+    />
+    <button
+      class="w-[70px] md:w-[100px] px-4 py-2 bg-[#F2994A] text-white rounded-lg hover:bg-orange-500 transition"
+    >
+      搜尋
+    </button>
+  </div>
+
+      <div class="ml-auto  md:mr-[250px]  hidden md:block">
+       <DropDownFilter title="活動類型" :items="typeItems" v-model="selectedType" />
+
+       </div>
+
+
+      
     </div>
 
     <!-- 水平線 -->
@@ -598,11 +608,11 @@
     </div>
 
     <!-- 主內容區：左分類 + 右商品 -->
-    <div class="container mx-auto max-w-8xl px-4">
+    <div class="relative container mx-auto max-w-8xl px-4">
       <div class="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-6">
         <!-- 左側分類選單 -->
         <aside
-          class="backdrop-blur-md p-6 rounded-xl text-white max-w-[280px] bg-[#FFFFFF]"
+          class="backdrop-blur-md p-6 rounded-xl text-white max-w-[280px] bg-[#FFFFFF] h-[600px] "
         >
           <h2 class="text-xl font-semibold mb-6 tracking-wide text-black">
             分類
@@ -666,6 +676,8 @@ import { ref } from "vue";
 import Theheader from "../components/Theheader.vue";
 import Thefooter from "../components/Thefooter.vue";
 import WeaponCard from "../components/WeaponCard.vue";
+import DropDownFilter from '@/components/DropDownFilter.vue';
+
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { EffectCoverflow, Pagination } from "swiper/modules";
@@ -721,4 +733,11 @@ function prevSlide() {
     currentIndex.value--;
   }
 }
+
+
+const typeItems = [
+   { label: '所有類型', value: 'all' },
+   { label: '實體活動', value: '實體活動' },
+   { label: '線上活動', value: '線上活動' }
+];
 </script>
