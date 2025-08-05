@@ -661,7 +661,7 @@ const goToApplicationGuide = () => {
         </div>
 
         <!-- 會員資訊卡片 -->
-        <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)] mb-8 max-w-xl mx-auto">
+        <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)] mb-8 max-w-4xl mx-auto">
           <h2 class="text-2xl font-bold mb-6 border-b pb-3">會員資訊</h2>
           <div class="space-y-4 text-sm lg:text-xl">
             <div class="flex justify-between items-center"><span class="text-gray-600">會員暱稱</span><span class="font-medium text-gray-900">{{ memberInfo.nickname }}</span></div>
@@ -679,7 +679,7 @@ const goToApplicationGuide = () => {
           <Basebutton
             type="button"
             variant="primary"
-            class="w-full h-12"
+            class="w-full h-12 text-[16px]"
             @click="goToEditProfile"
           >
             編輯資料
@@ -687,7 +687,7 @@ const goToApplicationGuide = () => {
           <Basebutton
             type="button"
             variant="primary"
-            class="w-full h-12"
+            class="w-full h-12 text-[16px]"
             @click="goToArtisanShowcase"
           >
             刀匠展示頁
@@ -695,7 +695,7 @@ const goToApplicationGuide = () => {
           <Basebutton
             type="button"
             variant="primary"
-            class="w-full h-12"
+            class="w-full h-12 text-[16px]"
             @click="goToEditArtisanProfile"
           >
             刀匠編輯資料
@@ -703,7 +703,7 @@ const goToApplicationGuide = () => {
           <Basebutton
             type="button"
             variant="primary"
-            class="w-full h-12"
+            class="w-full h-12 text-[16px]"
             @click="goToApplicationGuide"
           >
             刀匠申請

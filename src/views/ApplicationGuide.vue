@@ -619,7 +619,7 @@ const applicationFormUrl = getPublicImg('files/ChopHub-Application-Form.pdf');
         <div class="text-center mt-10">
           <button 
             @click="goBack"
-            class="w-full sm:w-auto bg-[#F2994A] text-white font-bold py-3 px-12 rounded-md transition-colors duration-300 border-2 border-transparent
+            class="w-full sm:w-auto bg-[#F2994A] text-white font-bold py-3 px-12 rounded-[8px] transition-colors duration-300 border-2 border-transparent
                    hover:bg-white hover:text-black hover:border-[#F2994A] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E87A3A]"
           >
             回上一頁

@@ -650,7 +650,7 @@ const toggleEquip = (badgeId) => {
         <div class="space-y-8">
 
           <!-- 我收藏的武器 -->
-          <div class="bg-white p-6 lg:p-8 rounded-lg" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+          <div class="bg-white p-6 lg:p-8 rounded-lg max-w-4xl mx-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">我收藏的武器</h2>
             <div class="flex space-x-6 overflow-x-auto pb-4">
               <a v-for="weapon in collectedWeapons" :key="weapon.id" :href="weapon.link" class="flex-shrink-0 group">
@@ -662,7 +662,7 @@ const toggleEquip = (badgeId) => {
           </div>
 
           <!-- 我收藏的徽章 -->
-          <div class="bg-white p-6 lg:p-8 rounded-lg" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+          <div class="bg-white p-6 lg:p-8 rounded-lg max-w-4xl mx-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">我收藏的徽章</h2>
             <div class="flex space-x-6 overflow-x-auto pb-4">
               <div v-for="badge in collectedBadges" :key="badge.id" class="flex flex-col items-center space-y-3 flex-shrink-0">
@@ -672,7 +672,7 @@ const toggleEquip = (badgeId) => {
                 <span class="font-semibold text-gray-800">{{ badge.name }}</span>
                 <button
                   @click="toggleEquip(badge.id)"
-                  class="w-32 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200"
+                  class="w-32 text-white font-bold py-2 px-4 rounded-[8px] transition-colors duration-200"
                   :class="badge.isEquipped ? 'bg-[#D15B5B] hover:bg-[#b94a4a]' : 'bg-gray-400 hover:bg-gray-500'"
                 >
                   {{ badge.isEquipped ? '配戴中' : '配戴' }}
@@ -682,7 +682,7 @@ const toggleEquip = (badgeId) => {
             <!-- 儲存按鈕 -->
             <div class="mt-6 text-center">
               <button
-                class="w-full lg:w-auto bg-[#F2994A] text-white font-bold py-3 px-16 rounded-md transition-colors duration-300 border-2 border-transparent
+                class="w-full lg:w-auto bg-[#F2994A] text-white font-bold py-3 px-16 rounded-[8px] transition-colors duration-300 border-2 border-transparent
                        hover:bg-white hover:text-black hover:border-[#F2994A]"
               >
                 儲存
