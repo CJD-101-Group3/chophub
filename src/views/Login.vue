@@ -6,14 +6,24 @@ import Basebutton from '../components/Basebutton.vue';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user'; // 1. 引入您的 user store
 
 // 定義響應式變量
 const particlesLoaded = async (container) => {
   console.log("Particles container loaded", container);
 };
 
-
 const router = useRouter();
+const userStore = useUserStore(); // 2. 建立 user store 的實例
+
+// 新增一個狀態來追蹤密碼是否可見
+const isPasswordVisible = ref(false);
+
+// 新增一個函式來切換密碼的可見性
+function togglePasswordVisibility() {
+  isPasswordVisible.value = !isPasswordVisible.value;
+}
+
 const emit = defineEmits(['submit']);
 const account = ref('');
 const password = ref('');
@@ -23,17 +33,48 @@ function handleSubmit() {
     alert('請輸入帳號和密碼！');
     return;
   }
+  
   const credentials = {
     account: account.value,
     password: password.value,
   };
+  
+  // 在真實的應用中，這裡您應該發送 credentials 到您的後端 API 進行驗證
+  // ... a fetch() or axios.post() call here ...
+  
+  // --- **【核心修改處】** ---
+  // 假設 API 驗證成功後，我們獲得了使用者資料
+  // 這裡我們使用一個假資料來模擬
+  const fakeUserData = {
+      name: '露比匠',
+      avatarUrl: '/src/assets/users/userp.png',
+      // 您可以在這裡添加更多從後端獲取的使用者資訊
+      email: account.value, 
+  };
+  
+  // 3. 呼叫 Pinia store 中的 login action 來更新全局狀態
+  userStore.login(fakeUserData);
+  // -------------------------
+
   emit('submit', credentials);
   console.log('表單已提交:', credentials);
+  
+  // 4. 在更新了全局狀態之後，再進行頁面跳轉
   router.push('/UserProfile');
 }
 
 function goToRegister() {
   router.push('/register');
+}
+
+// 登入按鈕的處理函式
+function handleLogin() {
+  // 登入驗證成功後，設定使用者資料
+  userStore.login({
+    name: '露比匠',
+    avatarUrl: '/users/userp.png'
+  })
+  // 這裡可以導頁到個人頁
 }
 </script>
 
@@ -559,7 +600,7 @@ function goToRegister() {
       }"
     />
     </div>
-  <div class="flex flex-col min-h-screen">
+   <div class="flex flex-col min-h-screen">
     <Theheader />
 
     <div class="flex-1 flex items-center justify-center">
@@ -579,30 +620,31 @@ function goToRegister() {
             >
           </div>
           <div class="relative">
+            <!-- **【修改處 2】** 動態綁定 input 的 type -->
             <input
               v-model="password"
-              type="password"
+              :type="isPasswordVisible ? 'text' : 'password'"
               placeholder="密碼"
               class="w-full px-4 py-3 bg-[#F8F9FA] border-2 border-[#F2994A] rounded-md transition-colors
                      focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"
             >
-            <button type="button" class="absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <!-- **【修改處 3】** 將按鈕綁定點擊事件，並根據狀態顯示不同圖示 -->
+            <button @click="togglePasswordVisibility" type="button" class="absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+              <!-- 張開的眼睛圖示 -->
+              <svg v-if="!isPasswordVisible" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <!-- 閉上的眼睛圖示 -->
+              <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243l-4.243-4.243" />
               </svg>
             </button>
           </div>
           <div class="text-center lg:text-left">
-            <a href="#" class="text-sm text-gray-600 hover:text-orange-500 transition-colors">忘記密碼？</a>
+            <a href="#" class="text-sm text-white hover:text-orange-500 transition-colors">忘記密碼？</a>
           </div>
 
-          <!--
-            修改後的按鈕區塊:
-            我們移除了外層的 div 容器，讓 form 的 space-y-4 生效，
-            使按鈕能夠垂直堆疊並帶有間距。
-            因為 Basebutton 內部有固定寬度，按鈕會保持原寬度並在表單中置中。
-           -->
           <Basebutton type="submit" variant="primary" class="w-full h-12">登入</Basebutton>
           <Basebutton type="button" variant="outline" class="w-full h-12" @click="goToRegister">立即註冊</Basebutton>
         </form>

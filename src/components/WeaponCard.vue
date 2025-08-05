@@ -71,7 +71,7 @@ function toggleStar() {
       </div>
       
       <router-link 
-        :to="`/post/${id}`"
+        :to="`/weaponslist/weapondetail`"
         class="w-full bg-[#F2994A] text-[#ffffff] font-semibold rounded-lg text-base h-[59px] flex items-center justify-center focus:outline-none focus:ring-0 hover:text-white"
       >
         查看更多
