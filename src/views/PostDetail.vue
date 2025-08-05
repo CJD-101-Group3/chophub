@@ -11,6 +11,14 @@ import smallStarActiveIcon from '@/assets/icon/smallstar_h.svg';
 import messagesIcon from '@/assets/icon/postshare.svg';
 import shareIcon from '@/assets/icon/postshare.svg';
 
+// ★★★★★ 新增：匯入勳章圖片 ★★★★★
+// 請確保圖片已放置在 src/assets/badges/ 資料夾
+import badge1 from '@/assets/icon/badge1.png';
+import badge2 from '@/assets/icon/badge2.png';
+import badge3 from '@/assets/icon/badge3.png';
+// ★★★★★ END ★★★★★
+
+
 // --- STATE MANAGEMENT ---
 
 const router = useRouter();
@@ -20,7 +28,9 @@ const post = ref({
   id: 1,
   author: {
     name: '中壢彭于晏',
-    avatar: 'https://i.pravatar.cc/150?u=pengyuyan'
+    avatar: 'https://i.pravatar.cc/150?u=pengyuyan',
+    // ★★★★★ 新增：將勳章加入 author 物件 ★★★★★
+    badges: [badge1, badge2, badge3],
   },
   title: '【刀鋒淬鍊記】',
   content: '每把刀都需經高溫鍛造與淬火處理，才能擁有鋒利與堅韌的雙重特性。冷兵器自古以來就是戰場上的殺戮利器，無需火藥，僅憑鋼鐵與技巧，便能決定生死。刀劍的鋒芒、長槍的凌厲、戰斧的沉重，每一種武器都蘊含著獨特的戰鬥哲學與歷史痕跡。在冷冽的金屬光澤中，映照出人類智慧與殘酷戰爭的縮影，這就是冷兵器的致命魅力所在。',
@@ -144,11 +154,15 @@ function submitReport() {
 
       <div class="w-full h-full lg:w-5/12 flex flex-col bg-white dark:bg-zinc-900">
         
-        <!-- 手機版 Header -->
+        <!-- ★★★★★ 修改處：手機版 Header 加入勳章 ★★★★★ -->
         <header class="p-4 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-700 lg:hidden">
           <div class="flex items-center gap-3">
             <img :src="post.author.avatar" alt="Author Avatar" class="w-8 h-8 rounded-full object-cover">
-            <span class="font-bold text-zinc-800 dark:text-zinc-100">{{ post.author.name }}</span>
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-zinc-800 dark:text-zinc-100">{{ post.author.name }}</span>
+              <!-- 勳章渲染 -->
+              <img v-for="(badge, index) in post.author.badges" :key="index" :src="badge" alt="Badge" class="w-5 h-5 object-contain">
+            </div>
           </div>
           <button @click="router.back()" class="text-zinc-600 dark:text-zinc-300 p-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -159,9 +173,14 @@ function submitReport() {
         
         <div class="flex-grow overflow-y-auto">
           <div class="p-4 lg:p-6">
+            <!-- ★★★★★ 修改處：桌面版 Header 加入勳章 ★★★★★ -->
             <div class="hidden lg:flex items-center gap-3 mb-4">
               <img :src="post.author.avatar" alt="Author Avatar" class="w-10 h-10 rounded-full object-cover">
-              <span class="font-bold text-zinc-800 dark:text-zinc-100">{{ post.author.name }}</span>
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-zinc-800 dark:text-zinc-100">{{ post.author.name }}</span>
+                <!-- 勳章渲染 -->
+                <img v-for="(badge, index) in post.author.badges" :key="index" :src="badge" alt="Badge" class="w-5 h-5 object-contain">
+              </div>
             </div>
             
             <div class="aspect-w-4 aspect-h-3 bg-zinc-800 rounded-lg overflow-hidden mb-4 lg:hidden">
@@ -174,9 +193,7 @@ function submitReport() {
             </div>
           </div>
           
-          <!-- ★★★★★ 修改處：將檢舉按鈕移至此處 ★★★★★ -->
           <div class="px-4 lg:px-6 py-3 flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400 border-t border-zinc-200 dark:border-zinc-700">
-            <!-- 左側的數量統計 -->
             <div class="flex items-center gap-4">
               <div class="flex items-center gap-1">
                 <img :src="isLiked ? smallLikeActiveIcon : smallLikeIcon" alt="Likes" class="h-5 w-5" />
@@ -192,16 +209,14 @@ function submitReport() {
               </div>
             </div>
             
-            <!-- 右側的檢舉按鈕 -->
-            <button @click="openReportModal" class="flex items-center gap-1 text-zinc-500 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-500 transition-colors rounded-md p-2 -mr-2">
+            <button @click="openReportModal" class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-500 transition-colors rounded-md p-2 -mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6H8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
               </svg>
+              <span class="font-semibold">檢舉</span>
             </button>
           </div>
-          <!-- ★★★★★ END ★★★★★ -->
 
-          <!-- 恢復為三按鈕的橫向按鈕列 -->
           <div class="flex items-center justify-around py-2 border-t border-b border-zinc-200 dark:border-zinc-700">
             <button @click="toggleLike" class="flex items-center justify-center gap-2 w-1/3 py-2 rounded-lg font-semibold transition-colors" :class="isLiked ? 'text-blue-600' : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'">
               <span class="p-2 rounded-full" :class="isLiked ? 'bg-blue-100' : ''">
@@ -223,7 +238,6 @@ function submitReport() {
             </button>
           </div>
           
-          <!-- Comments List -->
           <div class="p-4 lg:p-6">
             <h3 class="font-bold text-lg text-zinc-800 dark:text-zinc-100 mb-4">留言</h3>
             <div v-for="comment in comments" :key="comment.id" class="flex gap-3 mb-6">
@@ -243,7 +257,6 @@ function submitReport() {
           </div>
         </div>
 
-        <!-- Comment Input Area -->
         <div class="p-4 border-t border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
           <div v-if="newCommentImage" class="relative w-24 h-24 mb-2">
             <img :src="newCommentImage" class="w-full h-full object-cover rounded-lg" alt="Selected image preview">
@@ -284,7 +297,6 @@ function submitReport() {
       </div>
     </div>
 
-    <!-- 檢舉彈出視窗 (這部分維持不變) -->
     <div v-if="showReportModal" @click.self="closeReportModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 transition-opacity">
       <div class="bg-white dark:bg-zinc-800 rounded-2xl shadow-xl w-full max-w-md p-6 transform transition-all">
         <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">檢舉貼文</h3>
