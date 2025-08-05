@@ -113,7 +113,7 @@ onMounted(() => {
             <div class="flex items-center gap-3 mb-6 text-white">
               <span>創作者：</span>
               <div class="w-10 h-10 rounded-full bg-[#F2994A]"></div>
-              <span>蔡依玲</span>
+              <span>使用者</span>
             </div>
 
             <div class="bg-white rounded-xl p-6 mb-8">
@@ -132,7 +132,7 @@ onMounted(() => {
               <div v-for="n in 10" :key="n" class="flex items-start gap-3">
                 <div class="flex-shrink-0 w-9 h-9 rounded-full bg-[#F2994A] border-2 border-white shadow-sm mt-1"></div>
                 <div class="flex-grow flex flex-col bg-white rounded-xl p-4">
-                  <span class="font-bold text-sm text-gray-900 mb-1">中壢彭于晏 {{ n }}</span>
+                  <span class="font-bold text-sm text-gray-900 mb-1">使用者名稱 {{ n }}</span>
                   <p class="text-base leading-relaxed mb-4 text-gray-700">這是第 {{ n }} 則留言，用來測試滾動功能。這把刀的設計太棒了，重心恰到好處！</p>
                   <div class="flex justify-between items-center text-xs text-gray-500">
                     <span>{{23-n}}週 讚 檢舉</span>
