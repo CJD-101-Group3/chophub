@@ -2,7 +2,6 @@
 // --- Script 區塊維持不變 ---
 import { defineProps, ref, computed } from 'vue';
 import fireIcon from '@/assets/icon/fire.svg';
-import moreIcon from '@/assets/icon/more.svg';
 import smallLikeIcon from '@/assets/icon/smalllike.svg';
 import smallLikeActiveIcon from '@/assets/icon/smalllike_h.svg';
 import smallUserIcon from '@/assets/icon/smalluser.svg';
@@ -78,12 +77,6 @@ function doNothing() {}
           - .prevent 阻止按鈕的預設行為。
           - .stop 阻止點擊事件冒泡。
         -->
-        <button 
-          class="text-gray-400 focus:outline-none focus:ring-0"
-          @click.prevent.stop="doNothing"
-        >
-          <img :src="moreIcon" alt="More options" class="w-6 h-6" />
-        </button>
       </div>
       <div class="flex items-center gap-x-2 mb-2.5">
         <h2 class="text-[#F2994A] text-[25.2px] font-medium leading-[35.28px] tracking-[1.12px]">{{ postTitle }}</h2>

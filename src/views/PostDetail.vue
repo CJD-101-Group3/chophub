@@ -10,7 +10,6 @@ import smallStarIcon from '@/assets/icon/smallstar.svg';
 import smallStarActiveIcon from '@/assets/icon/smallstar_h.svg';
 import messagesIcon from '@/assets/icon/postshare.svg';
 import shareIcon from '@/assets/icon/postshare.svg';
-// sendIcon 的匯入已被移除，因為我們將直接使用 SVG 程式碼
 
 // --- STATE MANAGEMENT ---
 
@@ -34,7 +33,7 @@ const post = ref({
 const isLiked = ref(false);
 const isSaved = ref(false);
 
-// Comments Data (simulated)
+// --- Comments Data (simulated) ---
 const comments = ref([
     { id: 1, author: { name: '中壢彭于晏', avatar: 'https://i.pravatar.cc/150?u=pengyuyan' }, content: '武器評價文字武器評價文字...', likes: 82, time: '23週' },
     { id: 2, author: { name: '館長', avatar: 'https://i.pravatar.cc/150?u=chang' }, content: '這把看起來不錯！', likes: 150, time: '2週' }
@@ -44,6 +43,10 @@ const comments = ref([
 const newCommentText = ref('');
 const newCommentImage = ref(null);
 const fileInput = ref(null);
+
+// --- 檢舉功能的狀態管理 ---
+const showReportModal = ref(false);
+const reportReason = ref('');
 
 // --- COMPUTED PROPERTIES ---
 
@@ -98,6 +101,30 @@ function postComment() {
   if (fileInput.value) fileInput.value.value = '';
 }
 
+// --- 檢舉功能的處理函式 ---
+function openReportModal() {
+  showReportModal.value = true;
+}
+
+function closeReportModal() {
+  showReportModal.value = false;
+  reportReason.value = ''; // 關閉時清空內容
+}
+
+function submitReport() {
+  if (!reportReason.value.trim()) {
+    alert('請輸入檢舉事由。');
+    return;
+  }
+  // 在這裡，您可以將檢舉內容送到後端
+  console.log('檢舉已送出:', {
+    postId: post.value.id,
+    reason: reportReason.value
+  });
+  alert('檢舉已成功送出，感謝您的回報。');
+  closeReportModal();
+}
+
 </script>
 
 <template>
@@ -147,23 +174,34 @@ function postComment() {
             </div>
           </div>
           
-          <!-- 按讚、收藏和留言數量顯示 -->
-          <div class="px-4 lg:px-6 py-3 flex items-center gap-4 text-sm text-zinc-500 dark:text-zinc-400 border-t border-zinc-200 dark:border-zinc-700">
-            <div class="flex items-center gap-1">
-              <img :src="isLiked ? smallLikeActiveIcon : smallLikeIcon" alt="Likes" class="h-5 w-5" />
-              <span>{{ post.likes }}</span>
+          <!-- ★★★★★ 修改處：將檢舉按鈕移至此處 ★★★★★ -->
+          <div class="px-4 lg:px-6 py-3 flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400 border-t border-zinc-200 dark:border-zinc-700">
+            <!-- 左側的數量統計 -->
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-1">
+                <img :src="isLiked ? smallLikeActiveIcon : smallLikeIcon" alt="Likes" class="h-5 w-5" />
+                <span>{{ post.likes }}</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <img :src="isSaved ? smallStarActiveIcon : smallStarIcon" alt="Saves" class="h-5 w-5" />
+                <span>{{ post.saves }}</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <img :src="messagesIcon" alt="Comments" class="h-5 w-5" />
+                <span>{{ comments.length }}</span>
+              </div>
             </div>
-            <div class="flex items-center gap-1">
-              <img :src="isSaved ? smallStarActiveIcon : smallStarIcon" alt="Saves" class="h-5 w-5" />
-              <span>{{ post.saves }}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <img :src="messagesIcon" alt="Comments" class="h-5 w-5" />
-              <span>{{ comments.length }}</span>
-            </div>
+            
+            <!-- 右側的檢舉按鈕 -->
+            <button @click="openReportModal" class="flex items-center gap-1 text-zinc-500 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-500 transition-colors rounded-md p-2 -mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6H8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+              </svg>
+            </button>
           </div>
+          <!-- ★★★★★ END ★★★★★ -->
 
-          <!-- 新的橫向按鈕列 -->
+          <!-- 恢復為三按鈕的橫向按鈕列 -->
           <div class="flex items-center justify-around py-2 border-t border-b border-zinc-200 dark:border-zinc-700">
             <button @click="toggleLike" class="flex items-center justify-center gap-2 w-1/3 py-2 rounded-lg font-semibold transition-colors" :class="isLiked ? 'text-blue-600' : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'">
               <span class="p-2 rounded-full" :class="isLiked ? 'bg-blue-100' : ''">
@@ -199,7 +237,6 @@ function postComment() {
                 <div class="flex items-center text-xs text-zinc-500 dark:text-zinc-400 mt-2 gap-3">
                   <span>{{ comment.time }}</span>
                   <button class="font-semibold">讚</button>
-                  <!-- <button class="font-semibold">檢舉</button> -->
                 </div>
               </div>
             </div>
@@ -228,7 +265,6 @@ function postComment() {
                 placeholder="新增留言..." 
                 class="flex-grow bg-transparent focus:outline-none text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 px-2"
               />
-              <!-- ★★★★★ 主要修改處 ★★★★★ -->
               <button 
                 @click="postComment" 
                 :disabled="!isCommentSubmittable" 
@@ -237,8 +273,6 @@ function postComment() {
                   ? 'text-zinc-500 hover:text-blue-500' 
                   : 'text-zinc-400 opacity-50 cursor-not-allowed'"
               >
-                <!-- 將 <img> 替換為內聯 SVG。 -->
-                <!-- 關鍵點：fill="currentColor" 會讓 SVG 繼承父層 <button> 的文字顏色 -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                   <path d="M0 0h24v24H0z" fill="none"/>
@@ -249,6 +283,29 @@ function postComment() {
         </div>
       </div>
     </div>
+
+    <!-- 檢舉彈出視窗 (這部分維持不變) -->
+    <div v-if="showReportModal" @click.self="closeReportModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 transition-opacity">
+      <div class="bg-white dark:bg-zinc-800 rounded-2xl shadow-xl w-full max-w-md p-6 transform transition-all">
+        <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">檢舉貼文</h3>
+        <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4">請說明您檢舉此貼文的原因，這將有助於我們進行審核。</p>
+        <textarea 
+          v-model="reportReason"
+          rows="5"
+          placeholder="請填寫檢舉事由..."
+          class="w-full p-3 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-zinc-50 dark:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-zinc-900 dark:text-zinc-100 transition"
+        ></textarea>
+        <div class="flex justify-end gap-4 mt-6">
+          <button @click="closeReportModal" class="px-5 py-2 rounded-lg text-zinc-800 dark:text-zinc-200 bg-zinc-200 dark:bg-zinc-600 hover:bg-zinc-300 dark:hover:bg-zinc-500 font-semibold transition-colors">
+            取消
+          </button>
+          <button @click="submitReport" class="px-5 py-2 rounded-lg text-white bg-red-600 hover:bg-red-700 font-semibold transition-colors shadow-sm hover:shadow-md">
+            確認送出
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
