@@ -105,7 +105,7 @@ const handleLogout = () => {
                 to="/UserProfile"
                 class="group flex items-center space-x-3 hover:text-white transition duration-300"
                 @click="handleClose">
-                <img :src="userStore.userInfo.avatarUrl" alt="Avatar" class="w-12 h-12 rounded-full object-cover">
+                <img src="/users/userp.png" alt="Avatar" class="w-12 h-12 rounded-full object-cover">
                 <span class="font-bold text-2xl">{{ userStore.userInfo.name }}</span>
             </RouterLink>
             <button @click="handleLogout" class="mt-4 w-full text-left font-bold hover:text-white transition duration-300">
