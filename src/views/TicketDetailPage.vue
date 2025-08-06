@@ -33,7 +33,7 @@ const mockCurrentUser = {
 
 // --- 2. 【核心修改】元件邏輯 ---
 // 2.1. 獲取當前的路由資訊
-const route = useRoute();
+const route = useRoute(import.meta.env.url);
 
 // 2.2. 從路由的參數中，動態地讀取 'id'。
 // 如果 URL 是 /TicketDetailPage/5, route.params.id 的值就是 '5'
