@@ -75,22 +75,13 @@ const displayTicketId = computed(() => {
 <template>
     <Theheader />
     <div class="bg-[#282828] min-h-screen text-white">
-        <header class="p-4">
-            <a href="/MyEvents" class="text-white hover:text-[#F2994A]">
-                < 返回我的活動</a>
-        </header>
+            <router-link to="/MyEvents" class="text-white hover:text-[#F2994A] pl-8">
+                < 返回我的活動</router-link>
 
         <main class="py-8 px-4">
             <!-- 【保護層】只有在 event 物件成功找到時，才渲染所有內容 -->
             <div v-if="event" class="max-w-6xl mx-auto">
 
-                <!-- 
-                  【新增】主佈局容器 
-                  - flex: 啟用 Flexbox
-                  - flex-col: 在手機上預設為垂直排列
-                  - lg:flex-row: 在大螢幕 (lg) 上變為水平排列
-                  - gap-12: 在欄位之間增加間距
-                -->
                 <div class="flex flex-col lg:flex-row gap-12">
 
 
