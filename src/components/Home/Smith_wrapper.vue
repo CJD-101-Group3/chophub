@@ -1,10 +1,10 @@
 <template>
     <div
-        class="absolute left-1/2 translate-x-[-50%] z-20 bottom-[5%] w-[50vw] sm:bottom-[11%] sm:w-[37vw] md:bottom-[11%] md:w-[15vw]">
+        class="absolute aspect-[3/5] left-1/2 translate-x-[-50%] z-20 bottom-[5%] w-[45vw] sm:bottom-[11%] sm:w-[37vw] md:bottom-[11%] md:w-[15vw]">
         <!-- 對話泡泡 -->
         <div
             :key="message"
-            class="absolute top-[-19%] left-[3%] translate-x-[-50%] px-4 py-2 bg-white border-2 border-black rounded-lg text-black w-max shadow-lg animate-fade-in text-[5vw] sm:text-[3vw] md:text-[1.5vw]">
+            class="absolute top-[-17%] left-[2%] translate-x-[-50%] px-4 py-2 bg-white border-2 border-black rounded-lg text-black w-max shadow-lg animate-fade-in text-[4vw] sm:text-[3vw] md:text-[1.5vw]">
             {{ message }}
 
             <div
@@ -23,7 +23,7 @@
             <img
                 src="/Home_img/Hand_0.png"
                 alt="Smith 手"
-                class="absolute bottom-[50%] left-1/2 z-10 w-[28vw] translate-x-[-53%] sm:bottom-[50%] sm:w-[21vw]
+                class="absolute bottom-[50%] left-1/2 z-10 w-[26vw] translate-x-[-53%] sm:bottom-[50%] sm:w-[21vw]
                 md:bottom-[50%] md:w-[9vw] md:translate-x-[18%] animate-swing-hand" />
         </div>
     </div>

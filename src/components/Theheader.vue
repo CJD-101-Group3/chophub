@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { useUserStore } from '@/stores/user'; // 1. 引入您的 user store
+import { useUserStore } from '@/stores/user' // 1. 引入您的 user store
 import { useRouter } from 'vue-router' // ← 一定要有這行
 import logo from '@/assets/icon/LOGO.png'
 import Basebutton from './Basebutton.vue'
@@ -9,8 +9,9 @@ import message from '@/assets/icon/message.svg'
 import weapon from '@/assets/icon/sword.svg'
 import calendar from '@/assets/icon/calendar.svg'
 import aboutus from '@/assets/icon/aboutus.svg'
+import cross from '@/assets/icon/cross.svg'
 const isOpen = ref(false)
-const userStore = useUserStore(); // 2. 建立 user store 的實例
+const userStore = useUserStore() // 2. 建立 user store 的實例
 const router = useRouter() // ← 一定要有這行
 
 // 關閉動畫
@@ -20,11 +21,11 @@ const handleClose = () => {
 
 // **【新功能】** 登出函式
 const handleLogout = () => {
-    userStore.logout();
+    userStore.logout()
     // **【修改處】** 改用命名路由進行跳轉，更可靠！
-    router.push({ name: 'Home' });
-    handleClose();
-};
+    router.push({ name: 'Home' })
+    handleClose()
+}
 </script>
 
 <template>
@@ -45,7 +46,7 @@ const handleLogout = () => {
             <RouterLink to="/weaponslist" class="h5 hover:text-orange-400 transition">武器展示區</RouterLink>
             <RouterLink to="/EventHomePage" class="h5 hover:text-orange-400 transition">活動專區</RouterLink>
             <RouterLink to="/About" class="h5 hover:text-orange-400 transition">關於我們</RouterLink>
-            
+
             <!-- **【修改處】** 登入狀態判斷 -->
             <div class="flex items-center space-x-2">
                 <!-- 如果未登入，顯示登入/註冊按鈕 -->
@@ -61,14 +62,18 @@ const handleLogout = () => {
                 <!-- 如果已登入，顯示使用者頭像和名稱 -->
                 <template v-else>
                     <RouterLink
-                      to="/UserProfile"
-                      class="flex items-center gap-3 text-white hover:text-orange-400 p-2 rounded-full transition-colors"
-                    >
-                      <img src="/users/userp.png"  alt="User Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-orange-400">
-                      <span class="font-semibold text-xl transition-colors">{{ userStore.userInfo.name }}</span>
+                        to="/UserProfile"
+                        class="flex items-center gap-3 text-white hover:text-orange-400 p-2 rounded-full transition-colors">
+                        <img
+                            src="/users/userp.png"
+                            alt="User Avatar"
+                            class="w-10 h-10 rounded-full object-cover border-2 border-orange-400" />
+                        <span class="font-semibold text-xl transition-colors">{{ userStore.userInfo.name }}</span>
                     </RouterLink>
                     <!-- 您也可以在這裡放一個登出按鈕，如果設計需要的話 -->
-                    <button @click="handleLogout" class="font-medium ml-4 p-2 rounded-[8px] hover:bg-orange-400">登出</button>
+                    <button @click="handleLogout" class="font-medium ml-4 p-2 rounded-[8px] hover:bg-orange-400">
+                        登出
+                    </button>
                 </template>
             </div>
         </nav>
@@ -81,10 +86,11 @@ const handleLogout = () => {
         :class="{ 'translate-x-0': isOpen, 'translate-x-full': !isOpen }">
         <!-- 關閉按鈕 -->
         <div class="flex justify-end">
-            <button
-                @click="handleClose"
-                class="w-12 h-12 flex items-center justify-center text-5xl font-bold hover:text-white transition duration-500 transform hover:rotate-[180deg] origin-center">
-                
+            <button @click="handleClose" class="w-12 h-12 flex items-center justify-center transition duration-500">
+                <img
+                    :src="cross"
+                    alt="close"
+                    class="w-12 h-12 transition duration-500 hover:rotate-180 hover:brightness-0 hover:invert" />
             </button>
         </div>
 
@@ -101,18 +107,19 @@ const handleLogout = () => {
 
         <!-- 如果已登入 -->
         <div v-else class="pb-3 border-b border-black">
-            <RouterLink 
+            <RouterLink
                 to="/UserProfile"
                 class="group flex items-center space-x-3 hover:text-white transition duration-300"
                 @click="handleClose">
-                <img src="/users/userp.png" alt="Avatar" class="w-12 h-12 rounded-full object-cover">
+                <img src="/users/userp.png" alt="Avatar" class="w-12 h-12 rounded-full object-cover" />
                 <span class="font-bold text-2xl">{{ userStore.userInfo.name }}</span>
             </RouterLink>
-            <button @click="handleLogout" class="mt-4 w-full text-left font-bold hover:text-white transition duration-300">
+            <button
+                @click="handleLogout"
+                class="mt-4 w-full text-left font-bold hover:text-white transition duration-300">
                 登出
             </button>
         </div>
-
 
         <!-- 導覽項目 -->
         <RouterLink
