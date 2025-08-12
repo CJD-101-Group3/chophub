@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue'; // 新增 onMounted 和 onUnmounted
 import { useRouter } from 'vue-router';
 
 // 匯入您指定的圖片與 SVG 圖示
@@ -31,9 +31,9 @@ const post = ref({
   },
   title: '【刀鋒淬鍊記】',
   content: '每把刀都需經高溫鍛造與淬火處理，才能擁有鋒利與堅韌的雙重特性。冷兵器自古以來就是戰場上的殺戮利器，無需火藥，僅憑鋼鐵與技巧，便能決定生死。刀劍的鋒芒、長槍的凌厲、戰斧的沉重，每一種武器都蘊含著獨特的戰鬥哲學與歷史痕跡。在冷冽的金屬光澤中，映照出人類智慧與殘酷戰爭的縮影，這就是冷兵器的致命魅力所在。',
-  imageUrl: postDetailImage, 
+  imageUrl: postDetailImage,
   likes: 82,
-  saves: 24, 
+  saves: 24,
 });
 
 // --- Interactive State ---
@@ -41,10 +41,9 @@ const isLiked = ref(false);
 const isSaved = ref(false);
 
 // --- Comments Data (simulated) ---
-// ★★★ 為每則留言新增 isLikedByUser 狀態 ★★★
 const comments = ref([
     { id: 1, author: { name: '中壢彭于晏', avatar: 'https://i.pravatar.cc/150?u=pengyuyan' }, content: '武器評價文字武器評價文字...', likes: 82, time: '23週', isLikedByUser: false },
-    { id: 2, author: { name: '館長', avatar: 'https://i.pravatar.cc/150?u=chang' }, content: '這把看起來不錯！', likes: 150, time: '2週', isLikedByUser: true } // 假設這則預設為已按讚
+    { id: 2, author: { name: '館長', avatar: 'https://i.pravatar.cc/150?u=chang' }, content: '這把看起來不錯！', likes: 150, time: '2週', isLikedByUser: true }
 ]);
 
 // --- New Comment State ---
@@ -75,11 +74,8 @@ function toggleSave() {
   post.value.saves += isSaved.value ? 1 : -1;
 }
 
-// ★★★ 新增：處理留言按讚的函式 ★★★
 function toggleCommentLike(comment) {
-  // 切換指定留言的按讚狀態
   comment.isLikedByUser = !comment.isLikedByUser;
-  // 根據新的狀態增減按讚數
   comment.likes += comment.isLikedByUser ? 1 : -1;
 }
 
@@ -108,7 +104,7 @@ function postComment() {
     imageUrl: newCommentImage.value,
     likes: 0,
     time: '剛剛',
-    isLikedByUser: false // ★★★ 新增留言時也要有初始狀態 ★★★
+    isLikedByUser: false
   };
 
   comments.value.unshift(newComment);
@@ -118,7 +114,6 @@ function postComment() {
   if (fileInput.value) fileInput.value.value = '';
 }
 
-// --- 檢舉功能的處理函式 ---
 function openReportModal() {
   showReportModal.value = true;
 }
@@ -141,6 +136,36 @@ function submitReport() {
   closeReportModal();
 }
 
+
+// ===== 新增：用於反向縮放的程式碼 (不建議在正式專案中使用) =====
+// 警告：以下程式碼會阻止檢舉視窗跟隨瀏覽器縮放，這會破壞網站的可及性，
+// 並可能導致視窗內的文字和邊框渲染模糊。
+const inverseScale = ref(1);
+
+const modalStyle = computed(() => ({
+  transform: `scale(${inverseScale.value})`,
+  transformOrigin: 'center center',
+}));
+
+function detectZoom() {
+  // window.devicePixelRatio 是一個近似值，並非 100% 可靠。
+  const zoomLevel = window.devicePixelRatio || 1;
+  inverseScale.value = 1 / zoomLevel;
+}
+
+onMounted(() => {
+  // 在組件掛載時，開始監聽 resize 事件來近似偵測縮放
+  detectZoom(); // 立即執行一次以獲取初始值
+  window.addEventListener('resize', detectZoom);
+});
+
+onUnmounted(() => {
+  // 在組件卸載時，移除監聽，防止記憶體洩漏
+  window.removeEventListener('resize', detectZoom);
+});
+// =================================================================
+
+
 </script>
 
 <template>
@@ -152,14 +177,14 @@ function submitReport() {
       </svg>
     </button>
 
-    <div class="w-full h-full lg:h-[90vh] lg:w-[90vw] lg:max-w-[1600px] flex flex-col lg:flex-row shadow-2xl lg:rounded-2xl overflow-hidden">
-      
+    <div class="w-full h-full lg:h-[90vh] lg:w-full lg:max-w-[1600px] flex flex-col lg:flex-row shadow-2xl lg:rounded-2xl overflow-hidden">
+
       <div class="hidden lg:flex lg:w-7/12 bg-black items-center justify-center">
         <img :src="post.imageUrl" alt="Post Image" class="max-h-full max-w-full object-contain">
       </div>
 
       <div class="w-full h-full lg:w-5/12 flex flex-col bg-white dark:bg-zinc-900">
-        
+
         <header class="p-4 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-700 lg:hidden">
           <div class="flex items-center gap-3">
             <img :src="post.author.avatar" alt="Author Avatar" class="w-8 h-8 rounded-full object-cover">
@@ -174,7 +199,7 @@ function submitReport() {
             </svg>
           </button>
         </header>
-        
+
         <div class="flex-grow overflow-y-auto">
           <div class="p-4 lg:p-6">
             <div class="hidden lg:flex items-center gap-3 mb-4">
@@ -184,7 +209,7 @@ function submitReport() {
                 <img v-for="(badge, index) in post.author.badges" :key="index" :src="badge" alt="Badge" class="w-5 h-5 object-contain">
               </div>
             </div>
-            
+
             <div class="aspect-w-4 aspect-h-3 bg-zinc-800 rounded-lg overflow-hidden mb-4 lg:hidden">
               <img :src="post.imageUrl" alt="Post Image" class="w-full h-full object-cover">
             </div>
@@ -194,7 +219,7 @@ function submitReport() {
               <p class="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{{ post.content }}</p>
             </div>
           </div>
-          
+
           <div class="px-4 lg:px-6 py-3 flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400 border-t border-zinc-200 dark:border-zinc-700">
             <div class="flex items-center gap-4">
               <div class="flex items-center gap-1">
@@ -210,7 +235,7 @@ function submitReport() {
                 <span>{{ comments.length }}</span>
               </div>
             </div>
-            
+
             <button @click="openReportModal" class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-500 transition-colors rounded-md p-2 -mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6H8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
@@ -239,7 +264,7 @@ function submitReport() {
               <span>分享</span>
             </button>
           </div>
-          
+
           <div class="p-4 lg:p-6">
             <h3 class="font-bold text-lg text-zinc-800 dark:text-zinc-100 mb-4">留言</h3>
             <div v-for="comment in comments" :key="comment.id" class="flex gap-3 mb-6">
@@ -250,23 +275,20 @@ function submitReport() {
                   <span class="ml-2 text-zinc-700 dark:text-zinc-300">{{ comment.content }}</span>
                 </p>
                 <img v-if="comment.imageUrl" :src="comment.imageUrl" class="mt-2 rounded-lg max-w-xs object-cover" alt="Comment image">
-                
-                <!-- ★★★ 更新留言下方的互動按鈕 ★★★ -->
+
                 <div class="flex items-center text-xs text-zinc-500 dark:text-zinc-400 mt-2 gap-4">
                   <span>{{ comment.time }}</span>
-                  
-                  <!-- 動態按讚按鈕 -->
-                  <button 
-                    @click="toggleCommentLike(comment)" 
+
+                  <button
+                    @click="toggleCommentLike(comment)"
                     class="flex items-center gap-1 font-semibold transition-colors"
                     :class="comment.isLikedByUser ? 'text-blue-600' : 'hover:text-zinc-900 dark:hover:text-zinc-100'"
                   >
-                    <img 
-                      :src="comment.isLikedByUser ? smallLikeActiveIcon : smallLikeIcon" 
-                      class="h-4 w-4" 
+                    <img
+                      :src="comment.isLikedByUser ? smallLikeActiveIcon : smallLikeIcon"
+                      class="h-4 w-4"
                       alt="Like"
                     />
-                    <!-- 根據按讚數顯示文字或數字 -->
                     <span>{{ comment.likes > 0 ? comment.likes : '讚' }}</span>
                   </button>
                 </div>
@@ -290,19 +312,19 @@ function submitReport() {
               <button @click="triggerFileInput" class="p-2 text-zinc-500 hover:text-blue-500">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
               </button>
-              <input 
-                v-model="newCommentText" 
+              <input
+                v-model="newCommentText"
                 @keyup.enter="postComment"
-                type="text" 
-                placeholder="新增留言..." 
+                type="text"
+                placeholder="新增留言..."
                 class="flex-grow bg-transparent focus:outline-none text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 px-2"
               />
-              <button 
-                @click="postComment" 
-                :disabled="!isCommentSubmittable" 
+              <button
+                @click="postComment"
+                :disabled="!isCommentSubmittable"
                 class="p-2 rounded-full transition-colors"
-                :class="isCommentSubmittable 
-                  ? 'text-zinc-500 hover:text-blue-500' 
+                :class="isCommentSubmittable
+                  ? 'text-zinc-500 hover:text-blue-500'
                   : 'text-zinc-400 opacity-50 cursor-not-allowed'"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -316,11 +338,21 @@ function submitReport() {
       </div>
     </div>
 
+    <!-- 檢舉視窗 -->
     <div v-if="showReportModal" @click.self="closeReportModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 transition-opacity">
-      <div class="bg-white dark:bg-zinc-800 rounded-2xl shadow-xl w-full max-w-md p-6 transform transition-all">
+      <!-- 
+        ===== 修改之處 =====
+        新增 :style="modalStyle" 的綁定。
+        這個 style 會應用一個反向的 scale transform，以抵銷瀏覽器的縮放效果。
+        如前述警告，此方法不建議用於正式環境。
+      -->
+      <div 
+        :style="modalStyle" 
+        class="bg-white dark:bg-zinc-800 rounded-2xl shadow-xl w-full max-w-sm p-6"
+      >
         <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">檢舉貼文</h3>
         <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4">請說明您檢舉此貼文的原因，這將有助於我們進行審核。</p>
-        <textarea 
+        <textarea
           v-model="reportReason"
           rows="5"
           placeholder="請填寫檢舉事由..."
@@ -341,5 +373,5 @@ function submitReport() {
 </template>
 
 <style scoped>
-/* You can add component-specific styles here if needed */
+
 </style>

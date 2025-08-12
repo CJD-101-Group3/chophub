@@ -1,5 +1,5 @@
 <script setup>
-// --- Script 區塊完全维持不变 ---
+// --- Script 區塊保持不變 ---
 import { ref } from 'vue';
 import TheHeader from '@/components/Theheader.vue';
 import TheFooter from '@/components/Thefooter.vue';
@@ -63,6 +63,8 @@ const mobileArtisans = [
         
         <!-- Section 3: 專業工匠介紹 -->
         <section class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12">
+          
+          <!-- 電腦版工匠區塊 (使用 hidden lg:flex) -->
           <div class="hidden lg:flex justify-center gap-6">
             <div v-for="artisan in artisans" :key="artisan.name" class="text-center w-48">
               <div class="aspect-[3/4] w-full rounded-lg overflow-hidden shadow-md">
@@ -71,6 +73,7 @@ const mobileArtisans = [
               <p class="mt-3 font-semibold">{{ artisan.name }}</p>
             </div>
           </div>
+          
           <!-- 【修改點 2】將 text-center lg:text-left 改為 text-left -->
           <div class="text-left max-w-md">
             <h3 class="text-3xl lg:text-3xl font-bold mb-4">專業工匠・匠心鍛鋼</h3>
@@ -78,9 +81,15 @@ const mobileArtisans = [
               他們不只是打造兵器，更傳承一段歷史。在高溫與錘聲中，金屬被反覆淬鍊，成就每一把兼具實用與美學的冷兵器。ChopHub 精選介紹來自世界各地的工匠職人，讓你認識背後那雙鍛造出傳奇的雙手。
             </p>
           </div>
+          
+          <!-- 手機版工匠區塊 (使用 lg:hidden) -->
           <div class="lg:hidden flex flex-col items-center gap-8">
             <div v-for="artisan in mobileArtisans" :key="artisan.id" class="w-full">
-              <img :src="artisan.image" :alt="'Artisan image ' + artisan.id" class="w-full h-80 object-cover rounded-lg shadow-md">
+              <!-- 
+                【修復重點：避免人頭被裁切】
+                為 img 加上 object-top，確保裁切時優先保留圖片頂部（人頭）。
+              -->
+              <img :src="artisan.image" :alt="'Artisan image ' + artisan.id" class="w-full h-80 object-cover object-top rounded-lg shadow-md">
             </div>
           </div>
         </section>
