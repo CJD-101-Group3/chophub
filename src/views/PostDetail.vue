@@ -340,24 +340,31 @@ onUnmounted(() => {
 
     <!-- 檢舉視窗 -->
     <div v-if="showReportModal" @click.self="closeReportModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 transition-opacity">
-      <!-- 
-        ===== 修改之處 =====
-        新增 :style="modalStyle" 的綁定。
-        這個 style 會應用一個反向的 scale transform，以抵銷瀏覽器的縮放效果。
-        如前述警告，此方法不建議用於正式環境。
-      -->
       <div 
         :style="modalStyle" 
         class="bg-white dark:bg-zinc-800 rounded-2xl shadow-xl w-full max-w-sm p-6"
       >
         <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">檢舉貼文</h3>
         <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4">請說明您檢舉此貼文的原因，這將有助於我們進行審核。</p>
-        <textarea
-          v-model="reportReason"
-          rows="5"
-          placeholder="請填寫檢舉事由..."
-          class="w-full p-3 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-zinc-50 dark:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-zinc-900 dark:text-zinc-100 transition"
-        ></textarea>
+
+        <!-- ===== 修改開始 ===== -->
+        <div>
+          <textarea
+            v-model="reportReason"
+            rows="5"
+            maxlength="200"
+            placeholder="請填寫檢舉事由 (200字內)..."
+            class="w-full p-3 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-zinc-50 dark:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-zinc-900 dark:text-zinc-100 transition"
+          ></textarea>
+          <div 
+            class="text-right text-xs mt-1 pr-1"
+            :class="reportReason.length >= 200 ? 'text-red-500' : 'text-zinc-500 dark:text-zinc-400'"
+          >
+            {{ reportReason.length }} / 200
+          </div>
+        </div>
+        <!-- ===== 修改結束 ===== -->
+        
         <div class="flex justify-end gap-4 mt-6">
           <button @click="closeReportModal" class="px-5 py-2 rounded-lg text-zinc-800 dark:text-zinc-200 bg-zinc-200 dark:bg-zinc-600 hover:bg-zinc-300 dark:hover:bg-zinc-500 font-semibold transition-colors">
             取消
