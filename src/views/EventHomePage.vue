@@ -6,8 +6,46 @@ import DropDownFilter from '@/components/DropDownFilter.vue';
 import EventCard from '@/components/EventCard.vue';
 import Pagination from '@/components/Pagination.vue';
 import { getPublicImg } from '@/utils/getPublicImg'
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
+
+const allEvents = ref([]); // 初始化一個空陣列，用來存放所有活動
+const loading = ref(true); // 用於顯示「載入中」
+const error = ref(null);   // 用於顯示錯誤訊息
+
+// --- 4. 建立獲取所有活動資料的函式 ---
+async function fetchAllEvents() {
+   loading.value = true;  // 開始請求前，永遠先設定為載入中
+   error.value = null;    // 清除之前的錯誤
+   try {
+      const apiUrl = 'http://localhost:8888/ChopHub-back-end/api/getAllEvents.php';
+      console.log("正在請求 API:", apiUrl);
+
+      const response = await axios.get(apiUrl);
+
+      console.log("API 成功回應:", response.data);
+
+      // **【核心修正】將 API 資料存入正確的 events 變數**
+      // 假設您的 PHP 回傳的資料結構是 { "status": "success", "data": [...] }
+      // 如果是，請使用 response.data.data。如果直接是 [...] 陣列，就用 response.data
+      allEvents.value = response.data.data || response.data;
+
+   } catch (err) {
+      console.error("API 請求失敗:", err);
+      error.value = "無法載入活動資料，請稍後再試。"; // 設定錯誤訊息給使用者看
+   } finally {
+      // **【核心修正】不論成功或失敗，最後都要結束載入狀態**
+      loading.value = false;
+   }
+};
+
+
+// --- 5. 在元件掛載後，自動執行上述函式 ---
+onMounted(() => {
+   fetchAllEvents();
+});
+
 
 
 const router = useRouter();
@@ -72,98 +110,27 @@ const image5 = getPublicImg('events/forgingman.png');
 const image6 = getPublicImg('events/viking-forges-weapons-swords-smithy-man-warrior-s-clothes-is-smithy.jpg');
 
 
-// --- 原始活動資料 ---
-const events = ref([
-   {
-      id: 1,
-      title: '匠魂初試 - 手作小刀實體體驗',
-      type: '實體活動',
-      location: '台北市',
-      date: '2025/8/03(日) 14:00PM',
-      rating: 5,
-      reviews: 121,
-      isFeatured: true,
-      image: image1
-   },
-   {
-      id: 2,
-      title: '【虛擬兵器匠】線上設計你的奇幻刀劍',
-      type: '線上活動',
-      location: '線上',
-      date: '2025/8/10(日) 19:00PM',
-      rating: 4,
-      reviews: 76,
-      isFeatured: true,
-      image: image2
-   },
-   {
-      id: 3,
-      title: '鍛造群俠會 - 刀匠線上交流',
-      type: '線上活動',
-      location: '線上',
-      date: '2025/7/23(三) 10:00AM',
-      rating: 4,
-      reviews: 82,
-      isFeatured: false,
-      image: image3
-   },
-   {
-      id: 4,
-      title: '匠人現場 - 劍柄木雕實作坊',
-      type: '實體活動',
-      location: '台中市',
-      date: '2025/8/12(二) 13:30PM',
-      rating: 4,
-      reviews: 64,
-      isFeatured: true,
-      image: image4
-   },
-   {
-      id: 5,
-      title: '皮革護刀鞘 - 線上手作課程',
-      type: '線上活動',
-      location: '線上',
-      date: '2025/8/20(三) 15:00PM',
-      rating: 5,
-      reviews: 97,
-      isFeatured: false,
-      image: image5
-   },
-   {
-      id: 6,
-      title: '匠人故事夜 - 鍛劍師傅的職人生涯',
-      type: '線上活動',
-      location: '線上',
-      date: '2025/8/04(一) 20:00PM',
-      rating: 4.5,
-      reviews: 43,
-      isFeatured: false,
-      image: image6
-   }
-]);
-
-
 // --- 核心篩選邏輯 ---
 const filteredEvents = computed(() => {
-   let result = events.value;
+   let result = allEvents.value;
 
-   if (selectedType.value !== 'all') {
-      result = result.filter(event => event.type === selectedType.value);
+   if (!result || !Array.isArray(result)) {
+      return []; // 如果資料還沒回來或是格式不對，回傳空陣列
    }
 
+   // ... 您的篩選邏輯（這裡不需要改動）
+   if (selectedType.value !== 'all') {
+      // 請注意：這裡的 event.type 要和您資料庫回傳的欄位名稱一致
+      result = result.filter(event => event.event_type === selectedType.value);
+   }
    if (selectedLocation.value !== 'all') {
       result = result.filter(event => event.location === selectedLocation.value);
    }
-
    if (selectedTime.value !== 'default') {
       result = result.slice().sort((a, b) => {
-         const dateA = new Date(a.date.split('(')[0]);
-         const dateB = new Date(b.date.split('(')[0]);
-         if (selectedTime.value === 'newest') {
-            return dateB - dateA;
-         } else {
-            return dateA - dateB;
-         }
+         const dateA = new Date(a.event_date.split('(')[0]);
+         const dateB = new Date(b.event_date.split('(')[0]);
+         return selectedTime.value === 'newest' ? dateB - dateA : dateA - dateB;
       });
    }
    return result;
@@ -182,46 +149,54 @@ console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
 <template>
    <Theheader />
    <main class="bg-[#282828] flex-1 flex flex-col items-center overflow-y-auto space-y-4 md:space-y-6">
+      <!-- Banner 和按鈕部分不需要改動 -->
       <div class="relative">
          <img :src="banner" alt="鑄造師" class="block z-index-[-1] opacity-[60%]" />
          <p class="absolute top-[40%] left-[13%] text-[#fff] text-xl font-bold tracking-widest md:text-4xl lg:text-6xl">
-            冷鋼烈火 ·
-            共赴匠魂之旅</p>
+            冷鋼烈火 · 共赴匠魂之旅
+         </p>
          <p class="absolute top-[45%] left-[13%] text-[#fff] mt-5 md:mt-10 text-base md:text-2xl lg:text-3xl">
-            體驗鍛造、深度研修，沉浸兵器之美</p>
+            體驗鍛造、深度研修，沉浸兵器之美
+         </p>
       </div>
-
       <div class="flex justify-center items-center">
          <GeneralButton variant="primary" @click="goToMyEvents" width="150px" height="50px" font-size="20px">
             我的活動
          </GeneralButton>
       </div>
-
       <div class="flex flex-row gap-3">
          <DropDownFilter title="活動類型" :items="typeItems" v-model="selectedType" />
-
          <DropDownFilter title="時間排序" :items="timeItems" v-model="selectedTime" />
-
          <DropDownFilter title="活動地點" :items="locationItems" v-model="selectedLocation" />
       </div>
 
-      <div v-if="filteredEvents.length > 0" class="inline-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-5">
-         <EventCard v-for="event in filteredEvents" :key="event.id" :title="event.title" :event-type="event.type"
-            :event-date="event.date" :rating="event.rating" :review-count="event.reviews"
-            :is-featured="event.isFeatured" :event-image="event.image" @learn-more="handleLearnMore"
-            class="shadow-[8px_8px_15px_rgba(255,255,255,0.4)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] transition-shadow duration-300" />
-      </div>
+      <!-- **【核心修正】更新 v-if 邏輯，讓它能正確顯示三種狀態 ** -->
 
-      <div v-else class="text-white text-center py-10">
-         <p>找不到符合條件的活動，請嘗試調整篩選條件。</p>
+      <!-- 1. 載入中提示 -->
+      <div v-if="loading" class="text-white text-center py-10">載入活動中...</div>
+
+      <!-- 2. 錯誤提示 -->
+      <div v-else-if="error" class="text-red-500 text-center py-10">{{ error }}</div>
+
+      <!-- 3. 成功後，顯示卡片列表或無資料提示 -->
+      <div v-else>
+         <div v-if="filteredEvents.length > 0" class="inline-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-5">
+            <EventCard v-for="event in filteredEvents" :key="event.id" :id="event.id" :title="event.title"
+               :event-type="event.category" 
+               :event-date="event.start_time" 
+               :rating="event.rating"
+               :review-count="event.review_count" 
+               :event-image="event.event_image_url" />
+         </div>
+         <!-- 沒有活動時的提示 -->
+         <div v-else class="text-white text-center py-10">
+            <p>找不到符合篩選條件的活動。</p>
+         </div>
       </div>
 
       <div>
-
          <Pagination :total-pages="mockTotalPages" v-model:currentPage="currentPage" />
-
       </div>
    </main>
-
    <Thefooter />
 </template>

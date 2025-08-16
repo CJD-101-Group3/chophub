@@ -12,15 +12,13 @@ import defaultEventImage from '@/assets/icon/activity1.png';
 // --- 定義 Props ---
 const props = defineProps({
   id: { type: [String, Number], required: true },
+  title: { type: String, default: '預設標題' },
+  eventType: { type: String, default: '活動類型' },
+  eventDate: { type: String, default: '活動日期' },
+  rating: { type: Number, default: 0 },
+  reviewCount: { type: Number, default: 0 },
   eventImage: { type: String, default: '' },
-  isFeatured: { type: Boolean, default: false },
-  title: { type: String, default: '鍛造群俠會 - 刀匠線上交流' },
-  eventType: { type: String, default: '線上活動' },
-  eventDate: { type: String, default: '2025/7/23(三) 10:00AM' },
-  rating: { type: Number, default: 4 },
-  reviewCount: { type: Number, default: 82 },
 });
-console.log(`卡片標題: '${props.title}', 收到的圖片 prop:`, props.eventImage);
 
 
 // --- 收藏狀態 ---
@@ -46,7 +44,6 @@ function goToDetail() {
 </script>
 
 <template>
-  <!-- 【修改】移除了 md:w-[387px]，讓寬度完全由父層的 grid 控制 -->
   <div class="flex flex-col w-full max-w-[350px] bg-[#FEFEFE] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2 shadow-[15px_15px_13px_rgba(255,255,255,0.5)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] md:transition-shadow">
     
     <div class="relative">
