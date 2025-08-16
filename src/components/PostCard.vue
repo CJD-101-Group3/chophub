@@ -1,6 +1,6 @@
 <script setup>
-// --- Script 區塊維持不變 ---
 import { defineProps, ref, computed } from 'vue';
+import axios from 'axios'; // 【新增】引入 axios
 import fireIcon from '@/assets/icon/fire.svg';
 import smallLikeIcon from '@/assets/icon/smalllike.svg';
 import smallLikeActiveIcon from '@/assets/icon/smalllike_h.svg';
@@ -15,11 +15,12 @@ const props = defineProps({
   postTitle: { type: String, default: '手裡劍' },
   isHot: { type: Boolean, default: false },
   description: { type: String, default: '四爪對稱手裡劍，結構精準銳利，中心圓孔設計，兼具工藝美感與穩定投擲性能。' },
-  likes: { type: Number, default: 82 },
-  stars: { type: Number, default: 24 },
+  likes: { type: Number, default: 0 },
+  stars: { type: Number, default: 0 },
 });
 
-const isLiked = ref(false);
+// isLiked 狀態可以根據使用者是否已按讚來初始化 (進階功能)
+const isLiked = ref(false); 
 const isStarred = ref(false);
 const localLikes = ref(props.likes);
 const localStars = ref(props.stars);
@@ -27,26 +28,52 @@ const localStars = ref(props.stars);
 const smallLikeSrc = computed(() => isLiked.value ? smallLikeActiveIcon : smallLikeIcon);
 const smallStarSrc = computed(() => isStarred.value ? smallStarActiveIcon : smallStarIcon);
 
-function toggleLike() {
-  isLiked.value = !isLiked.value;
-  localLikes.value += isLiked.value ? 1 : -1;
+// 【修改】將 toggleLike 函式替換為非同步 API 呼叫
+async function toggleLike() {
+  try {
+    // 【非常重要】您必須用真實的邏輯來獲取當前登入者的 ID
+    // 這通常來自 Pinia, Vuex, 或 localStorage
+    const currentUserId = 1; // 暫時寫死為 1，請務必替換！
+
+    if (!currentUserId) {
+      alert('請先登入才能按讚！');
+      return;
+    }
+
+    const apiUrl = 'http://localhost:8888/chophub-admin/api/toggleLike.php';
+    const response = await axios.post(apiUrl, {
+      post_id: props.id,
+      user_id: currentUserId,
+    });
+
+    if (response.data && response.data.status === 'success') {
+      // 根據後端回傳的結果，即時更新畫面上的讚數和圖示
+      if (response.data.action === 'liked') {
+        localLikes.value++;
+        isLiked.value = true;
+      } else if (response.data.action === 'unliked') {
+        localLikes.value--;
+        isLiked.value = false;
+      }
+    } else {
+      console.error('API 操作失敗:', response.data.message);
+    }
+  } catch (error) {
+    console.error('呼叫按讚 API 時出錯:', error);
+    alert('操作失敗，請稍後再試。');
+  }
 }
+
+// 收藏功能 (未來您可以比照 toggleLike 模式建立 toggleFavorite.php)
 function toggleStar() {
   isStarred.value = !isStarred.value;
   localStars.value += isStarred.value ? 1 : -1;
+  // TODO: 呼叫 toggleFavorite.php API
 }
-
-// 為了 .stop 修飾符而建立的空函式，避免點擊時出現控制台錯誤
-function doNothing() {}
 </script>
 
 <template>
-  <!-- 
-    【修改 1】: 將根元素 div 換成 router-link
-    - :to 屬性指向貼文詳情頁。
-    - class 樣式完全繼承，外觀不變。
-    - 現在整張卡片都是一個巨大的連結。
-  -->
+  <!-- Template 結構維持不變 -->
   <router-link 
     :to="`/post/${id}`"
     class="flex flex-col w-full md:w-[348px] bg-[#FEFEFE] rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2"
@@ -54,14 +81,8 @@ function doNothing() {}
     <div class="relative">
       <img :src="postImage" alt="Post Image" class="w-full h-auto object-cover" />
     </div>
-
     <div class="flex flex-col flex-grow p-5">
       <div class="flex items-center justify-between mb-[14px]">
-        <!-- 
-          【修改 2】: 在內部的 router-link 上加上 @click.stop
-          - 這會讓點擊使用者名稱時，只觸發前往 ArtisanShowcase 的導航。
-          - .stop 修飾符會阻止點擊事件冒泡到外層的卡片連結。
-        -->
         <router-link 
           to="/ArtisanShowcase" 
           class="flex items-center gap-x-2.5 group"
@@ -72,11 +93,6 @@ function doNothing() {}
             {{ userName }}
           </span>
         </router-link>
-        <!-- 
-          【修改 3】: 在按鈕上加上 @click.prevent.stop
-          - .prevent 阻止按鈕的預設行為。
-          - .stop 阻止點擊事件冒泡。
-        -->
       </div>
       <div class="flex items-center gap-x-2 mb-2.5">
         <h2 class="text-[#F2994A] text-[25.2px] font-medium leading-[35.28px] tracking-[1.12px]">{{ postTitle }}</h2>
@@ -86,13 +102,7 @@ function doNothing() {}
         {{ description }}
       </p>
       <div class="flex-grow"></div>
-      
       <div class="flex justify-end items-center gap-x-6 mb-3.5 text-gray-500">
-        <!-- 
-          【修改 4】: 在按讚/收藏的容器上加上 @click.prevent.stop
-          - 這樣點擊按讚或收藏時，只會觸發 toggleLike/toggleStar 函式。
-          - 不會觸發外層的頁面跳轉。
-        -->
         <div class="flex items-center gap-x-2.5 cursor-pointer" @click.prevent.stop="toggleLike">
           <img :src="smallLikeSrc" alt="Likes" class="w-7 h-7" />
           <span class="w-8 text-left text-base">{{ localLikes }}</span>
@@ -102,13 +112,6 @@ function doNothing() {}
           <span class="w-8 text-left text-base">{{ localStars }}</span>
         </div>
       </div>
-      
-      <!-- 
-        【修改 5】: 將原本的 router-link 按鈕改為普通的 div
-        - 因為整張卡片都已經是連結了，這裡不再需要一個重複的連結。
-        - 改為 div 可以避免 HTML 中 <a> 標籤互相嵌套的無效結構。
-        - 樣式保持不變，所以外觀看起來還是一個按鈕。
-      -->
       <div 
         class="w-full bg-[#F2994A] text-[#ffffff] font-semibold rounded-lg text-base h-[59px] flex items-center justify-center focus:outline-none focus:ring-0 hover:text-white"
       >

@@ -46,19 +46,30 @@ const fetchPosts = async () => {
     // 檢查後端回傳的狀態是否為 'success'
     if (response.data && response.data.status === 'success') {
       
-      // 將 API 回傳的資料陣列 (response.data.data) 存入 posts ref
-      // 使用 .map 處理每一筆資料，確保格式符合前端需求
-      posts.value = response.data.data.map(post => ({
-        ...post,
-        // 後端撈出來的 COUNT 結果可能是字串，建議轉為數字以利操作
-        likes: parseInt(post.likes, 10) || 0, 
-        stars: parseInt(post.favorites, 10) || 0, // 對應你前端的 stars
+      // 【關鍵修改處】在這裡精確地映射 props
+      posts.value = response.data.data.map(post => {
         
-        // 你可以根據業務邏輯動態決定 isFeatured 和 isHot
-        isFeatured: true, // 假設所有貼文都是精選
-        isHot: (parseInt(post.likes, 10) || 0) > 150, // 讚數 > 150 則標為熱門
-        id: post.post_id // 確保 key 使用的是 post_id
-      }));
+        // 從 getPost.php 的 SQL 查詢來看，您有以下欄位：
+        // post_id, user_id, title, content, image_url, created_at, status
+        // 您可能還需要 JOIN users 表來獲取 userName
+        
+        return {
+          // 問題 1 解決：將 post_id (可能是字串) 轉為數字
+          id: parseInt(post.post_id, 10), 
+          
+          // 問題 2 解決：將 API 的欄位名稱映射到 PostCard 需要的 props 名稱
+          postImage: post.image_url,    // 'image_url' -> 'postImage'
+          postTitle: post.title,        // 'title' -> 'postTitle'
+          description: post.content,    // 'content' -> 'description'
+          userName: post.username || '作者', // 假設您有關聯查詢 users 表得到 username
+          
+          // 您原有的邏輯保持不變
+          // 假設您的 getPosts.php 已經加入了計算 likes 和 favorites 的邏輯
+          likes: parseInt(post.likes_count, 10) || 0, 
+          stars: parseInt(post.favorites_count, 10) || 0,
+          isHot: (parseInt(post.likes_count, 10) || 0) > 150,
+        };
+      });
 
     } else {
       // API 回傳了資料，但 status 不是 success
