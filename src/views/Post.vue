@@ -1,29 +1,18 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
 // --- 組件引入 ---
-// 確保您的組件路徑正確
+// 確保您的組件路徑是正確的
 import CreatePostModal from '@/components/CreatePostModal.vue'; 
-import TheHeader from '@/components/TheHeader.vue'; // 假設您有此組件
-import TheFooter from '@/components/TheFooter.vue'; // 假設您有此組件
-import PostCard from '@/components/PostCard.vue';   // 假設您有此組件
-import Pagination from '@/components/Pagination.vue'; // 假設您有此組件
+import TheHeader from '@/components/TheHeader.vue';
+import TheFooter from '@/components/TheFooter.vue';
+import PostCard from '@/components/PostCard.vue';
+import Pagination from '@/components/Pagination.vue';
 
 // --- Icon 引入 ---
 // 請確認您的 icon 路徑是正確的
 import searchIcon from '@/assets/icon/search.svg';
-
-// --- 貼文圖片引入 ---
-// 請確認您的圖片路徑是正確的
-import post01 from '@/assets/post/post01.png';
-import post02 from '@/assets/post/post02.png';
-import post03 from '@/assets/post/post03.png';
-import post04 from '@/assets/post/post04.png';
-import post05 from '@/assets/post/post05.png';
-import post06 from '@/assets/post/post06.png';
-import post07 from '@/assets/post/post07.png';
-import post08 from '@/assets/post/post08.png';
-import post09 from '@/assets/post/post09.png';
 
 // --- 響應式狀態 ---
 const isModalOpen = ref(false);
@@ -33,31 +22,81 @@ const sortOptions = ref(['最熱門', '評價最高', '最新發布', '最多留
 const searchTerm = ref('');
 
 // --- 分頁狀態 ---
+// 你可以讓後端 API 回傳總頁數，然後在這裡動態設定
 const currentPage = ref(1);
-const totalPages = ref(20);
+const totalPages = ref(20); // 目前為靜態，可後續優化
 
-// --- 貼文假資料 ---
-const posts = ref([
-  { id: 1, postImage: post01, isFeatured: true, userName: '中壢彭于晏', postTitle: '刀鋒淬鍊記', isHot: true, description: '每把刀都需經高溫鍛造與淬火處理，才能擁有鋒利與堅韌的雙重特性。', likes: 188, stars: 45 },
-  { id: 2, postImage: post02, isFeatured: true, userName: 'BladeMaker_99', postTitle: '武士刀開刃', isHot: false, description: '刀刃打磨的過程講究角度與手感，最終展現出光滑如鏡的刃口。', likes: 152, stars: 30 },
-  { id: 3, postImage: post03, isFeatured: true, userName: '古兵小誌', postTitle: '冷兵器展覽', isHot: true, description: '展覽收錄來自各地的冷兵器，讓你一次看遍歷史的鋒芒與工藝之美。', likes: 199, stars: 48 },
-  { id: 4, postImage: post04, isFeatured: true, userName: 'FireForge匠心', postTitle: '匠人訪談', isHot: false, description: '走進鐵匠的世界，聽他分享打造兵器時的堅持與心路歷程。', likes: 120, stars: 25 },
-  { id: 5, postImage: post05, isFeatured: true, userName: 'ColdSteel手作', postTitle: '西洋劍製程', isHot: true, description: '每一把西洋劍從鋼材選擇到護手裝配，都需經歷數十道繁複工序。', likes: 176, stars: 41 },
-  { id: 6, postImage: post06, isFeatured: true, userName: '斬鐵測試員', postTitle: '斧頭也浪漫', isHot: false, description: '這把斧頭融合雕刻與木作藝術，完全顛覆你對斧頭的想像！', likes: 98, stars: 15 },
-  { id: 7, postImage: post07, isFeatured: true, userName: '鍛魂者_Yu', postTitle: '兵器保養法', isHot: true, description: '定期清潔、上油與防鏽處理，是維持刀劍狀態的基本保養流程。', likes: 165, stars: 38 },
-  { id: 8, postImage: post08, isFeatured: true, userName: '戰場殘光', postTitle: '手工打造盾', isHot: false, description: '這面圓盾使用多層木板壓製成型，兼具古風美感與實戰強度。', likes: 134, stars: 29 },
-  { id: 9, postImage: post09, isFeatured: true, userName: '武器控_阿鋒', postTitle: '仿古戰槍秀', isHot: true, description: '以古法工藝打造的仿宋代戰槍，每一枝都重現歷史風貌與細節。', likes: 192, stars: 47 },
-]);
+// --- 貼文資料 ---
+// 初始化為一個空陣列，等待 API 回傳資料
+const posts = ref([]);
 
 // --- 函式 ---
+
+/**
+ * @description 從後端 API 獲取貼文資料並更新到畫面上
+ */
+const fetchPosts = async () => {
+  try {
+    // 【關鍵點】請確保這個 URL 是你後端 API 的正確位址
+    // 根據我們的偵錯，這個 URL 應該是正確的
+    const apiUrl = 'http://localhost:8888/chophub-admin/api/getPosts.php';
+    const response = await axios.get(apiUrl);
+
+    
+    // 檢查後端回傳的狀態是否為 'success'
+    if (response.data && response.data.status === 'success') {
+      
+      // 將 API 回傳的資料陣列 (response.data.data) 存入 posts ref
+      // 使用 .map 處理每一筆資料，確保格式符合前端需求
+      posts.value = response.data.data.map(post => ({
+        ...post,
+        // 後端撈出來的 COUNT 結果可能是字串，建議轉為數字以利操作
+        likes: parseInt(post.likes, 10) || 0, 
+        stars: parseInt(post.favorites, 10) || 0, // 對應你前端的 stars
+        
+        // 你可以根據業務邏輯動態決定 isFeatured 和 isHot
+        isFeatured: true, // 假設所有貼文都是精選
+        isHot: (parseInt(post.likes, 10) || 0) > 150, // 讚數 > 150 則標為熱門
+        id: post.post_id // 確保 key 使用的是 post_id
+      }));
+
+    } else {
+      // API 回傳了資料，但 status 不是 success
+      console.error('API returned an error:', response.data.message || 'Unknown error');
+      // 清空陣列以防顯示舊資料
+      posts.value = [];
+    }
+  } catch (error) {
+    // 發生網路錯誤或 API 根本無法連上
+    console.error('Failed to fetch posts:', error);
+    // 清空陣列以防顯示舊資料
+    posts.value = [];
+    // 在這裡可以加入一些提示，例如 alert('無法載入貼文，請稍後再試。');
+  }
+};
+
+// 【關鍵點】使用 onMounted 生命週期鉤子
+// 這能確保在組件掛載到畫面上之後，立刻去執行 fetchPosts() 來獲取資料
+onMounted(() => {
+  fetchPosts();
+});
+
+// --- 其他互動函式 (可後續實作) ---
 function selectSort(option) {
   selectedSort.value = option;
   isDropdownOpen.value = false;
+  // TODO: 未來可以在這裡根據排序選項，帶上參數重新呼叫 fetchPosts()
+  // 例如：fetchPosts({ sortBy: option });
 }
 
 function performSearch() {
   alert(`正在搜尋：${searchTerm.value}`);
+  // TODO: 未來可以在這裡根據搜尋關鍵字，帶上參數重新呼叫 fetchPosts()
+  // 例如：fetchPosts({ search: searchTerm.value });
 }
+
+// console.log('Vite 提供的 BASE_URL 是:', import.meta.env.BASE_URL);
+// console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
 </script>
 
 <template>
@@ -65,7 +104,9 @@ function performSearch() {
     <TheHeader />
 
     <main class="flex-grow w-full px-4 py-8 flex justify-center">
-      <div class="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- 【關鍵點】使用 v-if 來判斷是否有貼文 -->
+      <!-- 當 posts.length > 0 時，才顯示貼文列表 -->
+      <div v-if="posts.length > 0" class="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         
         <!-- 搜尋與排序欄 -->
         <div class="bg-white rounded-lg shadow-md p-4 col-span-full">
@@ -106,11 +147,19 @@ function performSearch() {
         />
 
         <!-- 分頁組件 -->
-        <Pagination 
-          :total-pages="totalPages" 
-          v-model:currentPage="currentPage" 
-        />
+        <div class="col-span-full">
+            <Pagination 
+                :total-pages="totalPages" 
+                v-model:currentPage="currentPage" 
+            />
+        </div>
 
+      </div>
+      
+      <!-- 當 API 請求失敗或沒有任何貼文時，顯示提示訊息 -->
+      <div v-else class="text-white text-center text-xl">
+        <p>正在載入貼文...</p>
+        <!-- 你也可以根據不同狀態顯示不同訊息，例如載入失敗 -->
       </div>
     </main>
 
