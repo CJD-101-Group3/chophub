@@ -1,14 +1,56 @@
 <script setup>
-import { ref } from 'vue';
+import {  ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { getPublicImg } from '@/utils/getPublicImg'; // 
 
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 import Basebutton from '../components/Basebutton.vue';
+import axios from 'axios';
+
+const loading = ref(false)
+const users = ref([])
+const error = ref(null)
 
 
 
+async function fetchAllUser() {
+  loading.value = true
+  error.value = null
+
+  // ✅ 建議先用完整 URL（或在 vite.config 設 proxy 後再用相對路徑）
+  const apiUrl = 'http://localhost:8888/back-end/api/userProfile.php'
+  console.log('正在請求 API:', apiUrl)
+
+  try {
+    const response = await axios.get(apiUrl, { params: { user_id: 2 } })
+    console.log('API 成功回應:', response.data)
+
+    // 若後端是 {status, data} 結構就取 data；否則直接用 response.data
+    const data = ('data' in (response.data || {})) ? response.data.data : response.data
+
+    // 將後端欄位對應到前端顯示用的 key
+    memberInfo.value = {
+      nickname: data.display_name ?? '',
+      realName:  data.real_name   ?? '',
+      badge:     data.badge       ?? '',
+      birthDate: data.birthday    ?? '',
+      gender:    data.gender      ?? '',
+      joinDate:  data.created_at  ?? '',
+      location:  data.location    ?? ''
+    }
+  } catch (err) {
+    console.error('API 請求失敗:', err)
+    error.value = err?.response?.data?.error || err?.message || '無法載入資料'
+  } finally {
+    loading.value = false
+  }
+};
+
+// --- 5. 在元件掛載後，自動執行上述函式 ---
+onMounted(() => {
+   fetchAllUser();
+});
 
 
 
@@ -38,16 +80,15 @@ const menuItems = ref([
 
 // 會員資料
 const memberInfo = ref({
-  name: '露比匠',
-  nickname: 'RUBI',
-  realName: '無言組',
-  badge: '刀匠 / 一般',
-  birthDate: '1997/06/28',
-  gender: '男生',
-  joinDate: '2025/05/20',
-  location: '加州',
-  avatarUrl: getPublicImg('users/userp.png'), // 
+  nickname: '',
+  realName: '',
+  badge: '',
+  birthDate: '',
+  gender: '',
+  joinDate: '',
+  location: ''
 });
+
 
 // 跳轉到編輯頁面的函式
 const goToEditProfile = () => {
@@ -598,7 +639,7 @@ const goToApplicationGuide = () => {
       <!-- 左側邊欄 (電腦版顯示) -->
       <aside class="hidden lg:block lg:w-72 flex-shrink-0">
         <div class="bg-white p-4 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)] sticky top-24">
-          <div class="flex flex-col items-center text-center border-b pb-4 mb-4">
+          <div class="flex flex-col items-center text-center border-b pb-4 mb-4 select-none">
             <img 
               :src="memberInfo.avatarUrl" 
               alt="Avatar" 
@@ -630,8 +671,8 @@ const goToApplicationGuide = () => {
         <!-- 手機版下拉式選單 (在電腦版上會隱藏) -->
         <div class="relative lg:hidden mb-6">
           <button @click="toggleDropdown" class="w-full flex items-center justify-between p-3 bg-white border border-gray-300 rounded-md shadow-sm">
-            <div class="flex items-center">
-              <img :src="memberInfo.avatarUrl" alt="Avatar" class="w-8 h-8 rounded-full object-cover mr-3"/>
+            <div class="flex items-center select-none ">
+              <img :src="memberInfo.avatarUrl" alt="Avatar" class="w-8 h-8 rounded-full object-cover mr-3 "/>
               <span class="font-semibold">{{ memberInfo.name }}</span>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform" :class="{'rotate-180': isDropdownOpen}">
@@ -645,7 +686,7 @@ const goToApplicationGuide = () => {
           </transition>
         </div>
         
-        <div class="flex justify-center mb-6">
+        <div class="flex justify-center mb-6 select-none">
           <img 
             :src="memberInfo.avatarUrl" 
             alt="User Avatar" 
