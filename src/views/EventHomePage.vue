@@ -6,9 +6,9 @@ import DropDownFilter from '@/components/DropDownFilter.vue';
 import EventCard from '@/components/EventCard.vue';
 import Pagination from '@/components/Pagination.vue';
 import { getPublicImg } from '@/utils/getPublicImg'
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';//~~~~
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+import axios from 'axios';//~~~~
 
 const allEvents = ref([]); // 初始化一個空陣列，用來存放所有活動
 const loading = ref(true); // 用於顯示「載入中」
