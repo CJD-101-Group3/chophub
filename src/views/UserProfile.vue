@@ -1,8 +1,6 @@
 <script setup>
 import {  ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getPublicImg } from '@/utils/getPublicImg'; // 
-
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 import Basebutton from '../components/Basebutton.vue';
@@ -19,7 +17,7 @@ async function fetchAllUser() {
   error.value = null
 
   // ✅ 建議先用完整 URL（或在 vite.config 設 proxy 後再用相對路徑）
-  const apiUrl = 'http://localhost:8888/back-end/api/userProfile.php'
+  const apiUrl = 'http://localhost:8888/ChopHub-back-end/api/userProfile.php'
   console.log('正在請求 API:', apiUrl)
 
   try {
