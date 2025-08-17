@@ -5,7 +5,7 @@ import GeneralButton from '../components/GeneralButton.vue';
 import DropDownFilter from '@/components/DropDownFilter.vue';
 import EventCard from '@/components/EventCard.vue';
 import Pagination from '@/components/Pagination.vue';
-import { getPublicImg } from '@/utils/getPublicImg'
+import { getPublicImg } from '@/utils/getPublicImg';
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
@@ -182,9 +182,9 @@ console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
       <div v-else>
          <div v-if="filteredEvents.length > 0" class="inline-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-5">
             <EventCard v-for="event in filteredEvents" :key="event.id" :id="event.id" :title="event.title"
-               :event-type="event.category" 
-               :event-date="event.start_time" 
+               :event-type="event.name" 
                :rating="event.rating"
+               :eventDate="event.start_time"
                :review-count="event.review_count" 
                :event-image="event.event_image_url" />
          </div>
