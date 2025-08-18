@@ -5,7 +5,7 @@ import GeneralButton from '../components/GeneralButton.vue';
 import DropDownFilter from '@/components/DropDownFilter.vue';
 import EventCard from '@/components/EventCard.vue';
 import Pagination from '@/components/Pagination.vue';
-import { getPublicImg } from '@/utils/getPublicImg'
+import { getPublicImg } from '@/utils/getPublicImg';
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';

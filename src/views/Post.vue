@@ -1,63 +1,93 @@
 <script setup>
-import { ref } from 'vue';
-
-// --- 組件引入 ---
-// 確保您的組件路徑正確
+import { ref, onMounted, watch } from 'vue';
+import axios from 'axios';
 import CreatePostModal from '@/components/CreatePostModal.vue'; 
-import TheHeader from '@/components/TheHeader.vue'; // 假設您有此組件
-import TheFooter from '@/components/TheFooter.vue'; // 假設您有此組件
-import PostCard from '@/components/PostCard.vue';   // 假設您有此組件
-import Pagination from '@/components/Pagination.vue'; // 假設您有此組件
-
-// --- Icon 引入 ---
-// 請確認您的 icon 路徑是正確的
+import TheHeader from '@/components/TheHeader.vue';
+import TheFooter from '@/components/TheFooter.vue';
+import PostCard from '@/components/PostCard.vue';
+import Pagination from '@/components/Pagination.vue';
 import searchIcon from '@/assets/icon/search.svg';
 
-// --- 貼文圖片引入 ---
-// 請確認您的圖片路徑是正確的
-import post01 from '@/assets/post/post01.png';
-import post02 from '@/assets/post/post02.png';
-import post03 from '@/assets/post/post03.png';
-import post04 from '@/assets/post/post04.png';
-import post05 from '@/assets/post/post05.png';
-import post06 from '@/assets/post/post06.png';
-import post07 from '@/assets/post/post07.png';
-import post08 from '@/assets/post/post08.png';
-import post09 from '@/assets/post/post09.png';
-
 // --- 響應式狀態 ---
+const posts = ref([]);
+const isLoading = ref(true);
 const isModalOpen = ref(false);
 const isDropdownOpen = ref(false);
-const selectedSort = ref('最熱門');
-const sortOptions = ref(['最熱門', '評價最高', '最新發布', '最多留言']); 
 const searchTerm = ref('');
 
-// --- 分頁狀態 ---
-const currentPage = ref(1);
-const totalPages = ref(20);
-
-// --- 貼文假資料 ---
-const posts = ref([
-  { id: 1, postImage: post01, isFeatured: true, userName: '中壢彭于晏', postTitle: '刀鋒淬鍊記', isHot: true, description: '每把刀都需經高溫鍛造與淬火處理，才能擁有鋒利與堅韌的雙重特性。', likes: 188, stars: 45 },
-  { id: 2, postImage: post02, isFeatured: true, userName: 'BladeMaker_99', postTitle: '武士刀開刃', isHot: false, description: '刀刃打磨的過程講究角度與手感，最終展現出光滑如鏡的刃口。', likes: 152, stars: 30 },
-  { id: 3, postImage: post03, isFeatured: true, userName: '古兵小誌', postTitle: '冷兵器展覽', isHot: true, description: '展覽收錄來自各地的冷兵器，讓你一次看遍歷史的鋒芒與工藝之美。', likes: 199, stars: 48 },
-  { id: 4, postImage: post04, isFeatured: true, userName: 'FireForge匠心', postTitle: '匠人訪談', isHot: false, description: '走進鐵匠的世界，聽他分享打造兵器時的堅持與心路歷程。', likes: 120, stars: 25 },
-  { id: 5, postImage: post05, isFeatured: true, userName: 'ColdSteel手作', postTitle: '西洋劍製程', isHot: true, description: '每一把西洋劍從鋼材選擇到護手裝配，都需經歷數十道繁複工序。', likes: 176, stars: 41 },
-  { id: 6, postImage: post06, isFeatured: true, userName: '斬鐵測試員', postTitle: '斧頭也浪漫', isHot: false, description: '這把斧頭融合雕刻與木作藝術，完全顛覆你對斧頭的想像！', likes: 98, stars: 15 },
-  { id: 7, postImage: post07, isFeatured: true, userName: '鍛魂者_Yu', postTitle: '兵器保養法', isHot: true, description: '定期清潔、上油與防鏽處理，是維持刀劍狀態的基本保養流程。', likes: 165, stars: 38 },
-  { id: 8, postImage: post08, isFeatured: true, userName: '戰場殘光', postTitle: '手工打造盾', isHot: false, description: '這面圓盾使用多層木板壓製成型，兼具古風美感與實戰強度。', likes: 134, stars: 29 },
-  { id: 9, postImage: post09, isFeatured: true, userName: '武器控_阿鋒', postTitle: '仿古戰槍秀', isHot: true, description: '以古法工藝打造的仿宋代戰槍，每一枝都重現歷史風貌與細節。', likes: 192, stars: 47 },
+// 【修改】將排序選項改為物件，以區分顯示文字和 API 參數值
+const selectedSort = ref({ text: '最新發布', value: 'latest' });
+const sortOptions = ref([
+  { text: '最熱門', value: 'popular' },
+  { text: '最多收藏', value: 'most_favorited' },
+  { text: '最新發布', value: 'latest' },
+  { text: '最多留言', value: 'most_commented' }
 ]);
 
-// --- 函式 ---
+const currentPage = ref(1);
+const totalPages = ref(1);
+
+// --- 核心 API 呼叫函式 ---
+const fetchPosts = async () => {
+  isLoading.value = true;
+  try {
+    // 【關鍵】將搜尋和排序參數附加到 URL 上
+    const params = new URLSearchParams({
+      search: searchTerm.value,
+      sort: selectedSort.value.value
+    }).toString();
+    
+    const apiUrl = `http://localhost:8888/chophub-admin/api/getPosts.php?${params}`;
+    const response = await axios.get(apiUrl);
+
+    if (response.data && response.data.status === 'success') {
+      posts.value = response.data.data.map(post => ({
+        id: parseInt(post.post_id, 10),
+        postImage: post.image_url,
+        userName: post.username,
+        postTitle: post.title,
+        description: post.content,
+        likes: parseInt(post.likes_count, 10) || 0,
+        stars: parseInt(post.favorites_count, 10) || 0,
+        isHot: (parseInt(post.likes_count, 10) || 0) > 150,
+      }));
+    } else {
+      posts.value = [];
+    }
+  } catch (error) {
+    console.error('獲取貼文失敗:', error);
+    posts.value = [];
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// --- 事件處理函式 ---
 function selectSort(option) {
   selectedSort.value = option;
   isDropdownOpen.value = false;
+  // 【修改】選擇排序後，重新呼叫 API
+  fetchPosts(); 
 }
 
 function performSearch() {
-  alert(`正在搜尋：${searchTerm.value}`);
+  // 【修改】按下 Enter 或點擊按鈕時，重新呼叫 API
+  fetchPosts();
 }
+
+// 【新增】使用 watch 監聽搜尋框的變化，實現延遲自動搜尋
+let debounceTimer;
+watch(searchTerm, () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    fetchPosts();
+  }, 500); // 使用者停止輸入 500 毫秒後，自動觸發搜尋
+});
+
+// 元件掛載時，立即獲取一次資料
+onMounted(() => {
+  fetchPosts();
+});
 </script>
 
 <template>
@@ -65,28 +95,28 @@ function performSearch() {
     <TheHeader />
 
     <main class="flex-grow w-full px-4 py-8 flex justify-center">
-      <div class="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="w-full max-w-6xl ">
         
         <!-- 搜尋與排序欄 -->
-        <div class="bg-white rounded-lg shadow-md p-4 col-span-full">
+        <div class="bg-white rounded-lg shadow-md p-4 mb-8">
           <div class="flex items-stretch gap-2 md:gap-4">
             
             <!-- 排序下拉選單 -->
             <div class="relative flex-shrink-0">
               <button @click="isDropdownOpen = !isDropdownOpen" class="flex items-center justify-between bg-[#F2994A] text-white px-3 rounded-lg font-semibold text-sm md:text-base md:w-40 h-11">
-                <span>{{ selectedSort }}</span>
-                <svg class="w-4 h-4 ml-1 transition-transform" :class="{'rotate-180': isDropdownOpen}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <span>{{ selectedSort.text }}</span>
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
               </button>
               <div v-if="isDropdownOpen" class="absolute top-full left-0 mt-2 w-40 bg-black/50 backdrop-blur-md border border-white/10 rounded-lg shadow-lg z-10 p-2 flex flex-col gap-2">
-                <a v-for="option in sortOptions" :key="option" @click.prevent="selectSort(option)" href="#" class="w-full bg-transparent text-[#F8F9FA] font-semibold border-2 border-[#F2994A] rounded-lg h-[36px] flex items-center justify-center transition-colors hover:bg-[#F2994A]/20">
-                  {{ option }}
+                <a v-for="option in sortOptions" :key="option.value" @click.prevent="selectSort(option)" href="#" class="w-full bg-transparent text-[#F8F9FA] font-semibold border-2 border-[#F2994A] rounded-lg h-[36px] flex items-center justify-center transition-colors hover:bg-[#F2994A]/20">
+                  {{ option.text }}
                 </a>
               </div>
             </div>
 
             <!-- 搜尋欄位 -->
             <div class="relative flex-grow border-2 border-[#F2994A] rounded-lg h-11">
-              <input v-model="searchTerm" @keyup.enter="performSearch" type="text" placeholder="搜尋貼文" class="w-full h-full bg-white pl-4 pr-10 text-gray-800 text-sm md:text-base focus:outline-none rounded-lg">
+              <input v-model="searchTerm" @keyup.enter="performSearch" type="text" placeholder="搜尋內容" class="w-full h-full bg-white pl-4 pr-10 text-gray-800 text-sm md:text-base focus:outline-none rounded-lg">
               <button @click="performSearch" class="absolute right-2 top-1/2 -translate-y-1/2 p-1"><img :src="searchIcon" alt="Search" class="w-5 h-5"></button>
             </div>
 
@@ -99,24 +129,23 @@ function performSearch() {
         </div>
 
         <!-- 貼文卡片列表 -->
-        <PostCard 
-          v-for="post in posts" 
-          :key="post.id" 
-          v-bind="post" 
-        />
+        <div v-if="isLoading" class="text-white text-center text-xl">
+          <p>正在載入貼文...</p>
+        </div>
+        <div v-else-if="posts.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <PostCard v-for="post in posts" :key="post.id" v-bind="post" />
+        </div>
+        <div v-else class="text-white text-center text-xl bg-gray-700/50 p-8 rounded-lg">
+          <p>找不到符合條件的貼文。</p>
+          <p class="text-base mt-2">請試試看更換搜尋關鍵字！</p>
+        </div>
 
         <!-- 分頁組件 -->
-        <Pagination 
-          :total-pages="totalPages" 
-          v-model:currentPage="currentPage" 
-        />
-
+        <Pagination v-if="!isLoading && posts.length > 0" :total-pages="totalPages" v-model:currentPage="currentPage" class="mt-8" />
+      
       </div>
     </main>
-
     <TheFooter />
-
-    <!-- 彈窗組件 -->
     <CreatePostModal v-if="isModalOpen" @close="isModalOpen = false" />
   </div>
 </template>

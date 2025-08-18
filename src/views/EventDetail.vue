@@ -1,28 +1,50 @@
 <script setup>
 import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import EventInfoCard from '@/components/EventInfoCard.vue';
 import RegisterBanner from '@/components/RegisterBanner.vue';
 import GeneralButton from '../components/GeneralButton.vue';
 import { getPublicImg } from '@/utils/getPublicImg'
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import axios from 'axios';
+
+const eventDetails = ref([]);
+const loading = ref(true);
+const error = ref(null);
+
+const route = useRoute();
+const router = useRouter();
+
+const eventId = route.params.id;
 
 const png01 = getPublicImg('events/katana-exhibition.png')
 
-const eventData = ref({
-   title: '【藏鋒夜宴】兵器藏家限定導覽',
-   time: '2025年08月23日 星期六 19:00–20:00',
-   location: '冷兵器體驗館（台北市大同區火鍛街 88 號）',
-   organizer: '鋼火典藏會',
-   spotsLeft: 5,
-   imageUrl: png01,
-   imageAlt: '兵器展'
+async function fetchEventDetails() {
+   loading.value = true;
+   error.valie = null;
+   try{
+      const apiUrl= 'http://localhost:8888/ChopHub-back-end/api/getEventById.php?id=${eventId}';
+      console.log("正在請求詳情API:",apiUrl);
+
+      const response = await axios.get(apiUrl);
+      console.log("詳情API成功回應", response.data);
+
+      eventDetails.value = response.data.data ||
+      response.data;
+   } catch (err) {
+      console.error("詳情 API 請求失敗:", err);
+      error.value = "無法載入活動詳情，請稍後再試。";
+   } finally {
+      loading.value = false;
+   }
+}
+
+onMounted(() => {
+   fetchEventDetails();
 });
 
 const quantity = ref(1);
-const ticketPrice = 500;
-
 
 const increaseQuantity = () => {
    quantity.value++;
@@ -34,15 +56,13 @@ const decreaseQuantity = () => {
    }
 };
 
-// 模擬提交報名的方法
-const submitRegistration = () => {
-   alert(`您已選擇 ${quantity.value} 張票，總金額為 NT$ ${500 * quantity.value}`);
-   // 實際應用中可能會替換成 API 呼叫等邏輯
-};
 
 // 建立一個 computed 屬性來計算總金額
 const totalPrice = computed(() => {
-   return ticketPrice * quantity.value;
+      if (eventDetails.value && eventDetails.value.price) {
+      return eventDetails.value.price * quantity.value;
+   }
+   return 0;   
 });
 
 
@@ -79,16 +99,21 @@ const suggestedEvents = ref([
    },
 ]);
 
-// --- 【第 2 步：建立處理函式】 ---
 function handleViewDetails(eventId) {
-   console.log(`接收到來自子元件的請求，需要查看 ID 為 ${eventId} 的活動詳情。`);
-
+   console.log(`查看 ID 為 ${eventId} 的活動詳情。`);
+   // 也可以讓推薦活動也跳轉
+   router.push({ name: 'event-detail', params: { id: eventId } });
 }
 
-const router = useRouter();
-
 function goToPayment() {
-   router.push('/EventPayment');
+   // 跳轉到付款頁時，可以把 id 和數量一起帶過去
+   router.push({
+      path: '/EventPayment',
+      query: {
+         eventId: eventId,
+         quantity: quantity.value
+      }
+   });
 }
 
 </script>
