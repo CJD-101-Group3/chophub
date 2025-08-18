@@ -3,9 +3,12 @@ import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
 import MyEventItem from '@/components/MyEventItem.vue';
 import { getPublicImg } from '@/utils/getPublicImg'
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import axios from 'axios';
 
 // --- STATE MANAGEMENT ---
+
+axios.defaults.withCredentials = true;
 
 // 1. 優化 Tabs 的定義，使其更具擴展性
 const tabs = ref([
@@ -15,77 +18,33 @@ const tabs = ref([
   { key: 'favorites', name: '我的收藏' }
 ]);
 
-// 2. 預設顯示 '即將到來' 的活動
 const activeTab = ref('upcoming');
 
-const image1 = getPublicImg('events/burning-coal.jpg')
-const image2 = getPublicImg('events/forgingseafood-and-man.png')
-const image3 = getPublicImg('events/katana-exhibition.png')
-const image4 = getPublicImg('events/forgingman.png')
-const image5 = getPublicImg('events/dark-stithy-workshop-with-hammer-anvil-firs-plan-fire-stove-background.jpg')
 
+const allActivities = ref([]);
+const isLoading = ref(true);
+const error = ref(null);
 
+// --- API 呼叫 ---
+async function fetchActivities() {
+  isLoading.value = true;
+  error.value = null;
+  try {
+    const response = await axios.get('http://localhost:8888/ChopHub-back-end/api/myEvents.php');
+    
+    allActivities.value = response.data.data; 
 
-// --- MOCK DATA (優化的核心) ---
-// 為每個活動添加 'status' 屬性來驅動 UI 變化
-// status: 'upcoming' (即將到來), 'past' (已結束，可評論), 'reviewed' (已評論)
-const allActivities = ref([
-  {
-    id: 1,
-    title: '【鍛造群俠會】刀匠線上交流',
-    dateTime: '2025/7/23(三) 10:00am',
-    imageUrl: image1,
-    price: 500,
-    ticketCount: 1,
-    eventType: '線上活動',
-    status: 'upcoming',
-    isFavorited: true
-  },
-  {
-    id: 2,
-    title: '【匠魂燒鍛】小型鍛刀入門體驗',
-    dateTime: '2024/5/15(五) 14:00pm',
-    imageUrl: image2,
-    price: 1200,
-    ticketCount: 2,
-    eventType: '實體工作坊',
-    status: 'past',
-    isFavorited: false
-  },
-  {
-    id: 3,
-    title: '【工藝知識講堂】冷兵器構造全解析',
-    dateTime: '2024/4/01(一) 19:30pm',
-    imageUrl: image3,
-    price: 500,
-    ticketCount: 1,
-    eventType: '線上課程',
-    status: 'reviewed',
-    isFavorited: false
-  },
-  {
-    id: 4,
-    title: '【刀劍研磨所】親手拋光你的第一把刀',
-    dateTime: '2025/9/01(一) 19:30pm',
-    imageUrl: image4,
-    price: 1100,
-    ticketCount: 1,
-    eventType: '實體工作坊',
-    status: 'cancelled',
-    isFavorited: true
-  },
-  {
-    id: 5,
-    title: '匠人現場 - 劍柄木雕實作坊',
-    dateTime: '2025/8/12(二) 13:30PM',
-    imageUrl: image5,
-    price: 2800,
-    ticketCount: 1,
-    eventType: '實體活動',
-    status: 'upcoming',
-    isFavorited: true
-  },
-]);
+  } catch (err) {
+    console.error('Failed to fetch activities:', err);
+    error.value = '無法載入活動資料，請稍後再試。';
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+onMounted(() => {
+  fetchActivities();
+});
 
 // --- COMPUTED PROPERTIES ---
 
@@ -98,7 +57,6 @@ const filteredActivities = computed(() => {
       return allActivities.value.filter(act => act.status === 'past' || act.status === 'reviewed');
     case 'cancelled':
       return allActivities.value.filter(act => act.status === 'cancelled');
-    // --- NEW: 新增收藏活動的過濾邏輯 ---
     case 'favorites':
       return allActivities.value.filter(act => act.isFavorited);
     default:
@@ -106,20 +64,47 @@ const filteredActivities = computed(() => {
   }
 });
 
-// --- NEW: 新增處理取消事件的函式 ---
-function handleCancelActivity(activityId) {
-  const activityToCancel = allActivities.value.find(act => act.id === activityId);
-  if (activityToCancel) {
-    activityToCancel.status = 'cancelled';
-    console.log(`Activity ${activityId} has been cancelled.`);
+// 6. 修改 handleCancelActivity，使其呼叫 API
+async function handleCancelActivity(activityId) {
+  try {
+    await axios.post(`http://localhost:8888/ChopHub-back-end/api/cancel-activity.php`, 
+    { activityId: activityId }
+  );
+
+    // API 成功後，更新前端的狀態以立即反映變化
+    const activityToCancel = allActivities.value.find(act => act.id === activityId);
+    if (activityToCancel) {
+      activityToCancel.status = 'cancelled';
+    }
+    
+
+  } catch (err) {
+    console.error('Failed to cancel activity:', err);
+    alert('取消活動失敗，請稍後再試。');
   }
 }
 
-// --- NEW: 處理收藏狀態切換的函式 (用於解說) ---
-function handleToggleFavorite(activityId) {
+//收藏功能也需要呼叫 API
+async function handleToggleFavorite(activityId) {
   const activity = allActivities.value.find(act => act.id === activityId);
-  if (activity) {
-    activity.isFavorited = !activity.isFavorited;
+  if (!activity) return;
+
+  const newFavoriteState = !activity.isFavorited;
+
+  try {
+    const apiUrl = 'http://localhost:8888/ChopHub-back-end/api/eventToggleFavorite.php';
+
+    await axios.post(apiUrl, {
+      activityId: activityId,
+      isFavorited: newFavoriteState
+    }
+  );
+
+    activity.isFavorited = newFavoriteState;
+    
+  } catch (err) {
+    console.error('Failed to toggle favorite:', err);
+    alert('更新收藏狀態失敗！');
   }
 }
 </script>
@@ -143,16 +128,29 @@ function handleToggleFavorite(activityId) {
           </button>
         </div>
 
-        <!-- 2. Display a message if no activities match the filter -->
-        <div v-if="filteredActivities.length === 0" class="text-center text-gray-400 py-12">
-          <p class="text-xl">這個分類下沒有活動喔！</p>
+        <!-- 載入中提示 -->
+        <div v-if="isLoading" class="text-center text-gray-400 py-12">
+          <p class="text-xl">活動載入中...</p>
+          <!-- 你可以在這裡放一個 loading spinner 動畫 -->
         </div>
+
+        <!-- 錯誤訊息提示 -->
+        <div v-else-if="error" class="text-center text-red-500 py-12">
+          <p class="text-xl">{{ error }}</p>
+        </div>
+        
+        <!-- 現有內容，用 v-else 包起來 -->
+        <div v-else>
+          <!-- 如果沒有任何活動，顯示提示訊息 -->
+          <div v-if="filteredActivities.length === 0" class="text-center text-gray-400 py-12">
+            <p class="text-xl">這個分類下沒有活動喔！</p>
+          </div>
 
         <!-- 3. Dynamic List Rendering based on the active tab -->
         <MyEventItem v-else v-for="activity in filteredActivities" :key="activity.id" v-bind="activity"
           @write-review="handleWriteReview" @cancel-activity="handleCancelActivity" />
       </div>
-
+      </div>
     </div>
   </main>
   <Thefooter />

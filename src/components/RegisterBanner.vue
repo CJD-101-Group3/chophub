@@ -1,3 +1,23 @@
+<script setup>
+import GeneralButton from './GeneralButton.vue'
+
+// 定義這個元件可以接收一個名為 'event' 的 prop，它的型別是物件
+defineProps({
+    event: {
+        type: Object,
+        required: true
+    }
+});
+
+const emit = defineEmits(['request-payment']);
+
+// const router = useRouter();
+
+// function goToPayment() {
+//   router.push('/EventPayment');
+// }
+
+</script>
 <template>
     <section class="w-full bg-white" >
         <div class="mx-auto flex max-w-5xl flex-col items-center px-4 py-12 sm:px-6 md:flex-row lg:px-8">
@@ -30,7 +50,7 @@
 
                     <GeneralButton
                         variant="primary"
-                        @click="goToPayment"
+                        @click="emit('request-payment')"
                         width="150px"
                         height="50px"
                         font-size="20px"
@@ -43,23 +63,3 @@
         </div>
     </section>
 </template>
-
-<script setup>
-import GeneralButton from './GeneralButton.vue'
-import { useRouter } from 'vue-router'
-
-// 定義這個元件可以接收一個名為 'event' 的 prop，它的型別是物件
-defineProps({
-    event: {
-        type: Object,
-        required: true
-    }
-});
-
-const router = useRouter();
-
-function goToPayment() {
-  router.push('/EventPayment');
-}
-
-</script>
