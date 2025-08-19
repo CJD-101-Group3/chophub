@@ -41,6 +41,7 @@ function handleSubmit() {
   console.log('註冊表單已提交:', registrationData);
   alert('註冊成功！');
 }
+const baseUrl = import.meta.env.BASE_URL;
 </script>
 
 <template>
@@ -593,7 +594,7 @@ function handleSubmit() {
         <!-- 「已有帳號」連結：在手機和電腦上都保持置中 -->
         <div class="text-left mb-6">
           <span class="text-sm text-white">已經有帳號嗎？</span>
-          <a href="/login" class="text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors">立即登入</a>
+          <a :href="`${baseUrl}login`" class="text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors">立即登入</a>
         </div>
 
         <form @submit.prevent="handleSubmit" class="space-y-4">

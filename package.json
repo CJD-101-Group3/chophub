@@ -14,6 +14,8 @@
     "@tsparticles/vue3": "^3.0.1",
     "@vueuse/core": "^13.6.0",
     "axios": "^1.11.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
     "js-cookie": "^3.0.5",
     "pinia": "^3.0.3",
     "qrcode.vue": "^3.6.0",
