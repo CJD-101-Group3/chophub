@@ -5,7 +5,7 @@ import GeneralButton from '../components/GeneralButton.vue';
 import DropDownFilter from '@/components/DropDownFilter.vue';
 import EventCard from '@/components/EventCard.vue';
 import Pagination from '@/components/Pagination.vue';
-import { getPublicImg } from '@/utils/getPublicImg'
+import { getPublicImg } from '@/utils/getPublicImg';
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
@@ -181,12 +181,15 @@ console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
       <!-- 3. 成功後，顯示卡片列表或無資料提示 -->
       <div v-else>
          <div v-if="filteredEvents.length > 0" class="inline-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-5">
-            <EventCard v-for="event in filteredEvents" :key="event.id" :id="event.id" :title="event.title"
-               :event-type="event.category" 
-               :event-date="event.start_time" 
-               :rating="event.rating"
-               :review-count="event.review_count" 
-               :event-image="event.event_image_url" />
+         <EventCard v-for="event in filteredEvents" 
+                  :key="event.event_id" 
+                  :id="event.event_id" 
+                  :title="event.title"
+                  :event-type="event.name" 
+                  :event-date="event.start_time" 
+                  :rating="event.average_rating"
+                  :review-count="event.rating_count" 
+                  :event-image="event.event_image_url" />
          </div>
          <!-- 沒有活動時的提示 -->
          <div v-else class="text-white text-center py-10">
