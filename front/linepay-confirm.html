@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+    <head>
+        <meta charset="UTF-8" />
+        <title>LINE Pay 確認中...</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            body {
+                font-family: system-ui, sans-serif;
+                padding: 2rem;
+                text-align: center;
+            }
+            .success {
+                color: green;
+                font-weight: bold;
+            }
+            .error {
+                color: red;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>正在確認付款...</h1>
+        <p id="msg">請稍候，我們正在處理您的付款。</p>
+
+        <script>
+            ;(async () => {
+                const params = new URLSearchParams(window.location.search)
+                const transactionId = params.get('transactionId')
+                const registrationId = params.get('registration_id')
+
+                if (!transactionId || !registrationId) {
+                    document.getElementById('msg').textContent = '❌ 缺少必要參數'
+                    document.getElementById('msg').className = 'error'
+                    return
+                }
+
+                try {
+                    const r = await fetch(`/backend/confirm_payment.php`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ transactionId, registration_id: registrationId }),
+                    })
+                    const data = await r.json()
+
+                    if (data.ok) {
+                        document.getElementById('msg').innerHTML = `✅ <span class="success">付款成功！</span><br>
+             訂單編號：${registrationId}<br>
+             付款金額：${data.amount} ${data.currency}`
+                    } else {
+                        document.getElementById('msg').innerHTML = `❌ <span class="error">付款失敗：</span> ${
+                            data.message || '未知錯誤'
+                        }`
+                    }
+                } catch (err) {
+                    document.getElementById(
+                        'msg'
+                    ).innerHTML = `⚠️ <span class="error">確認付款時發生錯誤：</span> ${err}`
+                }
+            })()
+        </script>
+    </body>
+</html>
