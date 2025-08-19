@@ -19,7 +19,7 @@ async function fetchAllEvents() {
    loading.value = true;  // 開始請求前，永遠先設定為載入中
    error.value = null;    // 清除之前的錯誤
    try {
-      const apiUrl = 'http://localhost:8888/ChopHub-backend/api/getAllEvents.php';
+      const apiUrl = import.meta.env.VITE_API_BASE + '/api/getAllEvents.php';
       console.log("正在請求 API:", apiUrl);
 
       const response = await axios.get(apiUrl);

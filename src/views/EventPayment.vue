@@ -1,7 +1,5 @@
 <script setup>
 import Theheader from '@/components/Theheader.vue'
-import Thefooter from '@/components/Thefooter.vue'
-import GeneralButton from '../components/GeneralButton.vue'
 import { getPublicImg } from '@/utils/getPublicImg'
 import { ref, computed } from 'vue'
 
@@ -12,6 +10,7 @@ const nameRef = ref('')
 const emailRef = ref('')
 const phoneRef = ref('')
 const messageRef = ref('')
+
 
 // 你可以把 eventId 寫死或從路由/頁面帶入
 const eventId = 1 // ← TODO: 改成實際活動ID
@@ -34,7 +33,7 @@ async function handlePay(){
   }
 
   try {
-  const r = await fetch('http://localhost:8888/ChopHub-backend/api/checkout_payment.php', {
+  const r = await fetch(`${import.meta.env.VITE_API_BASE}api/getAllEvents.php`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

@@ -41,7 +41,7 @@ function handleSubmit() {
   console.log('註冊表單已提交:', registrationData);
   alert('註冊成功！');
 }
-const baseUrl = import.meta.env.BASE_URL;
+const baseUrl = import.meta.env.BASE_URL; 
 </script>
 
 <template>
