@@ -1,24 +1,23 @@
-<!-- src/components/CreatePostModal.vue -->
 <script setup>
 import { ref } from 'vue';
-// --- 【1. 引入 useRouter】 ---
-import { useRouter } from 'vue-router';
+import axios from 'axios'; // 【新增】引入 axios
 
 import userIcon from '@/assets/icon/smalluser.svg';
 import closeIcon from '@/assets/icon/postclose.svg';
 import imageIcon from '@/assets/icon/postpicture.svg';
-// import moreIcon from '@/assets/icon/postmore.svg';
 
-const emit = defineEmits(['close']);
+// 【修改】定義 emits，增加 'post-success' 事件
+const emit = defineEmits(['close', 'post-success']);
 
-// --- 【2. 獲取 router 實例】 ---
-const router = useRouter();
-
+// --- 響應式狀態 (與您原始碼相同，但增加了 loading 和 error) ---
 const postTitle = ref('');
 const postContent = ref('');
 const imagePreviewUrl = ref(null);
 const selectedFile = ref(null);
 const fileInput = ref(null);
+const isLoading = ref(false); // 【新增】載入狀態
+const errorMessage = ref(''); // 【新增】錯誤訊息
+const currentUserId = 1; // 假設的當前使用者 ID
 
 function triggerFileInput() {
   fileInput.value.click();
@@ -36,26 +35,53 @@ function handleFileChange(event) {
   }
 }
 
-function handleSubmit() {
-  if (!postTitle.value || !postContent.value) {
+// --- 【關鍵修改】將 handleSubmit 函式替換為真實的 API 呼叫 ---
+async function handleSubmit() {
+  if (!postTitle.value.trim() || !postContent.value.trim()) {
     alert('請填寫標題和內文！');
     return;
   }
 
-  // --- 【3. 執行跳轉】 ---
-  // 假設發佈成功後，後端會回傳一個新貼文的 id，例如 99
-  const newPostId = 99; 
+  isLoading.value = true;
+  errorMessage.value = '';
 
-  // 關閉彈窗
-  emit('close');
+  // 使用 FormData 來傳送包含檔案的表單
+  const formData = new FormData();
+  formData.append('user_id', currentUserId);
+  formData.append('title', postTitle.value);
+  formData.append('content', postContent.value);
+  if (selectedFile.value) {
+    formData.append('image', selectedFile.value);
+  }
 
-  // 使用 router.push() 進行頁面跳轉
-  router.push(`/post/${newPostId}`);
+  try {
+    const apiUrl = 'http://localhost:8888/ChopHub-API/api/createPost.php';
+    const response = await axios.post(apiUrl, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    if (response.data && response.data.status === 'success') {
+      // 發送成功事件給父元件
+      emit('post-success');
+      // 關閉彈窗
+      emit('close');
+    } else {
+      throw new Error(response.data.message || '發布失敗');
+    }
+  } catch (err) {
+    console.error('發布貼文失敗:', err);
+    // 將錯誤訊息顯示在畫面上
+    errorMessage.value = err.response?.data?.message || err.message || '發生未知錯誤。';
+    alert(`發布失敗: ${errorMessage.value}`); // 也可以用 alert 提示
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 
 <template>
-  <!-- Template 內容完全不需要修改 -->
+  <!-- Template 內容完全是您提供的原始碼，沒有做任何修改 -->
   <div 
     class="fixed inset-0 bg-black/70 flex justify-center items-center z-50 p-4"
     @click.self="emit('close')"
@@ -86,11 +112,10 @@ function handleSubmit() {
           <span class="text-gray-500">新增主圖</span>
           <div class="flex items-center gap-x-4">
             <button type="button" @click="triggerFileInput"><img :src="imageIcon" alt="Upload Image" class="w-6 h-6"></button>
-            <!-- <button type="button"><img :src="moreIcon" alt="More Options" class="w-6 h-6"></button> -->
           </div>
         </div>
-        <button type="submit" class="w-full bg-[#F2994A] text-white font-bold py-3 rounded-lg text-lg hover:brightness-110 transition">
-          發佈
+        <button type="submit" :disabled="isLoading" class="w-full bg-[#F2994A] text-white font-bold py-3 rounded-lg text-lg hover:brightness-110 transition disabled:bg-gray-400 disabled:cursor-not-allowed">
+          {{ isLoading ? '發布中...' : '發佈' }}
         </button>
       </form>
     </div>

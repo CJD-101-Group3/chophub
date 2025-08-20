@@ -45,7 +45,7 @@ const fetchPostDetail = async () => {
   isLoading.value = true;
   error.value = null;
   try {
-    const apiUrl = `http://localhost:8888/chophub-admin/api/getPostDetail.php?post_id=${postId}&user_id=${currentUserId}`;
+    const apiUrl = `http://localhost:8888/ChopHub-API/api/getPostDetail.php?post_id=${postId}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       response.data.data.post.author.badges = [badge1, badge2, badge3];
@@ -79,7 +79,7 @@ async function toggleLike() {
   post.value.isLikedByUser = !post.value.isLikedByUser;
   post.value.likes += post.value.isLikedByUser ? 1 : -1;
   try {
-    await axios.post('http://localhost:8888/chophub-admin/api/toggleLike.php', { post_id: post.value.id, user_id: currentUserId });
+    await axios.post('http://localhost:8888/ChopHub-API/api/toggleLike.php', { post_id: post.value.id, user_id: currentUserId });
   } catch (err) {
     post.value.isLikedByUser = !post.value.isLikedByUser;
     post.value.likes += post.value.isLikedByUser ? 1 : -1;
@@ -91,7 +91,7 @@ async function toggleSave() {
   post.value.isFavoritedByUser = !post.value.isFavoritedByUser;
   post.value.saves += post.value.isFavoritedByUser ? 1 : -1;
   try {
-    await axios.post('http://localhost:8888/chophub-admin/api/toggleFavorite.php', { post_id: post.value.id, user_id: currentUserId });
+    await axios.post('http://localhost:8888/ChopHub-API/api/toggleFavorite.php', { post_id: post.value.id, user_id: currentUserId });
   } catch (err) {
     post.value.isFavoritedByUser = !post.value.isFavoritedByUser;
     post.value.saves += post.value.isFavoritedByUser ? 1 : -1;
@@ -102,7 +102,7 @@ async function toggleCommentLike(comment) {
   comment.isLikedByUser = !comment.isLikedByUser;
   comment.likes += comment.isLikedByUser ? 1 : -1;
   try {
-    await axios.post('http://localhost:8888/chophub-admin/api/toggleCommentLike.php', { comment_id: comment.id, user_id: currentUserId });
+    await axios.post('http://localhost:8888/ChopHub-API/api/toggleCommentLike.php', { comment_id: comment.id, user_id: currentUserId });
   } catch (err) {
     comment.isLikedByUser = !comment.isLikedByUser;
     comment.likes += comment.isLikedByUser ? 1 : -1;
@@ -112,7 +112,7 @@ async function toggleCommentLike(comment) {
 async function postComment() {
   if (!isCommentSubmittable.value || !post.value) return;
   try {
-    const apiUrl = 'http://localhost:8888/chophub-admin/api/postComment.php';
+    const apiUrl = 'http://localhost:8888/ChopHub-API/api/postComment.php';
     const response = await axios.post(apiUrl, { post_id: post.value.id, user_id: currentUserId, content: newCommentText.value });
     if (response.data && response.data.status === 'success') {
       comments.value.unshift(response.data.data);
@@ -134,7 +134,7 @@ function closeReportModal() { showReportModal.value = false; reportReason.value 
 function submitReport() {
   if (!reportReason.value.trim()) { alert('請輸入檢舉事由。'); return; }
   try {
-      axios.post('http://localhost:8888/chophub-admin/api/submitReport.php', {
+      axios.post('http://localhost:8888/ChopHub-API/api/submitReport.php', {
           post_id: post.value.id,
           user_id: currentUserId,
           reason: reportReason.value

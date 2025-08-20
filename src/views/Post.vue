@@ -9,13 +9,13 @@ import Pagination from '@/components/Pagination.vue';
 import searchIcon from '@/assets/icon/search.svg';
 
 // --- 響應式狀態 ---
-const posts = ref([]);
-const isLoading = ref(true);
+const posts = ref([]); // API 回傳的貼文
+const isLoading = ref(true); // 增加一個載入狀態
 const isModalOpen = ref(false);
 const isDropdownOpen = ref(false);
-const searchTerm = ref('');
+const searchTerm = ref(''); // 搜尋關鍵字
 
-// 【修改】將排序選項改為物件，以區分顯示文字和 API 參數值
+// 排序選項改為物件，方便將中文對應到 API 參數
 const selectedSort = ref({ text: '最新發布', value: 'latest' });
 const sortOptions = ref([
   { text: '最熱門', value: 'popular' },
@@ -24,6 +24,7 @@ const sortOptions = ref([
   { text: '最多留言', value: 'most_commented' }
 ]);
 
+// --- 分頁狀態 (暫時未使用，但保留) ---
 const currentPage = ref(1);
 const totalPages = ref(1);
 
@@ -31,16 +32,17 @@ const totalPages = ref(1);
 const fetchPosts = async () => {
   isLoading.value = true;
   try {
-    // 【關鍵】將搜尋和排序參數附加到 URL 上
+    // 將搜尋和排序參數附加到 URL 上
     const params = new URLSearchParams({
       search: searchTerm.value,
       sort: selectedSort.value.value
     }).toString();
     
-    const apiUrl = `http://localhost:8888/chophub-admin/api/getPosts.php?${params}`;
+    const apiUrl = `http://localhost:8888/ChopHub-API/api/getPosts.php?${params}`;
     const response = await axios.get(apiUrl);
 
     if (response.data && response.data.status === 'success') {
+      // 資料映射邏輯
       posts.value = response.data.data.map(post => ({
         id: parseInt(post.post_id, 10),
         postImage: post.image_url,
@@ -52,6 +54,7 @@ const fetchPosts = async () => {
         isHot: (parseInt(post.likes_count, 10) || 0) > 150,
       }));
     } else {
+      console.error('API 回傳錯誤:', response.data.message);
       posts.value = [];
     }
   } catch (error) {
@@ -66,16 +69,14 @@ const fetchPosts = async () => {
 function selectSort(option) {
   selectedSort.value = option;
   isDropdownOpen.value = false;
-  // 【修改】選擇排序後，重新呼叫 API
   fetchPosts(); 
 }
 
 function performSearch() {
-  // 【修改】按下 Enter 或點擊按鈕時，重新呼叫 API
   fetchPosts();
 }
 
-// 【新增】使用 watch 監聽搜尋框的變化，實現延遲自動搜尋
+// 使用 watch 來實現 "輸入時延遲搜尋"
 let debounceTimer;
 watch(searchTerm, () => {
   clearTimeout(debounceTimer);
@@ -95,7 +96,7 @@ onMounted(() => {
     <TheHeader />
 
     <main class="flex-grow w-full px-4 py-8 flex justify-center">
-      <div class="w-full max-w-6xl ">
+      <div class="w-full max-w-7xl">
         
         <!-- 搜尋與排序欄 -->
         <div class="bg-white rounded-lg shadow-md p-4 mb-8">
@@ -116,7 +117,7 @@ onMounted(() => {
 
             <!-- 搜尋欄位 -->
             <div class="relative flex-grow border-2 border-[#F2994A] rounded-lg h-11">
-              <input v-model="searchTerm" @keyup.enter="performSearch" type="text" placeholder="搜尋內容" class="w-full h-full bg-white pl-4 pr-10 text-gray-800 text-sm md:text-base focus:outline-none rounded-lg">
+              <input v-model="searchTerm" @keyup.enter="performSearch" type="text" placeholder="搜尋標題、內容或作者..." class="w-full h-full bg-white pl-4 pr-10 text-gray-800 text-sm md:text-base focus:outline-none rounded-lg">
               <button @click="performSearch" class="absolute right-2 top-1/2 -translate-y-1/2 p-1"><img :src="searchIcon" alt="Search" class="w-5 h-5"></button>
             </div>
 
@@ -145,7 +146,10 @@ onMounted(() => {
       
       </div>
     </main>
+
     <TheFooter />
+
+    <!-- 彈窗組件 -->
     <CreatePostModal v-if="isModalOpen" @close="isModalOpen = false" />
   </div>
 </template>

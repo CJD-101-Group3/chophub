@@ -19,24 +19,19 @@ const props = defineProps({
   stars: { type: Number, default: 0 },
 });
 
-// --- 狀態定義 ---
 const isLiked = ref(false);
+const isStarred = ref(false);
 const localLikes = ref(props.likes);
-const isStarred = ref(false); // 【新增】收藏狀態
-const localStars = ref(props.stars); // 【新增】本地收藏數
+const localStars = ref(props.stars);
+const currentUserId = 1;
 
-const currentUserId = 1; // 提醒：最終需替換為真實登入者 ID
-
-// --- Computed 屬性 ---
 const smallLikeSrc = computed(() => isLiked.value ? smallLikeActiveIcon : smallLikeIcon);
-const smallStarSrc = computed(() => isStarred.value ? smallStarActiveIcon : smallStarIcon); // 【新增】收藏圖示
+const smallStarSrc = computed(() => isStarred.value ? smallStarActiveIcon : smallStarIcon);
 
-
-// --- 按讚相關函式 (來自您原本的程式碼，完整保留) ---
 const fetchLikeStatus = async () => {
   if (!currentUserId) return;
   try {
-    const apiUrl = `http://localhost:8888/chophub-admin/api/getPostLikeStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
+    const apiUrl = `http://localhost:8888/ChopHub-API/api/getPostLikeStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       isLiked.value = response.data.data.isLiked;
@@ -49,7 +44,7 @@ const fetchLikeStatus = async () => {
 async function toggleLike() {
   if (!currentUserId) return alert('請先登入！');
   try {
-    const apiUrl = 'http://localhost:8888/chophub-admin/api/toggleLike.php';
+    const apiUrl = 'http://localhost:8888/ChopHub-API/api/toggleLike.php';
     const response = await axios.post(apiUrl, {
       post_id: props.id,
       user_id: currentUserId,
@@ -65,20 +60,13 @@ async function toggleLike() {
     }
   } catch (error) {
     console.error('呼叫按讚 API 時出錯:', error);
-    alert('操作失敗，請稍後再試。');
   }
 }
 
-
-// --- 【新增】收藏相關函式 ---
-
-/**
- * @description (GET) 查詢使用者是否已收藏此貼文
- */
 const fetchFavoriteStatus = async () => {
   if (!currentUserId) return;
   try {
-    const apiUrl = `http://localhost:8888/chophub-admin/api/getPostFavoriteStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
+    const apiUrl = `http://localhost:8888/ChopHub-API/api/getPostFavoriteStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       isStarred.value = response.data.data.isFavorited;
@@ -88,13 +76,10 @@ const fetchFavoriteStatus = async () => {
   }
 };
 
-/**
- * @description (POST) 執行收藏或取消收藏
- */
 async function toggleStar() {
   if (!currentUserId) return alert('請先登入！');
   try {
-    const apiUrl = 'http://localhost:8888/chophub-admin/api/toggleFavorite.php';
+    const apiUrl = 'http://localhost:8888/ChopHub-API/api/toggleFavorite.php';
     const response = await axios.post(apiUrl, {
       post_id: props.id,
       user_id: currentUserId,
@@ -110,30 +95,30 @@ async function toggleStar() {
     }
   } catch (error) {
     console.error('呼叫收藏 API 時出錯:', error);
-    alert('操作失敗，請稍後再試。');
   }
 }
 
-
-// --- 元件掛載 ---
 onMounted(() => {
   fetchLikeStatus();
-  fetchFavoriteStatus(); // 【修改】同時查詢按讚和收藏狀態
+  fetchFavoriteStatus();
 });
 </script>
 
 <template>
-  <router-link :to="`/post/${id}`" class="flex flex-col w-full md:w-[348px] bg-[#FEFEFE] rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2">
-    <div class="relative">
-      <img v-if="postImage" :src="postImage" alt="Post Image" class="w-full h-auto object-cover" />
-      <div v-else class="w-full h-[200px] bg-gray-200 flex items-center justify-center text-gray-400">
-        暫無圖片
-      </div>
+  <router-link 
+    :to="`/post/${id}`"
+    class="flex flex-col w-full bg-[#FEFEFE] rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2 h-full"
+  >
+    <!-- 【關鍵修改】直接放置 img，並修改圓角 class -->
+    <img v-if="postImage" :src="postImage" alt="Post Image" class="w-full h-48 object-cover rounded-t-2xl" />
+    <div v-else class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400 rounded-t-2xl">
+      暫無圖片
     </div>
+
     <div class="flex flex-col flex-grow p-5">
-      <div class="flex items-center justify-between mb-[14px]">
+      <div class="flex items-center justify-between mb-4">
         <router-link to="/ArtisanShowcase" class="flex items-center gap-x-2.5 group" @click.stop>
-          <img :src="smallUserIcon" alt="User" class="w-8 h-8" />
+          <img :src="smallUserIcon" alt="User" class="w-8 h-8 rounded-full" />
           <span class="text-[#F2994C] text-lg font-normal leading-tight tracking-wide group-hover:underline">{{ userName }}</span>
         </router-link>
       </div>
@@ -141,16 +126,17 @@ onMounted(() => {
         <h2 class="text-[#F2994A] text-2xl font-medium leading-snug tracking-wider">{{ postTitle }}</h2>
         <img v-if="isHot" :src="fireIcon" alt="Hot Post" class="w-5 h-5" />
       </div>
-      <p class="text-[#4F4F4F] text-sm font-normal leading-relaxed mb-5">
+      <p class="text-[#4F4F4F] text-sm font-normal leading-relaxed mb-5 line-clamp-3">
         {{ description }}
       </p>
+      
       <div class="flex-grow"></div>
+      
       <div class="flex justify-end items-center gap-x-6 mb-3.5 text-gray-500">
         <div class="flex items-center gap-x-2.5 cursor-pointer" @click.prevent.stop="toggleLike">
           <img :src="smallLikeSrc" alt="Likes" class="w-7 h-7" />
           <span class="w-8 text-left text-base">{{ localLikes }}</span>
         </div>
-        <!-- 【修改】確保點擊事件綁定到新的 toggleStar 函式 -->
         <div class="flex items-center gap-x-2.5 cursor-pointer" @click.prevent.stop="toggleStar">
           <img :src="smallStarSrc" alt="Stars" class="w-7 h-7" />
           <span class="w-8 text-left text-base">{{ localStars }}</span>
