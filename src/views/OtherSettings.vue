@@ -1,61 +1,108 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router'; // 1. 引入 useRoute
-import { getPublicImg } from '@/utils/getPublicImg'; // 引入路徑輔助函數
+import { ref, reactive, onMounted, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import axios from 'axios';
+import { getPublicImg } from '@/utils/getPublicImg';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 
-
-
-// 定義響應式變量
-const particlesLoaded = async (container) => {
-  console.log("Particles container loaded", container);
-};
-
-
-// --- (手機版) 下拉選單狀態 ---
+// --- 通用佈局相關的資料 ---
 const isDropdownOpen = ref(false);
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
-};
-
-const route = useRoute(); // 2. 獲取當前路由資訊
-
-// --- (電腦版) 側邊欄狀態 ---
+const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
+const route = useRoute();
 const menuItems = ref([
   { name: '會員資訊', href: '/UserProfile' },
   { name: '貼文相關', href: '/PostActivity' },
   { name: '收藏相關', href: '/UserCollections' },
-  // { name: '我的活動', href: '/MyActivities' }, // 已移除
   { name: '其他設定', href: '/OtherSettings' },
 ]);
 
-// 3. 使用 computed 根據路由自動判斷 activeTab
 const activeTab = computed(() => {
   const currentRoute = menuItems.value.find(item => item.href === route.path);
   return currentRoute ? currentRoute.name : '其他設定';
 });
 
-// --- 會員資料 ---
 const memberInfo = ref({
   name: '露比匠',
-  avatarUrl: getPublicImg('users/userp.png'), // 將錯誤路徑修正為使用輔助函數
+  avatarUrl: getPublicImg('users/userp.png'),
 });
 
-// --- 此頁面專用的資料 ---
-const settings = ref({
-  newWeaponAlerts: false,
-  newEventNotifications: true,
-  newPostReplies: true,
-  postReportedAlerts: false,
-  isCollectionPublic: false,
-  areBadgesPublic: true,
-  showLocation: false,
+// --- API 相關狀態 ---
+const loading = ref(true);
+const error = ref(null);
+const saving = ref(false);
+
+// --- 響應式表單資料 ---
+// 注意：變數名稱已修改為與後端資料庫欄位完全一致
+const privacySettings = reactive({
+  is_collections_public: false,
+  is_achievements_public: false,
+  is_location_public: false,
 });
+
+// 假設是當前登入的使用者 ID
+const userId = 1;
+
+// --- GET 請求，獲取目前的設定 ---
+async function fetchPrivacySettings() {
+  loading.value = true;
+  error.value = null;
+  try {
+    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/userProfile.php?user_id=${userId}`);
+    if (response.data.status === 'success') {
+      const settings = response.data.data;
+      // 將從 API 獲取的 1 或 0 轉換為 true 或 false，以驅動開關的 UI
+      privacySettings.is_collections_public = !!parseInt(settings.is_collections_public);
+      privacySettings.is_achievements_public = !!parseInt(settings.is_achievements_public);
+      privacySettings.is_location_public = !!parseInt(settings.is_location_public);
+    } else {
+      throw new Error(response.data.message);
+    }
+  } catch (err) {
+    console.error("獲取隱私設定失敗:", err);
+    error.value = "無法載入設定，請稍後再試。";
+  } finally {
+    loading.value = false;
+  }
+}
+
+// 元件載入時，自動獲取設定
+onMounted(fetchPrivacySettings);
+
+// --- PATCH 請求，儲存變更 ---
+async function handleSave() {
+  saving.value = true;
+  try {
+    // 準備要發送到後端的 payload，將 true/false 轉換回 1/0
+    const payload = {
+      is_collections_public: privacySettings.is_collections_public ? 1 : 0,
+      is_achievements_public: privacySettings.is_achievements_public ? 1 : 0,
+      is_location_public: privacySettings.is_location_public ? 1 : 0,
+    };
+
+    const response = await axios.patch(
+      `http://localhost:8888/ChopHub-API/api/userProfile.php?user_id=${userId}`,
+      payload
+    );
+    
+    if (response.data.status === 'success') {
+      alert('隱私設定已更新！');
+    } else {
+      throw new Error(response.data.message);
+    }
+  } catch (err) {
+    console.error("儲存失敗:", err);
+    alert(`儲存失敗: ${err.response?.data?.message || err.message}`);
+    // 如果儲存失敗，重新從伺服器抓取一次資料，讓開關狀態復原
+    await fetchPrivacySettings();
+  } finally {
+    saving.value = false;
+  }
+}
 </script>
 
 <template>
-              <div class="absolute inset-0 -z-10">
+            <div class="absolute inset-0 -z-10">
       <vue-particles
       id="tsparticles"
       @particles-loaded="particlesLoaded"
@@ -576,19 +623,15 @@ const settings = ref({
       }"
     />
     </div>
-  <div class="flex flex-col min-h-screen  overflow-y-scroll">
-    <Theheader />
 
+  <div class="flex flex-col min-h-screen">
+    <Theheader />
     <div class="flex-1 container mx-auto p-4 lg:flex lg:gap-8 lg:p-8">
-      <!-- 左側邊欄 (電腦版顯示) -->
+      <!-- 左側邊欄 -->
       <aside class="hidden lg:block lg:w-72 flex-shrink-0">
         <div class="bg-white p-4 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)] sticky top-24">
           <div class="flex flex-col items-center text-center border-b pb-4 mb-4">
-            <img 
-              :src="memberInfo.avatarUrl" 
-              alt="Avatar" 
-              class="w-40 h-40 rounded-full object-cover mb-3"
-            />
+            <img :src="memberInfo.avatarUrl" alt="Avatar" class="w-40 h-40 rounded-full object-cover mb-3"/>
             <h2 class="text-xl font-bold text-gray-800">{{ memberInfo.name }}</h2>
           </div>
           <nav class="flex flex-col space-y-2">
@@ -610,8 +653,6 @@ const settings = ref({
 
       <!-- 右側主內容區 -->
       <main class="flex-1">
-        
-        <!-- 手機版下拉式選單 -->
         <div class="relative lg:hidden mb-6">
           <button @click="toggleDropdown" class="w-full flex items-center justify-between p-3 bg-white border border-gray-300 rounded-md shadow-sm">
             <div class="flex items-center">
@@ -628,47 +669,61 @@ const settings = ref({
         </div>
 
         <div class="space-y-8">
-          
           <div class="max-w-4xl mx-auto space-y-8">
             <!-- 隱私設定 卡片 -->
             <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
               <h2 class="text-2xl font-bold text-gray-800 mb-6">隱私設定</h2>
-              <div class="space-y-5">
+              
+              <div v-if="loading" class="text-center py-10">載入中...</div>
+              <div v-else-if="error" class="text-center text-red-500 py-10">{{ error }}</div>
+              
+              <div v-else class="space-y-5">
+                <!-- 精選收藏開關 -->
                 <div class="flex justify-between items-center border-b pb-4">
                   <span class="text-gray-700 text-xl">精選收藏是否公開</span>
                   <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" v-model="settings.isCollectionPublic" class="sr-only peer">
+                    <input type="checkbox" v-model="privacySettings.is_collections_public" class="sr-only peer">
                     <div class="w-14 h-8 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#F2994A]"></div>
                   </label>
                 </div>
+                <!-- 成就徽章開關 -->
                 <div class="flex justify-between items-center border-b pb-4">
                   <span class="text-gray-700 text-xl">成就徽章是否公開</span>
                   <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" v-model="settings.areBadgesPublic" class="sr-only peer">
+                    <input type="checkbox" v-model="privacySettings.is_achievements_public" class="sr-only peer">
                     <div class="w-14 h-8 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#F2994A]"></div>
                   </label>
                 </div>
+                <!-- 所在地區開關 -->
                 <div class="flex justify-between items-center">
                   <span class="text-gray-700 text-xl">是否顯示所在地區</span>
                   <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" v-model="settings.showLocation" class="sr-only peer">
+                    <input type="checkbox" v-model="privacySettings.is_location_public" class="sr-only peer">
                     <div class="w-14 h-8 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#F2994A]"></div>
                   </label>
+                </div>
+                 <!-- 儲存按鈕 -->
+                <div class="pt-4">
+                  <button
+                    @click="handleSave"
+                    :disabled="saving"
+                    class="w-full bg-[#F2994A] text-white font-bold py-3 px-4 rounded-lg transition-colors hover:bg-[#E88C3A] disabled:bg-gray-400"
+                  >
+                    {{ saving ? '儲存中...' : '儲存設定' }}
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </main>
     </div>
-
     <Thefooter />
   </div>
 </template>
 
 <style scoped>
-/* 淡入淡出效果 (手機版下拉選單用) */
+/* 既有樣式 */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease, transform 0.2s ease;
@@ -679,7 +734,6 @@ const settings = ref({
   transform: translateY(-10px);
 }
 
-/* 讓側邊欄在滾動時可以固定在頂部 */
 .sticky {
   position: -webkit-sticky;
   position: sticky;

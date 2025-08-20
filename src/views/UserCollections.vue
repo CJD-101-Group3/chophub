@@ -1,59 +1,96 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 import { getPublicImg } from '@/utils/getPublicImg';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
-
-
 
 // 定義響應式變量
 const particlesLoaded = async (container) => {
   console.log("Particles container loaded", container);
 };
 
-
-// (手機版) 下拉選單狀態
+// --- 通用佈局相關的資料 ---
 const isDropdownOpen = ref(false);
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
 };
 
-// (電腦版) 側邊欄狀態
 const activeTab = ref('收藏相關');
 
-// **【修改處】** 從 menuItems 陣列中移除 '我的活動'
 const menuItems = ref([
   { name: '會員資訊', href: '/UserProfile' },
   { name: '貼文相關', href: '/PostActivity' },
   { name: '收藏相關', href: '/UserCollections' },
-  // { name: '我的活動', href: '/MyActivities' }, // <--- 已移除
   { name: '其他設定', href: '/OtherSettings' },
 ]);
 
-// 會員資料
 const memberInfo = ref({
   name: '露比匠',
   avatarUrl: getPublicImg('users/userp.png'),
 });
 
-// 收藏的武器資料
-const collectedWeapons = ref([
- { id: 1, imageUrl: getPublicImg('weapons/w1.png'), link: '/weapon/1' },
-  { id: 2, imageUrl: getPublicImg('weapons/w2.png'), link: '/weapon/2' },
-  { id: 3, imageUrl: getPublicImg('weapons/w3.png'), link: '/weapon/3' },
-  { id: 4, imageUrl: getPublicImg('weapons/w4.png'), link: '/weapon/4' },
-  { id: 5, imageUrl: getPublicImg('weapons/w5.png'), link: '/weapon/5' },
-]);
+// --- 「收藏的武器」區塊，準備接收 API 資料 ---
+const collectedWeapons = ref([]);
+const loadingWeapons = ref(false);
+const errorWeapons = ref(null);
 
-// 收藏的徽章資料
-const collectedBadges = ref([
-  { id: 1, imageUrl: getPublicImg('badges/badge1.png'), name: '黑鐵級刀匠', isEquipped: true },
-  { id: 2, imageUrl: getPublicImg('badges/badge2.png'), name: '赤火初煉者', isEquipped: true },
-  { id: 3, imageUrl: getPublicImg('badges/badge3.png'), name: '登入王', isEquipped: true },
-  { id: 4, imageUrl: getPublicImg('badges/badge4.png'), name: '社群新星', isEquipped: false },
-  { id: 5, imageUrl: getPublicImg('badges/badge5.png'), name: '新手村村民', isEquipped: false },
-]);
+// --- 「收藏的徽章」區塊，準備接收 API 資料 ---
+const collectedBadges = ref([]);
+const loadingBadges = ref(false);
+const errorBadges = ref(null);
 
+
+// 呼叫「收藏的武器」API
+async function fetchFavoriteWeapons() {
+  loadingWeapons.value = true;
+  errorWeapons.value = null;
+  const userId = 2; // 未來應動態獲取
+
+  try {
+    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/get_user_favorite_weapons.php?user_id=${userId}`);
+    if (response.data.status === 'success') {
+      collectedWeapons.value = response.data.data;
+    } else {
+      throw new Error(response.data.message || '無法載入武器收藏');
+    }
+  } catch (err) {
+    console.error('請求「武器收藏」API 失敗:', err);
+    errorWeapons.value = '資料載入失敗，請稍後再試。';
+  } finally {
+    loadingWeapons.value = false;
+  }
+}
+
+// 呼叫「擁有的徽章」API
+async function fetchUserAchievements() {
+  loadingBadges.value = true;
+  errorBadges.value = null;
+  const userId = 1; // 未來應動態獲取
+
+  try {
+    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/get_user_achievements.php?user_id=${userId}`);
+    if (response.data.status === 'success') {
+      collectedBadges.value = response.data.data;
+    } else {
+      throw new Error(response.data.message || '無法載入徽章收藏');
+    }
+  } catch (err) {
+    console.error('請求「徽章收藏」API 失敗:', err);
+    errorBadges.value = '資料載入失敗，請稍後再試。';
+  } finally {
+    loadingBadges.value = false;
+  }
+}
+
+// 在元件掛載後同時執行兩個 API 請求
+onMounted(() => {
+  fetchFavoriteWeapons();
+  fetchUserAchievements();
+});
+
+
+// (前端操作) 切換徽章配戴狀態
 const toggleEquip = (badgeId) => {
   const badgeToToggle = collectedBadges.value.find(b => b.id === badgeId);
   if (!badgeToToggle) return;
@@ -66,6 +103,8 @@ const toggleEquip = (badgeId) => {
     }
   }
   badgeToToggle.isEquipped = !badgeToToggle.isEquipped;
+  // 注意：這裡的改變只在前端。若要儲存，需在點擊「儲存」按鈕時，
+  // 將 collectedBadges 的狀態發送到後端 API 進行更新。
 };
 
 </script>
@@ -635,9 +674,7 @@ const toggleEquip = (badgeId) => {
               <img :src="memberInfo.avatarUrl" alt="Avatar" class="w-8 h-8 rounded-full object-cover mr-3"/>
               <span class="font-semibold">{{ memberInfo.name }}</span>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform" :class="{'rotate-180': isDropdownOpen}">
-              <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform" :class="{'rotate-180': isDropdownOpen}"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
           </button>
           <transition name="fade">
             <div v-if="isDropdownOpen" class="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg">
@@ -650,44 +687,57 @@ const toggleEquip = (badgeId) => {
         <div class="space-y-8">
 
           <!-- 我收藏的武器 -->
-          <div class="bg-white p-6 lg:p-8 rounded-lg max-w-4xl mx-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+          <div class="bg-white p-6 lg:p-8 rounded-lg max-w-4xl mx-auto min-h-[300px]" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">我收藏的武器</h2>
-            <div class="flex space-x-6 overflow-x-auto pb-4">
-              <a v-for="weapon in collectedWeapons" :key="weapon.id" :href="weapon.link" class="flex-shrink-0 group">
+            
+            <div v-if="loadingWeapons" class="text-center text-gray-500">載入中...</div>
+            <div v-else-if="errorWeapons" class="text-center text-red-500">{{ errorWeapons }}</div>
+            <div v-else-if="collectedWeapons.length === 0" class="text-center text-gray-500">尚未收藏任何武器。</div>
+
+            <div v-else class="flex space-x-6 overflow-x-auto pb-4">
+              <a v-for="weapon in collectedWeapons" :key="weapon.id" :href="'/weapon/' + weapon.id" class="flex-shrink-0 group">
                 <div class="w-48 h-48 lg:w-56 lg:h-56 bg-white p-2 rounded-lg shadow-md overflow-hidden transform transition-transform duration-300 group-hover:scale-105">
-                  <img :src="weapon.imageUrl" :alt="'武器 ' + weapon.id" class="w-full h-full object-contain">
+                  <img :src="weapon.imageUrl" :alt="weapon.name" class="w-full h-full object-contain">
                 </div>
               </a>
             </div>
           </div>
 
           <!-- 我收藏的徽章 -->
-          <div class="bg-white p-6 lg:p-8 rounded-lg max-w-4xl mx-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+          <div class="bg-white p-6 lg:p-8 rounded-lg max-w-4xl mx-auto min-h-[300px]" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">我收藏的徽章</h2>
-            <div class="flex space-x-6 overflow-x-auto pb-4">
-              <div v-for="badge in collectedBadges" :key="badge.id" class="flex flex-col items-center space-y-3 flex-shrink-0">
-                <div class="w-40 h-40 lg:w-48 lg:h-48 bg-white p-2 rounded-lg shadow-md overflow-hidden">
-                  <img :src="badge.imageUrl" :alt="badge.name" class="w-full h-full object-contain">
+
+            <div v-if="loadingBadges" class="text-center text-gray-500">載入中...</div>
+            <div v-else-if="errorBadges" class="text-center text-red-500">{{ errorBadges }}</div>
+            <div v-else-if="collectedBadges.length === 0" class="text-center text-gray-500">尚未獲得任何徽章。</div>
+            
+            <div v-else>
+              <div class="flex space-x-6 overflow-x-auto pb-4">
+                <div v-for="badge in collectedBadges" :key="badge.id" class="flex flex-col items-center space-y-3 flex-shrink-0">
+                  <div class="w-40 h-40 lg:w-48 lg:h-48 bg-white p-2 rounded-lg shadow-md overflow-hidden">
+                    <img :src="badge.imageUrl" :alt="badge.name" class="w-full h-full object-contain">
+                  </div>
+                  <span class="font-semibold text-gray-800">{{ badge.name }}</span>
+                  <button
+                    @click="toggleEquip(badge.id)"
+                    class="w-32 text-white font-bold py-2 px-4 rounded-[8px] transition-colors duration-200"
+                    :class="badge.isEquipped ? 'bg-[#D15B5B] hover:bg-[#b94a4a]' : 'bg-gray-400 hover:bg-gray-500'"
+                  >
+                    {{ badge.isEquipped ? '配戴中' : '配戴' }}
+                  </button>
                 </div>
-                <span class="font-semibold text-gray-800">{{ badge.name }}</span>
+              </div>
+              <!-- 儲存按鈕 -->
+              <div class="mt-6 text-center">
                 <button
-                  @click="toggleEquip(badge.id)"
-                  class="w-32 text-white font-bold py-2 px-4 rounded-[8px] transition-colors duration-200"
-                  :class="badge.isEquipped ? 'bg-[#D15B5B] hover:bg-[#b94a4a]' : 'bg-gray-400 hover:bg-gray-500'"
+                  class="w-full lg:w-auto bg-[#F2994A] text-white font-bold py-3 px-16 rounded-[8px] transition-colors duration-300 border-2 border-transparent
+                         hover:bg-white hover:text-black hover:border-[#F2994A]"
                 >
-                  {{ badge.isEquipped ? '配戴中' : '配戴' }}
+                  儲存
                 </button>
               </div>
             </div>
-            <!-- 儲存按鈕 -->
-            <div class="mt-6 text-center">
-              <button
-                class="w-full lg:w-auto bg-[#F2994A] text-white font-bold py-3 px-16 rounded-[8px] transition-colors duration-300 border-2 border-transparent
-                       hover:bg-white hover:text-black hover:border-[#F2994A]"
-              >
-                儲存
-              </button>
-            </div>
+
           </div>
 
         </div>
