@@ -1,77 +1,131 @@
 <script setup>
-import { ref } from 'vue';
-import { getPublicImg } from '@/utils/getPublicImg'; // 引入路徑輔助函數
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import axios from 'axios';
+import { getPublicImg } from '@/utils/getPublicImg';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
-// **【步驟 4.1】** 引入你剛剛建立的 SocialIcon 元件
 import SocialIcon from '../components/SocialIcon.vue'; 
 
-// 引入圖片資源
-// import artisanAvatar from '../assets/users/userp.png';
-// import artisanCardBg from '../assets/users/artisan-card-bg.png';
-// import weapon1 from '../assets/weapons/weapon1.png';
-// import weapon2 from '../assets/weapons/weapon2.png';
-// import weapon3 from '../assets/weapons/weapon3.png';
-// import weapon4 from '../assets/weapons/weapon4.png';
-// import weapon5 from '../assets/weapons/weapon5.png';
-// import badge1 from '../assets/badges/badge1.png';
-// import badge2 from '../assets/badges/badge2.png';
-// import badge3 from '../assets/badges/badge3.png';
-// import badge4 from '../assets/badges/badge4.png';
-
-const particlesLoaded = async (container) => {
-  console.log("Particles container loaded", container);
-};
+// --- API 相關狀態 ---
+const loading = ref(true);
+const error = ref(null);
+const route = useRoute();
 
 // --- 刀匠的所有展示資料都集中管理 ---
 const artisanProfile = ref({
-  name: 'Hattori Hanzo',
+  name: '載入中...',
   avatarUrl: getPublicImg('users/userp.png'), 
-  mainBadge: {
-    name: '黑鐵級刀匠',
-    iconUrl: getPublicImg('badges/badge2.png'),
-  },
-  joinDate: '2024/03/01',
-  location: '日本・伊賀',
-  intro: '千錘百鍊，鋼魂不滅。\n服部半藏，專精於日式直刃鍛造，擁有超過 20 年工藝經驗，致力於融合古法鍛造與現代力學美學。擅長使用玉鋼、反覆摺疊鍛打與水冷退火技法。其作品曾於《冷鋼祭》奪下優勝，並被多位收藏家收藏。',
+  mainBadge: { name: '', iconUrl: '' },
+  joinDate: '',
+  location: '',
+  intro: '',
   card: {
     imageUrl: getPublicImg('users/artisan-card-bg.png'),
-    quote: '「火不熄，我不止」',
-    details: '鍛造資歷 20 年\n專長：摺疊鋼 / 日式直刃 / 劈砍雕刻\n常用鋼材：白紙鋼、玉鋼\n流派：伊賀古法流',
+    quote: '',
+    details: '',
   },
-  socialLinks: [
-    { id: 1, platform: 'YOUTUBE', handle: '@Hattori_Hanzo5777', link: '#' },
-    { id: 2, platform: 'Instagram', handle: '@Hattori_Hanzo5777', link: '#' },
-    { id: 3, platform: 'X', handle: '@Hattori_Hanzo5777', link: '#' },
-    { id: 4, platform: 'Gmail', handle: 'Hattori5777@gmail.com', link: 'mailto:Hattori5777@gmail.com' },
-    { id: 5, platform: 'Podcast', handle: '專訪：聽見火光的聲音', link: '#' },
-  ],
-  featuredWorks: [
-    { id: 1, imageUrl: getPublicImg('weapons/weapon1.png'), link: '#' },
-    { id: 2, imageUrl: getPublicImg('weapons/weapon2.png'), link: '#' },
-    { id: 3, imageUrl: getPublicImg('weapons/weapon3.png'), link: '#' },
-    { id: 4, imageUrl: getPublicImg('weapons/weapon4.png'), link: '#' },
-    { id: 5, imageUrl: getPublicImg('weapons/weapon5.png'), link: '#' },
-  ],
-  featuredPosts: [
-    { id: 1, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
-    { id: 2, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
-    { id: 3, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
-    { id: 4, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
-    { id: 5, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
-    { id: 6, category: '【匠人日誌】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '#' },
-  ],
-  achievements: [
-    { id: 1, name: '百鍊成鋒', imageUrl: getPublicImg('badges/badge1.png') },
-    { id: 2, name: '黑鐵級刀匠', imageUrl: getPublicImg('badges/badge2.png') },
-    { id: 3, name: '赤火初煉者', imageUrl: getPublicImg('badges/badge3.png') },
-    { id: 4, name: '登入王', imageUrl: getPublicImg('badges/badge4.png') },
-  ],
+  socialLinks: [],
+  featuredWorks: [],
+  featuredPosts: [],
+  achievements: [],
+  // ******** 新增：用來儲存隱私設定 ********
+  privacySettings: {
+    is_collections_public: true, // 預設為 true，API 拿到資料後會覆蓋
+    is_achievements_public: true,
+    is_location_public: true,
+  }
+});
+
+const userId = ref(route.params.userId || 1);
+
+// --- GET 請求 ---
+onMounted(async () => {
+  loading.value = true;
+  error.value = null;
+
+  try {
+    const [
+      userRes,
+      artisanRes,
+      achievementsRes,
+      postsRes,
+      weaponsRes
+    ] = await Promise.all([
+      axios.get(`http://localhost:8888/ChopHub-API/api/userProfile.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/artisanProfile.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/get_user_achievements.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/get_user_posts.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/get_user_favorite_weapons.php?user_id=${userId.value}`)
+    ]);
+
+    // 1. 處理一般使用者資料 (已修改)
+    if (userRes.data.status === 'success') {
+      const userData = userRes.data.data;
+      artisanProfile.value.name = userData.display_name;
+      artisanProfile.value.joinDate = userData.created_at ? userData.created_at.split(' ')[0].replace(/-/g, '/') : '';
+      artisanProfile.value.location = userData.location;
+      
+      // ******** 將隱私設定存入 ref ********
+      artisanProfile.value.privacySettings.is_collections_public = !!parseInt(userData.is_collections_public);
+      artisanProfile.value.privacySettings.is_achievements_public = !!parseInt(userData.is_achievements_public);
+      artisanProfile.value.privacySettings.is_location_public = !!parseInt(userData.is_location_public);
+    }
+
+    // 2. 處理刀匠專屬資料 (已修改)
+    if (artisanRes.data.status === 'success') {
+      const artisanData = artisanRes.data.data;
+      if (artisanData.profile) {
+        artisanProfile.value.card.quote = `「${artisanData.profile.tagline}」`;
+        artisanProfile.value.card.details = `鍛造資歷 ${artisanData.profile.years_experience} 年\n專長：${artisanData.profile.specialty}\n流派：${artisanData.profile.sect}`;
+      }
+      if (artisanData.quotes && artisanData.quotes.length > 0) {
+        artisanProfile.value.intro = artisanData.quotes[0].content;
+      }
+      if (artisanData.social_links && Array.isArray(artisanData.social_links)) {
+        artisanProfile.value.socialLinks = artisanData.social_links.map(link => ({
+          id: link.link_id,
+          platform: link.platform,
+          handle: link.url,
+          link: link.url
+        }));
+      }
+    }
+
+    // 3. 處理成就徽章
+    if (achievementsRes.data.status === 'success') {
+      artisanProfile.value.achievements = achievementsRes.data.data;
+      if (artisanProfile.value.achievements.length > 0) {
+        artisanProfile.value.mainBadge.name = achievementsRes.data.data[0].name;
+        artisanProfile.value.mainBadge.iconUrl = achievementsRes.data.data[0].imageUrl;
+      }
+    }
+
+    // 4. 處理精選貼文
+    if (postsRes.data.status === 'success') {
+      artisanProfile.value.featuredPosts = postsRes.data.data.slice(0, 6).map(post => ({
+        ...post,
+        date: post.date.split(' ')[0].replace(/-/g, '/'),
+        category: '【匠人日誌】'
+      }));
+    }
+
+    // 5. 處理精選作品
+    if (weaponsRes.data.status === 'success') {
+      artisanProfile.value.featuredWorks = weaponsRes.data.data.slice(0, 5);
+    }
+
+  } catch (err) {
+    console.error("載入刀匠展示頁資料失敗:", err);
+    error.value = "無法載入刀匠資料，請確認該使用者是否存在且具有刀匠身份。";
+  } finally {
+    loading.value = false;
+  }
 });
 </script>
 
 <template>
-      <div class="absolute inset-0 -z-10">
+            <div class="absolute inset-0 -z-10">
       <vue-particles
       id="tsparticles"
       @particles-loaded="particlesLoaded"
@@ -593,58 +647,49 @@ const artisanProfile = ref({
     />
     </div>
 
-
   <div class="flex flex-col min-h-screen">
     <Theheader />
-
     <main class="flex-1 p-4 lg:p-12">
-      <div class="max-w-2xl lg:max-w-5xl mx-auto space-y-10 lg:space-y-12">
+      <div v-if="loading" class="text-center text-white text-2xl">載入刀匠資料中...</div>
+      <div v-else-if="error" class="text-center text-red-400 text-2xl p-8 bg-gray-800 rounded-lg">{{ error }}</div>
+      <div v-else class="max-w-2xl lg:max-w-5xl mx-auto space-y-10 lg:space-y-12">
 
         <!-- 頂部個人資訊 -->
         <section class="text-center space-y-4 lg:flex lg:gap-8 lg:text-left lg:items-center">
-          <img :src="artisanProfile.avatarUrl" alt="Artisan Avatar" 
-            class="w-full max-w-sm mx-auto rounded-lg shadow-[0_0_30px_rgba(255,255,255,0.4)] lg:w-60 lg:h-60 lg:mx-0 lg:flex-shrink-0 object-cover">
+          <img :src="artisanProfile.avatarUrl" alt="Artisan Avatar" class="w-full max-w-sm mx-auto rounded-lg shadow-[0_0_30px_rgba(255,255,255,0.4)] lg:w-60 lg:h-60 lg:mx-0 lg:flex-shrink-0 object-cover">
           <div class="space-y-3">
             <h1 class="text-4xl lg:text-5xl font-bold text-white">{{ artisanProfile.name }}</h1>
-            <div class="flex items-center justify-center lg:justify-start gap-2 text-xl font-semibold text-white">
+            <div v-if="artisanProfile.mainBadge.name && artisanProfile.privacySettings.is_achievements_public" class="flex items-center justify-center lg:justify-start gap-2 text-xl font-semibold text-white">
               {{ artisanProfile.mainBadge.name }}
               <img :src="artisanProfile.mainBadge.iconUrl" alt="Badge Icon" class="w-8 h-8">
             </div>
-            <div class="text-white">
+            <div class="text-white text-2xl">
               <p>加入時間：{{ artisanProfile.joinDate }}</p>
-              <p>所在地：{{ artisanProfile.location }}</p>
+              <!-- ******** 加入 v-if 判斷 ******** -->
+              <p v-if="artisanProfile.privacySettings.is_location_public">所在地：{{ artisanProfile.location }}</p>
             </div>
           </div>
         </section>
 
-        <!-- 刀匠簡介 -->
+        <!-- ... 刀匠簡介, 刀匠卡片, 社群連結 (不變) ... -->
         <section>
           <h2 class="text-3xl font-bold text-white mb-8">刀匠簡介：</h2>
-          <p class="text-xl text-white whitespace-pre-line leading-relaxed">{{ artisanProfile.intro }}</p>
+          <p class="text-2xl text-white whitespace-pre-line leading-relaxed">{{ artisanProfile.intro }}</p>
         </section>
-
-        <!-- 刀匠卡片 -->
-        
         <section class="relative rounded-lg overflow-hidden shadow-[0_0_30px_rgba(255,255,255,0.4)]">
-          <router-link to="/" class="block cursor-pointer relative z-10">
+          <a href="#" class="block cursor-pointer relative z-10">
             <img :src="artisanProfile.card.imageUrl" alt="Artisan at work" class="w-full h-56 md:h-72 object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6 lg:p-8 text-white pointer-events-none">
               <p class="text-3xl lg:text-4xl font-bold mb-12">{{ artisanProfile.card.quote }}</p>
               <p class="text-sm lg:text-xl whitespace-pre-line leading-snug">{{ artisanProfile.card.details }}</p>
             </div>
-          </router-link>
+          </a>
         </section>
-
-        <!-- 社群連結 -->
         <section class="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
-          <a v-for="link in artisanProfile.socialLinks" :key="link.id" :href="link.link" target="_blank"
-             class="flex items-center gap-4 bg-[#F2994A] p-4 rounded-lg shadow-sm hover:bg-[#F2B94C] transition-colors duration-200">
-
-            <!-- **【步驟 4.2】** 將原本的 div 替換成 SocialIcon 元件 -->
+          <a v-for="link in artisanProfile.socialLinks" :key="link.id" :href="link.link" target="_blank" class="flex items-center gap-4 bg-[#F2994A] p-4 rounded-lg shadow-sm hover:bg-[#F2B94C] transition-colors duration-200">
             <div class="w-10 h-10 bg-white rounded-md flex items-center justify-center">
               <SocialIcon :platform="link.platform" class="w-6 h-6 text-gray-800" />
             </div>
-
             <div>
               <p class="font-bold text-gray-800">{{ link.platform }}</p>
               <p class="text-sm text-gray-600">{{ link.handle }}</p>
@@ -652,64 +697,36 @@ const artisanProfile = ref({
           </a>
         </section>
 
-        <!-- 刀匠精選作品 -->
-<section
-  class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8"
-  style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);"
->            <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選作品</h2>
+
+        <!-- 刀匠精選作品 (已加入 v-if) -->
+        <section v-if="artisanProfile.privacySettings.is_collections_public" class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選作品</h2>
           <div class="flex space-x-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-5 lg:gap-6 lg:space-x-0 lg:pb-0">
-            <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="work.link" class="flex-shrink-0 group w-56 lg:w-full">
+            <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="'/weapon/' + work.id" class="flex-shrink-0 group w-56 lg:w-full">
               <div class="bg-black p-2 rounded-lg shadow-md overflow-hidden">
-                <img :src="work.imageUrl" :alt="'作品 ' + work.id" class="w-full h-48 lg:h-40 object-contain transition-transform duration-300 ">
+                <img :src="work.imageUrl" :alt="'作品 ' + work.id" class="w-full h-48 lg:h-40 object-contain">
               </div>
-              <button class="mt-3 w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-md transition-colors text-sm">
-                查看更多
-              </button>
+              <button class="mt-3 w-full bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-md transition-colors text-sm">查看更多</button>
             </a>
           </div>
         </section>
 
-        <!-- 刀匠精選貼文 -->
-<section
-  class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8"
-  style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);"
->            <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選貼文</h2>
-          <div class="space-y-4 lg:hidden">
-            <a
-              v-for="post in artisanProfile.featuredPosts"
-              :key="post.id"
-              :href="post.link"
-              class="block bg-white shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 rounded-lg"
-            >
-              <p class="font-semibold text-gray-800">{{ post.category }} {{ post.title }}</p>
-              <p class="text-sm text-gray-500 mt-2">發表日期：{{ post.date }}</p>
-            </a>
-          </div>
+        <!-- 刀匠精選貼文 (不變) -->
+        <section class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選貼文</h2>
           <table class="w-full text-left hidden lg:table">
-            <thead>
-              <tr class="border-b-2">
-                <th class="py-2 font-semibold">文章標題</th>
-                <th class="py-2 font-semibold text-right">發表日期</th>
-              </tr>
-            </thead>
+            <thead><tr class="border-b-2"><th class="py-2 font-semibold">文章標題</th><th class="py-2 font-semibold text-right">發表日期</th></tr></thead>
             <tbody>
               <tr v-for="post in artisanProfile.featuredPosts" :key="post.id" class="border-b last:border-b-0">
-                <td class="py-4">
-                  <a :href="post.link" class="text-gray-800 hover:text-[#F2994A] transition-colors">
-                    <span class="text-gray-500">{{ post.category }}</span> {{ post.title }}
-                  </a>
-                </td>
+                <td class="py-4"><a :href="post.link" class="text-gray-800 hover:text-[#F2994A] transition-colors"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</a></td>
                 <td class="py-4 text-right text-gray-500">{{ post.date }}</td>
               </tr>
             </tbody>
           </table>
         </section>
 
-        <!-- 成就徽章 -->
-<section
-  class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8"
-  style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);"
->          
+        <!-- 成就徽章 (已加入 v-if) -->
+        <section v-if="artisanProfile.privacySettings.is_achievements_public" class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">          
           <h2 class="text-2xl font-bold text-gray-800 mb-6">成就徽章</h2>
           <div class="flex space-x-6 overflow-x-auto pb-4 lg:flex-wrap lg:justify-center lg:gap-x-4 lg:gap-y-6 lg:space-x-0">
             <div v-for="achievement in artisanProfile.achievements" :key="achievement.id" class="flex flex-col items-center flex-shrink-0 w-32 lg:w-24">
@@ -721,24 +738,14 @@ const artisanProfile = ref({
 
       </div>
     </main>
-
     <Thefooter />
   </div>
 </template>
 
 <style scoped>
 /* 美化滾動條 */
-.overflow-x-auto::-webkit-scrollbar {
-  height: 8px;
-}
-.overflow-x-auto::-webkit-scrollbar-track {
-  background: transparent;
-}
-.overflow-x-auto::-webkit-scrollbar-thumb {
-  background-color: #F2994A;
-  border-radius: 10px;
-}
-.overflow-x-auto::-webkit-scrollbar-thumb:hover {
-  background-color: #E88C3A;
-}
+.overflow-x-auto::-webkit-scrollbar { height: 8px; }
+.overflow-x-auto::-webkit-scrollbar-track { background: transparent; }
+.overflow-x-auto::-webkit-scrollbar-thumb { background-color: #F2994A; border-radius: 10px; }
+.overflow-x-auto::-webkit-scrollbar-thumb:hover { background-color: #E88C3A; }
 </style>

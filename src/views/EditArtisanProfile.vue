@@ -1,120 +1,208 @@
 <script setup>
-import { ref, reactive, computed } from 'vue';
-import { useRoute } from 'vue-router';
-import { getPublicImg } from '@/utils/getPublicImg'; // 
+import { ref, reactive, onMounted } from 'vue';
+import axios from 'axios';
+import { getPublicImg } from '@/utils/getPublicImg';
 
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
-// 引入圖片資源
-// import userp from '../assets/users/userp.png';
-// import selectedWeaponImage from '../assets/weapons/selected-weapon.png';
-// import weapon2 from '../assets/weapons/weapon2.png';
-// import weapon3 from '../assets/weapons/weapon3.png';
-// import weapon4 from '../assets/weapons/weapon4.png';
-// import weapon5 from '../assets/weapons/weapon5.png';
-// import badge1 from '../assets/badges/badge1.png';
-// import badge2 from '../assets/badges/badge2.png';
-// import badge3 from '../assets/badges/badge3.png';
-// import badge4 from '../assets/badges/badge4.png';
-// import badge5 from '../assets/badges/badge5.png';
+import { useRoute } from 'vue-router';
 
-
-
-const handleSave = () => {
-  alert('修改成功！請到信箱收驗證信。');
-  // 這裡可以加上儲存資料的程式碼
-};
-// 定義響應式變量
-const particlesLoaded = async (container) => {
-  console.log("Particles container loaded", container);
-};
-
-// (手機版) 下拉選單狀態
+// --- 通用佈局相關的資料 ---
 const isDropdownOpen = ref(false);
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
-};
-
+const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
 const route = useRoute();
-
-// **【修改處】** 移除 '我的活動'
+const activeTab = ref('其他設定'); 
 const menuItems = ref([
   { name: '會員資訊', href: '/UserProfile' },
   { name: '貼文相關', href: '/PostActivity' },
   { name: '收藏相關', href: '/UserCollections' },
-  // { name: '我的活動', href: '/MyActivities' }, // <--- 已移除
   { name: '其他設定', href: '/OtherSettings' },
 ]);
 
-// **【修改處】** 使用 computed 根據路由自動判斷 activeTab
-const activeTab = computed(() => {
-  const currentRoute = menuItems.value.find(item => item.href === route.path);
-  return currentRoute ? currentRoute.name : '會員資訊';
-});
-
-const countries = ref([
-  "美國", "英國", "臺灣", "日本", "韓國", "中國", "香港", "澳門", "新加坡", "馬來西亞", "加拿大", "澳大利亞", "德國", "法國", "義大利", "西班牙", "印度", "巴西", "俄羅斯", "阿富汗", "阿爾巴尼亞", "阿爾及利亞", "安道爾", "安哥拉", "阿根廷", "亞美尼亞", "奧地利", "亞塞拜然", "巴哈馬", "巴林", "孟加拉", "巴貝多", "白俄羅斯", "比利時", "貝里斯", "不丹", "玻利維亞", "波士尼亞與赫塞哥維納", "波札那", "汶萊", "保加利亞", "柬埔寨", "喀麥隆", "中非共和國", "查德", "智利", "哥倫比亞", "剛果", "哥斯大黎加", "克羅埃西亞", "古巴", "賽普勒斯", "捷克", "丹麥", "吉布地", "多明尼加", "厄瓜多", "埃及", "薩爾瓦多", "赤道幾內亞", "愛沙尼亞", "衣索比亞", "斐濟", "芬蘭", "喬治亞", "迦納", "希臘", "瓜地馬拉", "幾內亞", "蓋亞那", "海地", "宏都拉斯", "匈牙利", "冰島", "印尼", "伊朗", "伊拉克", "愛爾蘭", "以色列", "牙買加", "約旦", "哈薩克", "肯亞", "科威特", "吉爾吉斯", "寮國", "拉脫維亞", "黎巴嫩", "賴比瑞亞", "利比亞", "列支敦斯登", "立陶宛", "盧森堡", "馬達加斯加", "馬拉威", "馬爾地夫", "馬利", "馬爾他", "茅利塔尼亞", "模里西斯", "墨西哥", "摩爾多瓦", "摩納哥", "蒙古", "蒙特內哥羅", "摩洛哥", "莫三比克", "緬甸", "納米比亞", "尼泊爾", "荷蘭", "紐西蘭", "尼加拉瓜", "奈及利亞", "北韓", "北馬其頓", "挪威", "阿曼", "巴基斯坦", "巴拿馬", "巴拉圭", "秘魯", "菲律賓", "波蘭", "葡萄牙", "卡達", "羅馬尼亞", "盧安達", "聖馬利諾", "沙烏地阿拉伯", "塞內加爾", "塞爾維亞", "獅子山", "斯洛伐克", "斯洛維尼亞", "索馬利亞", "南非", "南韓", "斯里蘭卡", "蘇丹", "瑞典", "瑞士", "敘利亞", "塔吉克", "坦尚尼亞", "泰國", "東帝汶", "多哥", "千里達及托巴哥", "突尼西亞", "土耳其", "土庫曼", "烏干達", "烏克蘭", "阿拉伯聯合大公國", "烏拉圭", "烏茲別克", "梵蒂岡", "委內瑞拉", "越南", "葉門", "尚比亞", "辛巴威"
-]);
-
 const memberInfo = ref({
-  name: '露比匠',
-  avatarUrl: getPublicImg('users/userp.png'), // 
-  email: 'rubi520@gmail.com',
-  password: 'r******4',
-  backupEmail: 'rubija@gmail.com',
-  nickname: 'RUBI',
-  badge: '刀匠 / 一般',
-  birthDate: '1997/06/28',
-  gender: '男',
-  joinDate: '2025/05/20',
-  location: '臺灣',
-  artisanIntro: '不破百鍊，鋼鐵不滅。\n股肱折疊，臂膀不滅。\n吾心如鏡，無所掛礙，故無所不斷。',
-  artisanCard: {
-    slogan: '眼盲，心不止。',
-    experience: '20 年',
-    specialty: '戰術直刀 / 日式武士刀 / 戰術斧頭',
-    style: '自由心流',
-  },
+  name: '載入中...',
+  avatarUrl: getPublicImg('users/userp.png'), 
 });
 
+// --- API 相關狀態 ---
+const loading = ref(true);
+const error = ref(null);
+const saving = ref(false);
+
+// --- 新增：各區塊的獨立編輯狀態 ---
+const isEditingAccount = ref(false);
+const isEditingProfile = ref(false);
+const isEditingIntro = ref(false);
+const isEditingCard = ref(false);
+const isEditingSocials = ref(false);
+
+// --- 可選的社群平台 ---
+const socialPlatforms = ref(['YOUTUBE', 'Instagram', 'X', 'Gmail', 'Podcast']);
+
+// --- 表單資料 ---
 const profileForm = reactive({
-  ...memberInfo.value,
+  email: '',
   password: '',
-  featuredWeaponUrls: [
-    getPublicImg('weapons/w1.png'),
-    getPublicImg('weapons/w2.png'),
-    getPublicImg('weapons/w3.png'),
-    getPublicImg('weapons/w4.png'),
-    getPublicImg('weapons/w5.png')
-  ],
-  socialLinks: [
-    { id: 1, platform: 'YOUTUBE', handle: '@Hattori_Hanzo5777' },
-    { id: 2, platform: 'X', handle: '@Hattori_Hanzo5777' },
-    { id: 3, platform: 'Podcast', handle: '專訪：聽見火光的聲音' },
-    { id: 4, platform: 'Instagram', handle: '@Hattori_Hanzo5777' },
-    { id: 5, platform: 'Gmail', handle: 'Hattori5777@gmail.com' },
-  ]
+  backup_email: '',
+  display_name: '',
+  badge: '',
+  birthday: '',
+  gender: '',
+  created_at: '',
+  location: '',
+  avatarUrl: getPublicImg('users/userp.png'),
+  artisanIntro: '',
+  artisanCard: {
+    tagline: '',
+    years_experience: '',
+    specialty: '',
+    sect: '',
+  },
+  socialLinks: [],
 });
 
-const allBadges = ref([
-  { id: 1, imageUrl: getPublicImg('badges/badge1.png'), name: '黑鐵級刀匠' },
-  { id: 2, imageUrl: getPublicImg('badges/badge2.png'), name: '赤火初煉者' },
-  { id: 3, imageUrl: getPublicImg('badges/badge3.png'), name: '登入王' },
-  { id: 4, imageUrl: getPublicImg('badges/badge4.png'), name: '社群新星' },
-  { id: 5, imageUrl: getPublicImg('badges/badge5.png'), name: '新手村村民' },
-]);
+const userId = 1;
 
+// --- GET 請求 ---
+async function fetchUserProfile() {
+  try {
+    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/userProfile.php?user_id=${userId}`);
+    if (response.data.status === 'success') {
+      const userData = response.data.data;
+      Object.assign(profileForm, userData);
+      profileForm.birthday = userData.birthday ? userData.birthday.split(' ')[0] : '';
+      profileForm.created_at = userData.created_at ? userData.created_at.split(' ')[0].replace(/-/g, '/') : '';
+      profileForm.password = '';
+      memberInfo.value.name = userData.display_name;
+    }
+  } catch (err) {
+    console.error("獲取使用者資料失敗:", err);
+    throw err;
+  }
+}
+
+async function fetchArtisanProfile() {
+  try {
+    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/artisanProfile.php?user_id=${userId}`);
+    if (response.data.status === 'success') {
+      const artisanData = response.data.data;
+      if (artisanData.profile) {
+        Object.assign(profileForm.artisanCard, artisanData.profile);
+      }
+      if (artisanData.quotes && artisanData.quotes.length > 0) {
+        profileForm.artisanIntro = artisanData.quotes[0].content;
+      }
+      if (artisanData.social_links) {
+        profileForm.socialLinks = artisanData.social_links.map(link => ({
+            id: link.link_id,
+            platform: link.platform,
+            handle: link.url
+        }));
+      }
+    }
+  } catch (err) {
+    console.error("獲取刀匠資料失敗:", err);
+    throw err;
+  }
+}
+
+async function loadAllData() {
+  loading.value = true;
+  error.value = null;
+  try {
+    await Promise.all([ fetchUserProfile(), fetchArtisanProfile() ]);
+  } catch (err) {
+    error.value = "部分資料載入失敗，請重新整理頁面。";
+  } finally {
+    loading.value = false;
+  }
+}
+onMounted(loadAllData);
+
+// --- PATCH 請求 ---
+async function handleSave(formType) {
+  saving.value = true;
+  let apiUrl = '';
+  let payload = {};
+
+  if (formType === 'account' || formType === 'profile') {
+    apiUrl = `http://localhost:8888/ChopHub-API/api/userProfile.php?user_id=${userId}`;
+    if (formType === 'account') {
+      payload = { backup_email: profileForm.backup_email };
+      if (profileForm.password && profileForm.password.trim() !== '') {
+        payload.password = profileForm.password;
+      }
+    } else {
+      payload = {
+        display_name: profileForm.display_name,
+        birthday: profileForm.birthday,
+        gender: profileForm.gender,
+        location: profileForm.location
+      };
+    }
+  } else if (formType === 'artisan') {
+     apiUrl = `http://localhost:8888/ChopHub-API/api/artisanProfile.php?user_id=${userId}`;
+     const socialLinksPayload = profileForm.socialLinks.map(link => ({
+         platform: link.platform,
+         url: link.handle
+     }));
+     payload = {
+        profile: {
+          tagline: profileForm.artisanCard.tagline,
+          years_experience: profileForm.artisanCard.years_experience,
+          specialty: profileForm.artisanCard.specialty,
+          sect: profileForm.artisanCard.sect,
+        },
+        quotes: [{ content: profileForm.artisanIntro }],
+        social_links: socialLinksPayload
+     };
+  }
+  
+  try {
+    const response = await axios.patch(apiUrl, payload);
+    if (response.data.status === 'success') {
+      alert('更新成功！');
+      await loadAllData(); 
+      // 成功後關閉所有編輯模式
+      isEditingAccount.value = false;
+      isEditingProfile.value = false;
+      isEditingIntro.value = false;
+      isEditingCard.value = false;
+      isEditingSocials.value = false;
+    } else {
+      throw new Error(response.data.message || '後端回報更新失敗');
+    }
+  } catch (err) {
+    console.error("更新失敗:", err);
+    alert(`更新失敗: ${err.response?.data?.message || err.message}`);
+  } finally {
+    saving.value = false;
+  }
+}
+
+// --- 其他 UI 函式 ---
+function handleCancel(formType) {
+  if (confirm('確定要放棄所有未儲存的修改嗎？')) {
+    // 關閉對應的編輯模式
+    if (formType === 'account') isEditingAccount.value = false;
+    if (formType === 'profile') isEditingProfile.value = false;
+    if (formType === 'artisanIntro') isEditingIntro.value = false;
+    if (formType === 'artisanCard') isEditingCard.value = false;
+    if (formType === 'socials') isEditingSocials.value = false;
+    // 重新載入資料以還原
+    loadAllData();
+  }
+}
 const addSocialLink = () => {
-  profileForm.socialLinks.push({ id: Date.now(), platform: '', handle: '' });
+  profileForm.socialLinks.push({ id: Date.now(), platform: socialPlatforms.value[0], handle: '' });
 };
-
 const removeSocialLink = (index) => {
   profileForm.socialLinks.splice(index, 1);
 };
 </script>
 
 <template>
-          <div class="absolute inset-0 -z-10">
+            <div class="absolute inset-0 -z-10">
       <vue-particles
       id="tsparticles"
       @particles-loaded="particlesLoaded"
@@ -635,11 +723,10 @@ const removeSocialLink = (index) => {
       }"
     />
     </div>
+
   <div class="flex flex-col min-h-screen ">
     <Theheader />
-
     <div class="flex-1 container mx-auto p-4 lg:flex lg:gap-8 lg:p-8">
-      <!-- 左側邊欄 -->
       <aside class="hidden lg:block lg:w-72 flex-shrink-0">
         <div class="bg-white p-4 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)] sticky top-24">
           <div class="flex flex-col items-center text-center border-b pb-4 mb-4">
@@ -662,13 +749,10 @@ const removeSocialLink = (index) => {
           </nav>
         </div>
       </aside>
-
-      <!-- 右側主內容區 -->
+      
       <main class="flex-1">
-        
-        <!-- 手機版下拉式選單 -->
         <div class="relative lg:hidden mb-6">
-          <button @click="toggleDropdown" class="w-full flex items-center justify-between p-3 bg-white border border-gray-300 rounded-md shadow-sm">
+           <button @click="toggleDropdown" class="w-full flex items-center justify-between p-3 bg-white border border-gray-300 rounded-md shadow-sm">
             <div class="flex items-center">
               <img :src="memberInfo.avatarUrl" alt="Avatar" class="w-8 h-8 rounded-full object-cover mr-3"/>
               <span class="font-semibold">{{ memberInfo.name }}</span>
@@ -682,8 +766,9 @@ const removeSocialLink = (index) => {
           </transition>
         </div>
 
-        <!-- 主內容 -->
-        <div class="space-y-8 max-w-2xl mx-auto">
+        <div v-if="loading" class="text-center text-white text-xl">資料載入中...</div>
+        <div v-else-if="error" class="text-center text-red-400 text-xl">{{ error }}</div>
+        <div v-else class="space-y-8 max-w-2xl mx-auto">
           
           <div class="relative w-72 h-72 mx-auto group">
             <img :src="profileForm.avatarUrl" alt="User Avatar" class="w-full h-full object-cover rounded-full border-4 border-white">
@@ -691,130 +776,156 @@ const removeSocialLink = (index) => {
               <button class="text-sm bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-[8px] transition-all opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 duration-300">圖片上傳</button>
             </div>
           </div>
-
+          
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">帳號與安全</h2>
             <div class="space-y-4 text-xl">
-              <div class="grid grid-cols-3 items-center gap-4"><span class="text-gray-600 col-span-1">電子信箱</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.email }}</span></div>
-              <div class="grid grid-cols-3 items-center gap-4"><label for="password" class="text-gray-600 col-span-1">重設密碼</label><input id="password" type="password" v-model="profileForm.password" placeholder="留空為不更改密碼" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
-              <div class="grid grid-cols-3 items-center gap-4"><label for="backupEmail" class="text-gray-600 col-span-1">備用信箱</label><input id="backupEmail" type="email" v-model="profileForm.backupEmail" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
+              <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">電子信箱</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.email }}</span></div>
+              <template v-if="isEditingAccount">
+                <div class="grid grid-cols-3 items-center gap-4"><label for="password" class="font-bold text-gray-600 col-span-1">重設密碼</label><input id="password" type="password" v-model="profileForm.password" placeholder="留空為不更改密碼" autocomplete="new-password" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+                <div class="grid grid-cols-3 items-center gap-4"><label for="backupEmail" class="font-bold text-gray-600 col-span-1">備用信箱</label><input id="backupEmail" type="email" v-model="profileForm.backup_email" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+              </template>
+              <template v-else>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">密碼</span><span class="font-medium text-gray-900 col-span-2">********</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">備用信箱 </span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.backup_email || '尚未設定' }}</span></div>
+              </template>
             </div>
             <div class="mt-6 flex gap-4">
-              <button class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors  hover:border-[#F2994A] hover:brightness-110 hover:bg-white hover:text-black" @click="handleSave">儲存</button>
-              <button class="flex-1 bg-white hover:bg-gray-100 text-red-600 border border-red-600 font-bold py-2 px-4 rounded-[8px] transition-colors">刪除帳號</button>
+              <template v-if="isEditingAccount">
+                <button @click="handleSave('account')" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:border-[#F2994A] hover:brightness-110 hover:bg-white hover:text-black" :disabled="saving">{{ saving ? '儲存中...' : '儲存' }}</button>
+                <button @click="handleCancel('account')" class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">取消</button>
+              </template>
+              <template v-else>
+                <button @click="isEditingAccount = true" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:bg-white hover:text-black hover:border hover:border-[#F2994A]">編輯</button>
+                <button class="flex-1 bg-white hover:bg-gray-100 text-red-600 border border-red-600 font-bold py-2 px-4 rounded-[8px] transition-colors">刪除帳號</button>
+              </template>
             </div>
           </div>
-
+          
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">會員資訊</h2>
             <div class="space-y-4 text-xl">
-              <div class="grid grid-cols-3 items-center gap-4"><label class="text-gray-600 col-span-1">會員暱稱</label><input type="text" v-model="profileForm.nickname" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
-              <div class="grid grid-cols-3 items-center gap-4"><span class="text-gray-600 col-span-1">身份徽章</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.badge }}</span></div>
-              <div class="grid grid-cols-3 items-center gap-4"><label class="text-gray-600 col-span-1">生日</label><input type="text" v-model="profileForm.birthDate" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
-              <div class="grid grid-cols-3 items-center gap-4">
-                <label class="text-gray-600 col-span-1">性別</label>
-                <select v-model="profileForm.gender" class="col-span-2 w-1/2 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]">
-                  <option>男</option>
-                  <option>女</option>
-                </select>
-              </div>
-              <div class="grid grid-cols-3 items-center gap-4"><span class="text-gray-600 col-span-1">加入時間</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.joinDate }}</span></div>
-              <div class="grid grid-cols-3 items-center gap-4">
-                <label class="text-gray-600 col-span-1">所在地區</label>
-                <select v-model="profileForm.location" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]">
-                  <option disabled value="">請選擇地區</option>
-                  <option v-for="country in countries" :key="country" :value="country">
-                    {{ country }}
-                  </option>
-                </select>
-              </div>
+              <template v-if="isEditingProfile">
+                <div class="grid grid-cols-3 items-center gap-4"><label class="font-bold text-gray-600 col-span-1">會員暱稱</label><input type="text" v-model="profileForm.display_name" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">身份徽章</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.badge }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><label class="font-bold text-gray-600 col-span-1">生日</label><input type="date" v-model="profileForm.birthday" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+                <div class="grid grid-cols-3 items-center gap-4"><label class="font-bold text-gray-600 col-span-1">性別</label><select v-model="profileForm.gender" class="col-span-2 w-1/2 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"><option>男生</option><option>女生</option><option>其他</option></select></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">加入時間</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.created_at }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><label class="font-bold text-gray-600 col-span-1">所在地區</label><input type="text" v-model="profileForm.location" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+              </template>
+              <template v-else>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">會員暱稱</span><span class=" text-gray-900 col-span-2">{{ profileForm.display_name }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">身份徽章</span><span class=" text-gray-900 col-span-2">{{ profileForm.badge }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">生日</span><span class=" text-gray-900 col-span-2">{{ profileForm.birthday }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">性別</span><span class=" text-gray-900 col-span-2">{{ profileForm.gender }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">加入時間</span><span class=" text-gray-900 col-span-2">{{ profileForm.created_at }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">所在地區</span><span class=" text-gray-900 col-span-2">{{ profileForm.location }}</span></div>
+              </template>
             </div>
             <div class="mt-6 flex gap-4">
-              <button class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors  hover:border-[#F2994A] hover:brightness-110 hover:bg-white hover:text-black" >儲存</button>
-              <button class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">放棄修改</button>
+              <template v-if="isEditingProfile">
+                <button @click="handleSave('profile')" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:border-[#F2994A] hover:brightness-110 hover:bg-white hover:text-black" :disabled="saving">{{ saving ? '儲存中...' : '儲存' }}</button>
+                <button @click="handleCancel('profile')" class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">放棄修改</button>
+              </template>
+              <template v-else>
+                <button @click="isEditingProfile = true" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:bg-white hover:text-black hover:border hover:border-[#F2994A]">編輯</button>
+              </template>
             </div>
           </div>
           
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠簡介</h2>
-            <div class="space-y-4 text-xl">
-               <div class="grid grid-cols-3 gap-4">
-                <label class="text-gray-600 col-span-1 pt-2">簡介內容</label>
-                <textarea v-model="profileForm.artisanIntro" rows="5" class="col-span-2 w-full p-3 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></textarea>
-              </div>
+             <div class="space-y-4 text-xl">
+              <template v-if="isEditingIntro">
+                <div class="grid grid-cols-3 gap-4">
+                  <label class="text-gray-600 col-span-1 pt-2">簡介內容</label>
+                  <textarea v-model="profileForm.artisanIntro" rows="5" class="col-span-2 w-full p-3 bg-gray-100 border border-gray-300 rounded-md"></textarea>
+                </div>
+              </template>
+              <template v-else>
+                <p class="text-gray-800 whitespace-pre-line">{{ profileForm.artisanIntro || '尚未填寫簡介' }}</p>
+              </template>
             </div>
              <div class="mt-6 flex gap-4">
-              <button class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors  hover:border-[#F2994A] hover:brightness-110 hover:bg-white hover:text-black">儲存</button>
-              <button class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">放棄修改</button>
+              <template v-if="isEditingIntro">
+                <button @click="handleSave('artisan')" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors" :disabled="saving">{{ saving ? '儲存中...' : '儲存' }}</button>
+                <button @click="handleCancel('artisanIntro')" class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">放棄修改</button>
+              </template>
+              <template v-else>
+                <button @click="isEditingIntro = true" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:bg-white hover:text-black hover:border hover:border-[#F2994A]">編輯</button>
+              </template>
             </div>
           </div>
-
+          
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠卡片</h2>
             <div class="space-y-4 text-xl">
-              <div class="grid grid-cols-3 items-center gap-4"><label class="text-gray-600 col-span-1">刀匠語錄</label><input type="text" v-model="profileForm.artisanCard.slogan" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
-              <div class="grid grid-cols-3 items-center gap-4"><label class="text-gray-600 col-span-1">鍛造資歷</label><input type="text" v-model="profileForm.artisanCard.experience" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
-              <div class="grid grid-cols-3 items-center gap-4"><label class="text-gray-600 col-span-1">專精領域</label><input type="text" v-model="profileForm.artisanCard.specialty" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
-              <div class="grid grid-cols-3 items-center gap-4"><label class="text-gray-600 col-span-1">流派</label><input type="text" v-model="profileForm.artisanCard.style" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"></div>
+              <template v-if="isEditingCard">
+                <div class="grid grid-cols-3 items-center gap-4"><label class="font-bold text-gray-600 col-span-1">刀匠語錄</label><input type="text" v-model="profileForm.artisanCard.tagline" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+                <div class="grid grid-cols-3 items-center gap-4"><label class=" font-bold text-gray-600 col-span-1">鍛造資歷</label><input type="text" v-model="profileForm.artisanCard.years_experience" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+                <div class="grid grid-cols-3 items-center gap-4"><label class="font-bold text-gray-600 col-span-1">專精領域</label><input type="text" v-model="profileForm.artisanCard.specialty" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+                <div class="grid grid-cols-3 items-center gap-4"><label class="font-bold text-gray-600 col-span-1">流派</label><input type="text" v-model="profileForm.artisanCard.sect" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+              </template>
+              <template v-else>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">刀匠語錄</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.artisanCard.tagline }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">鍛造資歷</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.artisanCard.years_experience }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">專精領域</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.artisanCard.specialty }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">流派</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.artisanCard.sect }}</span></div>
+              </template>
             </div>
              <div class="mt-6 flex gap-4">
-              <button class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors  hover:border-[#F2994A] hover:brightness-110 hover:bg-white hover:text-black">儲存</button>
-              <button class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">放棄修改</button>
+              <template v-if="isEditingCard">
+                <button @click="handleSave('artisan')" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors" :disabled="saving">{{ saving ? '儲存中...' : '儲存' }}</button>
+                <button @click="handleCancel('artisanCard')" class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">放棄修改</button>
+              </template>
+              <template v-else>
+                <button @click="isEditingCard = true" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:bg-white hover:text-black hover:border hover:border-[#F2994A]">編輯</button>
+              </template>
             </div>
           </div>
           
           <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">社群連結</h2>
             <div class="space-y-4">
-              <div v-for="(link, index) in profileForm.socialLinks" :key="link.id" class="flex items-center gap-2">
-                <input type="text" v-model="link.platform" placeholder="平台 (例如 YOUTUBE)" class="w-1/3 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]">
-                <input type="text" v-model="link.handle" placeholder="帳號或連結" class="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]">
-                <button @click="removeSocialLink(index)" class="p-2 text-[#D96570] hover:text-red-700">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.134-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.067-2.09 1.02-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
-                </button>
-              </div>
-            </div>
-            <div class="mt-4 flex justify-center">
-              <button @click="addSocialLink" class="w-12 h-12 bg-[#F2994A] rounded-full text-white text-3xl flex items-center justify-center shadow-lg hover:bg-[#E88C3A] transform hover:scale-110 transition-transform">
-                +
-              </button>
+              <template v-if="isEditingSocials">
+                <div v-for="(link, index) in profileForm.socialLinks" :key="link.id" class="flex items-center gap-2">
+                  <select v-model="link.platform" class="w-1/3 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md">
+                    <option disabled value="">請選擇平台</option>
+                    <option v-for="platform in socialPlatforms" :key="platform" :value="platform">{{ platform }}</option>
+                  </select>
+                  <input type="text" v-model="link.handle" placeholder="帳號或連結" class="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md">
+                  <button @click="removeSocialLink(index)" class="p-2 text-[#D96570] hover:text-red-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.134-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.067-2.09 1.02-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                  </button>
+                </div>
+                <div class="mt-4 flex justify-center">
+                  <button @click="addSocialLink" class="w-12 h-12 bg-[#F2994A] rounded-full text-white text-3xl flex items-center justify-center shadow-lg hover:bg-[#E88C3A] transform hover:scale-110 transition-transform">+</button>
+                </div>
+              </template>
+              <template v-else>
+                <div v-if="profileForm.socialLinks.length > 0" class="space-y-2">
+                   <div v-for="link in profileForm.socialLinks" :key="link.id" class="grid grid-cols-3 items-center gap-4 text-xl">
+                      <span class="font-bold text-gray-600 col-span-1">{{ link.platform }}</span>
+                      <a :href="link.handle" target="_blank" class="font-medium text-gray-900 col-span-2 truncate hover:text-orange-600">{{ link.handle }}</a>
+                   </div>
+                </div>
+                <p v-else class="text-gray-500 text-xl">尚未設定社群連結</p>
+              </template>
             </div>
              <div class="mt-6 flex gap-4">
-              <button class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors  hover:border-[#F2994A] hover:brightness-110 hover:bg-white hover:text-black">
-                儲存連結
-              </button>
+              <template v-if="isEditingSocials">
+                <button @click="handleSave('artisan')" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors" :disabled="saving">{{ saving ? '儲存中...' : '儲存連結' }}</button>
+                <button @click="handleCancel('socials')" class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">放棄修改</button>
+              </template>
+              <template v-else>
+                 <button @click="isEditingSocials = true" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:bg-white hover:text-black hover:border hover:border-[#F2994A]">編輯</button>
+              </template>
             </div>
           </div>
-
-          <div class="bg-white p-6 lg:p-8 rounded-lg shadow-sm">
-            <h2 class="text-xl font-bold text-gray-800 mb-6">刀匠精選武器</h2>
-            <div class="flex space-x-6 overflow-x-auto pb-4 flex-nowrap">
-              <div
-                v-for="(weaponUrl, idx) in profileForm.featuredWeaponUrls"
-                :key="idx"
-                class="w-40 h-40 lg:w-48 lg:h-48 bg-white p-2 rounded-lg shadow-md overflow-hidden flex items-center justify-center flex-shrink-0"
-              >
-                <img :src="weaponUrl" alt="精選武器" class="w-full h-full object-contain" />
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-white p-6 lg:p-8 rounded-lg shadow-sm">
-            <h2 class="text-xl font-bold text-gray-800 mb-6">刀匠徽章</h2>
-            <div class="flex space-x-6 overflow-x-auto pb-4">
-              <div v-for="badge in allBadges" :key="badge.id" class="flex flex-col items-center space-y-3 flex-shrink-0">
-                <div class="w-40 h-40 lg:w-48 lg:h-48 bg-white p-2 rounded-lg shadow-md overflow-hidden">
-                  <img :src="badge.imageUrl" :alt="badge.name" class="w-full h-full object-contain">
-                </div>
-                <span class="font-semibold text-gray-800 text-center">{{ badge.name }}</span>
-              </div>
-            </div>
-          </div>
-
+          
         </div>
       </main>
     </div>
-
     <Thefooter />
   </div>
 </template>

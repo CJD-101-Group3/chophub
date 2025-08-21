@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue';
-import { getPublicImg } from '@/utils/getPublicImg'; // 引入路徑輔助函數
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import { getPublicImg } from '@/utils/getPublicImg';
 
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
@@ -18,12 +19,10 @@ const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
 
 const activeTab = ref('貼文相關');
 
-// **【修改處】** 從 menuItems 陣列中移除 '我的活動'
 const menuItems = ref([
   { name: '會員資訊', href: '/UserProfile' },
   { name: '貼文相關', href: '/PostActivity' },
   { name: '收藏相關', href: '/UserCollections' },
-  // { name: '我的活動', href: '/MyActivities' }, // <--- 已移除
   { name: '其他設定', href: '/OtherSettings' },
 ]);
 
@@ -32,40 +31,194 @@ const memberInfo = ref({
   avatarUrl: getPublicImg('users/userp.png'),
 });
 
-// --- 此頁面專用的模擬資料 ---
+// --- 「貼文相關紀錄」區塊，準備接收 API 資料 ---
 const postStats = ref({
-  posts: 36,
-  replies: 128,
-  collections: 2789,
-  latestPost: '「鍛造入門心得」',
+  posts: 0,
+  replies: 0,
+  collections: 0,
+  latestPost: '載入中...',
+});
+const loadingPostStats = ref(false);
+
+// --- 「我的貼文」區塊，準備接收 API 資料 ---
+const myPosts = ref([]);
+const loadingMyPosts = ref(false);
+const errorMyPosts = ref(null);
+
+// --- 「我的回覆摘要」區塊，準備接收 API 資料 ---
+const myReplies = ref([]);
+const loadingMyReplies = ref(false);
+const errorMyReplies = ref(null);
+
+// --- 「我的收藏貼文」區塊，準備接收 API 資料 ---
+const myCollectedPosts = ref([]);
+const loadingCollectedPosts = ref(false);
+const errorCollectedPosts = ref(null);
+
+// --- 「被檢舉紀錄」區塊，準備接收 API 資料 ---
+const reportedRecords = ref([]);
+const loadingReportedRecords = ref(false);
+const errorReportedRecords = ref(null);
+
+// --- 「舉發紀錄」區塊，準備接收 API 資料 ---
+const myReports = ref([]);
+const loadingMyReports = ref(false);
+const errorMyReports = ref(null);
+
+
+// 呼叫「貼文相關紀錄」API 的函式
+async function fetchPostStats() {
+  loadingPostStats.value = true;
+  const userId = 1;
+
+  try {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_post_stats.php', {
+      params: { user_id: userId }
+    });
+    if (response.data.status === 'success') {
+      postStats.value = response.data.data;
+    } else {
+      throw new Error(response.data.message || '無法載入統計紀錄');
+    }
+  } catch (err) {
+    console.error('請求「貼文統計」API 失敗:', err);
+    // 發生錯誤時給予預設值
+    postStats.value = { posts: 'N/A', replies: 'N/A', collections: 'N/A', latestPost: '讀取失敗' };
+  } finally {
+    loadingPostStats.value = false;
+  }
+}
+
+// 呼叫「我的貼文」API 的函式
+async function fetchMyPosts() {
+  loadingMyPosts.value = true;
+  errorMyPosts.value = null;
+  const userId = 7;
+
+  try {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_posts.php', {
+      params: { user_id: userId }
+    });
+    if (response.data.status === 'success') {
+      myPosts.value = response.data.data;
+    } else {
+      throw new Error(response.data.message || '無法載入貼文紀錄');
+    }
+  } catch (err) {
+    console.error('請求「我的貼文」API 失敗:', err);
+    errorMyPosts.value = '資料載入失敗，請稍後再試。';
+  } finally {
+    loadingMyPosts.value = false;
+  }
+}
+
+// 呼叫「我的回覆摘要」API 的函式
+async function fetchMyReplies() {
+  loadingMyReplies.value = true;
+  errorMyReplies.value = null;
+  const userId = 1;
+
+  try {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_post_comments.php', {
+      params: { user_id: userId }
+    });
+    if (response.data.status === 'success') {
+      myReplies.value = response.data.data;
+    } else {
+      throw new Error(response.data.message || '無法載入回覆紀錄');
+    }
+  } catch (err) {
+    console.error('請求「回覆紀錄」API 失敗:', err);
+    errorMyReplies.value = '資料載入失敗，請稍後再試。';
+  } finally {
+    loadingMyReplies.value = false;
+  }
+}
+
+// 呼叫「我的收藏貼文」API 的函式
+async function fetchMyCollectedPosts() {
+  loadingCollectedPosts.value = true;
+  errorCollectedPosts.value = null;
+  const userId = 1;
+
+  try {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_favorites_posts.php', {
+      params: { user_id: userId }
+    });
+    if (response.data.status === 'success') {
+      myCollectedPosts.value = response.data.data;
+    } else {
+      throw new Error(response.data.message || '無法載入收藏貼文');
+    }
+  } catch (err) {
+    console.error('請求「收藏貼文」API 失敗:', err);
+    errorCollectedPosts.value = '資料載入失敗，請稍後再試。';
+  } finally {
+    loadingCollectedPosts.value = false;
+  }
+}
+
+// 呼叫「舉發紀錄」API 的函式
+async function fetchMyReports() {
+  loadingMyReports.value = true;
+  errorMyReports.value = null;
+  const userId = 1;
+
+  try {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_reports.php', {
+      params: { user_id: userId }
+    });
+    if (response.data.status === 'success') {
+      myReports.value = response.data.data;
+    } else {
+      throw new Error(response.data.message || '無法載入舉發紀錄');
+    }
+  } catch (err) {
+    console.error('請求「舉發紀錄」API 失敗:', err);
+    errorMyReports.value = '資料載入失敗，請稍後再試。';
+  } finally {
+    loadingMyReports.value = false;
+  }
+}
+
+// 呼叫「被檢舉紀錄」API 的函式
+async function fetchReportedRecords() {
+  loadingReportedRecords.value = true;
+  errorReportedRecords.value = null;
+  const userId = 1;
+
+  try {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_reports_on_user.php', {
+      params: { user_id: userId }
+    });
+    if (response.data.status === 'success') {
+      reportedRecords.value = response.data.data;
+    } else {
+      throw new Error(response.data.message || '無法載入被檢舉紀錄');
+    }
+  } catch (err) {
+    console.error('請求「被檢舉紀錄」API 失敗:', err);
+    errorReportedRecords.value = '資料載入失敗，請稍後再試。';
+  } finally {
+    loadingReportedRecords.value = false;
+  }
+}
+
+// 使用 onMounted 生命週期鉤子，在元件掛載後同時執行所有 API 請求
+onMounted(() => {
+  fetchPostStats();
+  fetchMyPosts();
+  fetchMyReplies();
+  fetchMyCollectedPosts();
+  fetchMyReports();
+  fetchReportedRecords();
 });
 
-const myPosts = ref([
-  { id: 1, title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', status: '20則留言/50個讚', date: '2025/07/12', link: '/posts/1' },
-  { id: 2, title: '【心得】新手磨刀石推薦', status: '5則留言/12個讚', date: '2025/07/11', link: '/posts/2' },
-  { id: 3, title: '【分享】我的第一把手工小刀', status: '33則留言/88個讚', date: '2025/07/10', link: '/posts/3' },
-]);
-
-const myReplies = ref([
-  { id: 1, date: '2025/07/12', postTitle: '鍛刀失敗案例討論', content: '這個情況其實我之前也很常遇到，主要是因為', link: '/posts/4' },
-  { id: 2, date: '2025/07/11', postTitle: '關於大馬士革鋼的迷思', content: '沒錯，很多人都以為花紋越複雜越好，但其實...', link: '/posts/5' },
-  { id: 3, date: '2025/07/10', postTitle: '新手磨刀石推薦', content: '我個人推薦#1000和#3000的組合，對新手來說...', link: '/posts/2' },
-]);
-
-const myCollectedPosts = ref([
-  { id: 1, category: '【心得】', title: '【鋼火與水氣】一把刀的靈魂在什麼時候誕生？', date: '2025/07/12', link: '/posts/1' },
-  { id: 2, category: '【分享】', title: '專訪日本國寶級刀匠：一生一刃', date: '2025/07/11', link: '/posts/6' },
-]);
-
-const reportedRecords = ref([
-  { id: 1, date: '2025/07/17', type: '貼文', reason: '這個問題根本不配來問！內容空泛且態度不佳。', result: '警告一次' },
-  { id: 2, date: '2025/07/16', type: '貼文', reason: '涉及人身攻擊', result: '警告一次' },
-]);
-
-const myReports = ref([
-  { id: 1, date: '2025/07/17', type: '貼文', reason: '「這篇好廢，回覆好嗆」', result: '待審核' },
-  { id: 2, date: '2025/07/15', type: '貼文', reason: '「這篇好廢，回覆好嗆」', result: '已處理' },
-]);
+// 日期格式化輔助函式
+function formatDate(dateString) {
+  if (!dateString) return '';
+  return dateString.split(' ')[0].replace(/-/g, '/');
+}
 
 </script>
 
@@ -657,123 +810,202 @@ const myReports = ref([
             </div>
           </div>
 
-          <!-- 我的貼文 -->
-          <div class="bg-white p-6 rounded-lg max-h-96 overflow-y-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+          <!-- 我的貼文 (API 版本) -->
+          <div class="bg-white p-6 rounded-lg min-h-[200px]" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">我的貼文</h2>
-            <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
-              <colgroup><col class="w-7/12"><col class="w-3/12"><col class="w-2/12"></colgroup>
-              <thead><tr class="border-b-2"><th class="py-2 px-3">文章標題</th><th class="py-2 px-3">狀態</th><th class="py-2 px-3 text-right">發表日期</th></tr></thead>
-              <tbody>
-                <tr v-for="post in myPosts" :key="post.id" class="subtle-float-on-hover">
-                  <td class="py-3 px-3 truncate">
-                    <a :href="post.link" class="text-gray-800 hover:text-gray-800">{{ post.title }}</a>
-                  </td>
-                  <td class="px-3">{{ post.status }}</td>
-                  <td class="px-3 text-right">{{ post.date }}</td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="space-y-4 lg:hidden">
-              <a v-for="post in myPosts" :key="post.id" :href="post.link" class="block bg-white p-4 rounded-md subtle-float-on-hover">
-                <p class="font-semibold truncate">{{ post.title }}</p>
-                <div class="flex justify-between text-sm text-gray-600 mt-2"><p>狀態：{{ post.status }}</p><p>發表日期：{{ post.date }}</p></div>
-              </a>
+            
+            <div v-if="loadingMyPosts" class="text-center text-gray-500">
+              載入中...
+            </div>
+            
+            <div v-else-if="errorMyPosts" class="text-center text-red-500">
+              {{ errorMyPosts }}
+            </div>
+
+            <div v-else-if="myPosts.length === 0" class="text-center text-gray-500">
+              沒有任何貼文。
+            </div>
+
+            <div v-else>
+              <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
+                <colgroup><col class="w-7/12"><col class="w-3/12"><col class="w-2/12"></colgroup>
+                <thead><tr class="border-b-2"><th class="py-2 px-3">文章標題</th><th class="py-2 px-3">狀態</th><th class="py-2 px-3 text-right">發表日期</th></tr></thead>
+                <tbody>
+                  <tr v-for="post in myPosts" :key="post.id" class="subtle-float-on-hover">
+                    <td class="py-3 px-3 truncate">
+                      <a :href="post.link" class="text-gray-800 hover:text-gray-800">{{ post.title }}</a>
+                    </td>
+                    <td class="px-3">{{ post.status }}</td>
+                    <td class="px-3 text-right">{{ formatDate(post.date) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="space-y-4 lg:hidden">
+                <a v-for="post in myPosts" :key="post.id" :href="post.link" class="block bg-white p-4 rounded-md subtle-float-on-hover">
+                  <p class="font-semibold truncate">{{ post.title }}</p>
+                  <div class="flex justify-between text-sm text-gray-600 mt-2"><p>狀態：{{ post.status }}</p><p>發表日期：{{ formatDate(post.date) }}</p></div>
+                </a>
+              </div>
             </div>
           </div>
 
-          <!-- 我的回覆摘要 -->
-          <div class="bg-white p-6 rounded-lg max-h-96 overflow-y-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+          <!-- 我的回覆摘要 (API 版本) -->
+          <div class="bg-white p-6 rounded-lg min-h-[200px]" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">我的回覆摘要</h2>
-            <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
-              <colgroup><col class="w-[15%]"><col class="w-[30%]"><col class="w-[55%]"></colgroup>
-              <thead><tr class="border-b-2"><th class="py-2 px-3">回覆日期</th><th class="py-2 px-3">貼文標題</th><th class="py-2 px-3">回覆內容摘要</th></tr></thead>
-              <tbody>
-                <tr v-for="reply in myReplies" :key="reply.id" class="subtle-float-on-hover">
-                  <td class="py-3 px-3">{{ reply.date }}</td>
-                  <td class="px-3 truncate">
-                     <a :href="reply.link" class="text-gray-800 hover:text-gray-800">{{ reply.postTitle }}</a>
-                  </td>
-                  <td class="px-3 truncate">{{ reply.content }}</td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="space-y-4 lg:hidden">
-              <a v-for="reply in myReplies" :key="reply.id" :href="reply.link" class="block bg-white p-4 rounded-md subtle-float-on-hover">
-                <div class="flex justify-between items-center mb-2"><span class="font-semibold truncate">{{ reply.postTitle }}</span><span class="text-sm text-gray-500 flex-shrink-0 ml-2">{{ reply.date }}</span></div>
-                <p class="text-sm text-gray-700 truncate">{{ reply.content }}</p>
-              </a>
+
+            <div v-if="loadingMyReplies" class="text-center text-gray-500">
+              載入中...
+            </div>
+            
+            <div v-else-if="errorMyReplies" class="text-center text-red-500">
+              {{ errorMyReplies }}
+            </div>
+
+            <div v-else-if="myReplies.length === 0" class="text-center text-gray-500">
+              沒有任何回覆紀錄。
+            </div>
+            
+            <div v-else>
+              <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
+                <colgroup><col class="w-[15%]"><col class="w-[30%]"><col class="w-[55%]"></colgroup>
+                <thead><tr class="border-b-2"><th class="py-2 px-3">回覆日期</th><th class="py-2 px-3">貼文標題</th><th class="py-2 px-3">回覆內容摘要</th></tr></thead>
+                <tbody>
+                  <tr v-for="reply in myReplies" :key="reply.postId" class="subtle-float-on-hover">
+                    <td class="py-3 px-3">{{ formatDate(reply.date) }}</td>
+                    <td class="px-3 truncate">
+                       <a :href="'/posts/' + reply.postId" class="text-gray-800 hover:text-gray-800">{{ reply.postTitle }}</a>
+                    </td>
+                    <td class="px-3 truncate">{{ reply.content }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="space-y-4 lg:hidden">
+                <a v-for="reply in myReplies" :key="reply.postId" :href="'/posts/' + reply.postId" class="block bg-white p-4 rounded-md subtle-float-on-hover">
+                  <div class="flex justify-between items-center mb-2"><span class="font-semibold truncate">{{ reply.postTitle }}</span><span class="text-sm text-gray-500 flex-shrink-0 ml-2">{{ formatDate(reply.date) }}</span></div>
+                  <p class="text-sm text-gray-700 truncate">{{ reply.content }}</p>
+                </a>
+              </div>
             </div>
           </div>
 
-          <!-- 我的收藏貼文 -->
-          <div class="bg-white p-6 rounded-lg max-h-96 overflow-y-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+          <!-- 我的收藏貼文 (API 版本) -->
+          <div class="bg-white p-6 rounded-lg min-h-[200px]" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">我的收藏貼文</h2>
-            <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
-               <colgroup><col class="w-10/12"><col class="w-2/12"></colgroup>
-              <thead><tr class="border-b-2"><th class="py-2 px-3">收藏文章標題</th><th class="py-2 px-3 text-right">收藏日期</th></tr></thead>
-              <tbody>
-                <tr v-for="post in myCollectedPosts" :key="post.id" class="subtle-float-on-hover">
-                  <td class="py-3 px-3 truncate">
-                    <a :href="post.link" class="text-gray-800 hover:text-gray-800">
-                      <span class="text-gray-500">{{ post.category }}</span> {{ post.title }}
-                    </a>
-                  </td>
-                  <td class="px-3 text-right">{{ post.date }}</td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="space-y-4 lg:hidden">
-              <a v-for="post in myCollectedPosts" :key="post.id" :href="post.link" class="block bg-white p-4 rounded-md subtle-float-on-hover">
-                <p class="font-semibold truncate"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</p>
-                <p class="text-sm text-gray-600 mt-2 text-right">收藏日期：{{ post.date }}</p>
-              </a>
+            
+            <div v-if="loadingCollectedPosts" class="text-center text-gray-500">
+              載入中...
+            </div>
+            
+            <div v-else-if="errorCollectedPosts" class="text-center text-red-500">
+              {{ errorCollectedPosts }}
+            </div>
+
+            <div v-else-if="myCollectedPosts.length === 0" class="text-center text-gray-500">
+              沒有任何收藏貼文。
+            </div>
+
+            <div v-else>
+              <table class="w-full text-left hidden lg:table border-separate border-spacing-y-2">
+                 <colgroup><col class="w-10/12"><col class="w-2/12"></colgroup>
+                <thead><tr class="border-b-2"><th class="py-2 px-3">收藏文章標題</th><th class="py-2 px-3 text-right">收藏日期</th></tr></thead>
+                <tbody>
+                  <tr v-for="post in myCollectedPosts" :key="post.postId" class="subtle-float-on-hover">
+                    <td class="py-3 px-3 truncate">
+                      <a :href="'/posts/' + post.postId" class="text-gray-800 hover:text-gray-800">
+                        <span v-if="post.category" class="text-gray-500">{{ post.category }}</span> {{ post.title }}
+                      </a>
+                    </td>
+                    <td class="px-3 text-right">{{ formatDate(post.favoriteDate) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="space-y-4 lg:hidden">
+                <a v-for="post in myCollectedPosts" :key="post.postId" :href="'/posts/' + post.postId" class="block bg-white p-4 rounded-md subtle-float-on-hover">
+                  <p class="font-semibold truncate">
+                    <span v-if="post.category" class="text-gray-500">{{ post.category }}</span> {{ post.title }}
+                  </p>
+                  <p class="text-sm text-gray-600 mt-2 text-right">收藏日期：{{ formatDate(post.favoriteDate) }}</p>
+                </a>
+              </div>
             </div>
           </div>
 
-          <!-- 檢舉專區 -->
-          <div class="bg-white p-6 rounded-lg max-h-96 overflow-y-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+          <!-- 檢舉專區 - 被檢舉紀錄 (API 版本) -->
+          <div class="bg-white p-6 rounded-lg min-h-[200px]" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">檢舉專區 - 被檢舉紀錄</h2>
-            <table class="w-full text-left hidden lg:table">
-              <colgroup><col class="w-[15%]"><col class="w-[10%]"><col class="w-[60%]"><col class="w-[15%]"></colgroup>
-              <thead><tr class="border-b-2"><th class="py-2">日期</th><th class="py-2">類型</th><th class="py-2">內容摘要</th><th class="py-2 text-right">結果</th></tr></thead>
-              <tbody><tr v-for="record in reportedRecords" :key="record.id" class="border-b last:border-b-0 subtle-float-on-hover">
-                <td class="py-3">{{ record.date }}</td>
-                <td>{{ record.type }}</td>
-                <td class="truncate">{{ record.reason }}</td>
-                <td class="text-right">{{ record.result }}</td>
-              </tr></tbody>
-            </table>
-            <div class="space-y-4 lg:hidden">
-              <div v-for="record in reportedRecords" :key="record.id" class="bg-white p-4 rounded-md subtle-float-on-hover">
-                <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                  <span class="text-gray-500">日期</span><span>{{ record.date }}</span>
-                  <span class="text-gray-500">類型</span><span>{{ record.type }}</span>
-                  <span class="text-gray-500">內容摘要</span><span class="truncate">{{ record.reason }}</span>
-                  <span class="text-gray-500">結果</span><span class="font-semibold">{{ record.result }}</span>
+            
+            <div v-if="loadingReportedRecords" class="text-center text-gray-500">
+              載入中...
+            </div>
+            
+            <div v-else-if="errorReportedRecords" class="text-center text-red-500">
+              {{ errorReportedRecords }}
+            </div>
+
+            <div v-else-if="reportedRecords.length === 0" class="text-center text-gray-500">
+              沒有任何被檢舉紀錄。
+            </div>
+
+            <div v-else>
+              <table class="w-full text-left hidden lg:table">
+                <colgroup><col class="w-[15%]"><col class="w-[10%]"><col class="w-[60%]"><col class="w-[15%]"></colgroup>
+                <thead><tr class="border-b-2"><th class="py-2">日期</th><th class="py-2">類型</th><th class="py-2">內容摘要</th><th class="py-2 text-right">結果</th></tr></thead>
+                <tbody><tr v-for="(record, index) in reportedRecords" :key="index" class="border-b last:border-b-0 subtle-float-on-hover">
+                  <td class="py-3">{{ formatDate(record.date) }}</td>
+                  <td>{{ record.type }}</td>
+                  <td class="truncate">{{ record.summary }}</td>
+                  <td class="text-right">{{ record.result }}</td>
+                </tr></tbody>
+              </table>
+              <div class="space-y-4 lg:hidden">
+                <div v-for="(record, index) in reportedRecords" :key="index" class="bg-white p-4 rounded-md subtle-float-on-hover">
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                    <span class="text-gray-500">日期</span><span>{{ formatDate(record.date) }}</span>
+                    <span class="text-gray-500">類型</span><span>{{ record.type }}</span>
+                    <span class="text-gray-500">內容摘要</span><span class="truncate">{{ record.summary }}</span>
+                    <span class="text-gray-500">結果</span><span class="font-semibold">{{ record.result }}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="bg-white p-6 rounded-lg max-h-96 overflow-y-auto" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
+          <!-- 檢舉專區 - 舉發紀錄 (API版本) -->
+          <div class="bg-white p-6 rounded-lg min-h-[200px]" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">檢舉專區 - 舉發紀錄</h2>
-            <table class="w-full text-left hidden lg:table">
-              <colgroup><col class="w-[15%]"><col class="w-[10%]"><col class="w-[60%]"><col class="w-[15%]"></colgroup>
-              <thead><tr class="border-b-2"><th class="py-2">日期</th><th class="py-2">類型</th><th class="py-2">內容摘要</th><th class="py-2 text-right">結果</th></tr></thead>
-              <tbody><tr v-for="report in myReports" :key="report.id" class="border-b last:border-b-0 subtle-float-on-hover">
-                <td class="py-3">{{ report.date }}</td>
-                <td>{{ report.type }}</td>
-                <td class="truncate">{{ report.reason }}</td>
-                <td class="text-right">{{ report.result }}</td>
-              </tr></tbody>
-            </table>
-            <div class="space-y-4 lg:hidden">
-               <div v-for="report in myReports" :key="report.id" class="bg-white p-4 rounded-md subtle-float-on-hover">
-                <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                  <span class="text-gray-500">日期</span><span>{{ report.date }}</span>
-                  <span class="text-gray-500">類型</span><span>{{ report.type }}</span>
-                  <span class="text-gray-500">內容摘要</span><span class="truncate">{{ report.reason }}</span>
-                  <span class="text-gray-500">結果</span><span class="font-semibold">{{ report.result }}</span>
+            
+            <div v-if="loadingMyReports" class="text-center text-gray-500">
+              載入中...
+            </div>
+            
+            <div v-else-if="errorMyReports" class="text-center text-red-500">
+              {{ errorMyReports }}
+            </div>
+
+            <div v-else-if="myReports.length === 0" class="text-center text-gray-500">
+              沒有任何舉發紀錄。
+            </div>
+            
+            <div v-else>
+              <table class="w-full text-left hidden lg:table">
+                <colgroup><col class="w-[15%]"><col class="w-[10%]"><col class="w-[60%]"><col class="w-[15%]"></colgroup>
+                <thead><tr class="border-b-2"><th class="py-2">日期</th><th class="py-2">類型</th><th class="py-2">內容摘要</th><th class="py-2 text-right">結果</th></tr></thead>
+                <tbody><tr v-for="(report, index) in myReports" :key="index" class="border-b last:border-b-0 subtle-float-on-hover">
+                  <td class="py-3">{{ formatDate(report.date) }}</td>
+                  <td>{{ report.type }}</td>
+                  <td class="truncate">{{ report.summary }}</td>
+                  <td class="text-right">{{ report.result }}</td>
+                </tr></tbody>
+              </table>
+
+              <div class="space-y-4 lg:hidden">
+                 <div v-for="(report, index) in myReports" :key="index" class="bg-white p-4 rounded-md subtle-float-on-hover">
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                    <span class="text-gray-500">日期</span><span>{{ formatDate(report.date) }}</span>
+                    <span class="text-gray-500">類型</span><span>{{ report.type }}</span>
+                    <span class="text-gray-500">內容摘要</span><span class="truncate">{{ report.summary }}</span>
+                    <span class="text-gray-500">結果</span><span class="font-semibold">{{ report.result }}</span>
+                  </div>
                 </div>
               </div>
             </div>

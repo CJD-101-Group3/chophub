@@ -17,11 +17,11 @@ async function fetchAllUser() {
   error.value = null
 
   // ✅ 建議先用完整 URL（或在 vite.config 設 proxy 後再用相對路徑）
-  const apiUrl = 'http://localhost:8888/ChopHub-back-end/api/userProfile.php'
+  const apiUrl = 'http://localhost:8888/ChopHub-API/api/userProfile.php'
   console.log('正在請求 API:', apiUrl)
 
   try {
-    const response = await axios.get(apiUrl, { params: { user_id: 2 } })
+    const response = await axios.get(apiUrl, { params: { user_id: 1 } })
     console.log('API 成功回應:', response.data)
 
     // 若後端是 {status, data} 結構就取 data；否則直接用 response.data
@@ -703,13 +703,13 @@ const goToApplicationGuide = () => {
         <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)] mb-8 max-w-4xl mx-auto">
           <h2 class="text-2xl font-bold mb-6 border-b pb-3">會員資訊</h2>
           <div class="space-y-4 text-sm lg:text-xl">
-            <div class="flex justify-between items-center"><span class="text-gray-600">會員暱稱</span><span class="font-medium text-gray-900">{{ memberInfo.nickname }}</span></div>
-            <div class="flex justify-between items-center"><span class="text-gray-600">真實姓名</span><span class="font-medium text-gray-900">{{ memberInfo.realName }}</span></div>
-            <div class="flex justify-between items-center"><span class="text-gray-600">身份徽章</span><span class="font-medium text-gray-900">{{ memberInfo.badge }}</span></div>
-            <div class="flex justify-between items-center"><span class="text-gray-600">生日</span><span class="font-medium text-gray-900">{{ memberInfo.birthDate }}</span></div>
-            <div class="flex justify-between items-center"><span class="text-gray-600">性別</span><span class="font-medium text-gray-900">{{ memberInfo.gender }}</span></div>
-            <div class="flex justify-between items-center"><span class="text-gray-600">加入時間</span><span class="font-medium text-gray-900">{{ memberInfo.joinDate }}</span></div>
-            <div class="flex justify-between items-center"><span class="text-gray-600">所在地區</span><span class="font-medium text-gray-900">{{ memberInfo.location }}</span></div>
+            <div class="flex justify-between items-center"><span class="font-bold text-gray-600">會員暱稱</span><span class="font-medium text-gray-900">{{ memberInfo.nickname }}</span></div>
+            <div class="flex justify-between items-center"><span class="font-bold text-gray-600">真實姓名</span><span class="font-medium text-gray-900">{{ memberInfo.realName }}</span></div>
+            <div class="flex justify-between items-center"><span class="font-bold text-gray-600">身份徽章</span><span class="font-medium text-gray-900">{{ memberInfo.badge }}</span></div>
+            <div class="flex justify-between items-center"><span class="font-bold text-gray-600">生日</span><span class="font-medium text-gray-900">{{ memberInfo.birthDate }}</span></div>
+            <div class="flex justify-between items-center"><span class="font-bold text-gray-600">性別</span><span class="font-medium text-gray-900">{{ memberInfo.gender }}</span></div>
+            <div class="flex justify-between items-center"><span class="font-bold text-gray-600">加入時間</span><span class="font-medium text-gray-900">{{ memberInfo.joinDate }}</span></div>
+            <div class="flex justify-between items-center"><span class="font-bold text-gray-600">所在地區</span><span class="font-medium text-gray-900">{{ memberInfo.location }}</span></div>
           </div>
         </div>
 

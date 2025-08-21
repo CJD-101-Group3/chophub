@@ -23,20 +23,29 @@ const post = ref(null);
 const comments = ref([]);
 const isLoading = ref(true);
 const error = ref(null);
-const currentUserId = 1; // 假設的當前使用者 ID
+
+// ADDED: A dedicated object for the currently logged-in user.
+// In a real application, this would be populated after login from your auth system.
+const currentUser = ref({
+  id: 1, // Example ID
+  name: 'current_user_name', // Example name
+  // IMPORTANT: Replace this with the actual, valid URL to the logged-in user's avatar.
+  avatar: 'http://localhost:8888/ChopHub-API/uploads/avatars/your_avatar_filename.png' 
+});
+
+// MODIFIED: Use the ID from the new currentUser object for consistency.
+const currentUserId = currentUser.value.id;
 
 // 分享提示
 const shareFeedback = ref('');
 
 // 新留言 & 檢舉狀態
 const newCommentText = ref('');
-const newCommentImage = ref(null);
-const fileInput = ref(null);
 const showReportModal = ref(false);
 const reportReason = ref('');
 
 // --- Computed 屬性 ---
-const isCommentSubmittable = computed(() => newCommentText.value.trim() !== '' || newCommentImage.value !== null);
+const isCommentSubmittable = computed(() => newCommentText.value.trim() !== '');
 
 // --- API 呼叫 ---
 const fetchPostDetail = async () => {
@@ -123,12 +132,7 @@ async function postComment() {
   }
 }
 
-// --- 其他函式 (與您原始碼相同) ---
-function triggerFileInput() { fileInput.value.click(); }
-function handleFileSelect(event) {
-  const file = event.target.files[0];
-  if (file) { const reader = new FileReader(); reader.onload = (e) => { newCommentImage.value = e.target.result; }; reader.readAsDataURL(file); }
-}
+// --- 其他函式 ---
 function openReportModal() { showReportModal.value = true; }
 function closeReportModal() { showReportModal.value = false; reportReason.value = ''; }
 function submitReport() {
@@ -233,12 +237,10 @@ onUnmounted(() => {
             </div>
         </div>
         <div class="p-4 border-t border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-            <div v-if="newCommentImage" class="relative w-24 h-24 mb-2"><img :src="newCommentImage" class="w-full h-full object-cover rounded-lg" alt="Selected image preview"><button @click="newCommentImage = null" class="absolute -top-2 -right-2 bg-gray-700 text-white rounded-full p-0.5"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button></div>
             <div class="flex items-center gap-3">
-                <img :src="post.author.avatar" alt="User Avatar" class="w-10 h-10 rounded-full object-cover">
+                <!-- MODIFIED: Changed post.author.avatar to currentUser.avatar to fix the broken image -->
+                <img :src="currentUser.avatar" alt="User Avatar" class="w-10 h-10 rounded-full object-cover">
                 <div class="flex-grow flex items-center border border-zinc-300 dark:border-zinc-600 rounded-full px-2 py-1">
-                    <input type="file" ref="fileInput" @change="handleFileSelect" accept="image/*" class="hidden">
-                    <button @click="triggerFileInput" class="p-2 text-zinc-500 hover:text-blue-500"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></button>
                     <input v-model="newCommentText" @keyup.enter="postComment" type="text" placeholder="新增留言..." class="flex-grow bg-transparent focus:outline-none text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 px-2" />
                     <button @click="postComment" :disabled="!isCommentSubmittable" class="p-2 rounded-full transition-colors" :class="{ 'text-zinc-500 hover:text-blue-500': isCommentSubmittable, 'text-zinc-400 opacity-50 cursor-not-allowed': !isCommentSubmittable }"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/><path d="M0 0h24v24H0z" fill="none"/></svg></button>
                 </div>
@@ -270,5 +272,3 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
-
-<!-- 移除 style scoped 區塊以實現 "閃現" 效果 -->
