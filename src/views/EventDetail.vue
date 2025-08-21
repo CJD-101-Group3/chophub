@@ -29,7 +29,7 @@ async function fetchEventDetails() {
    error.value = null; // 修正：應為 .value
    try {
       // 修正：使用樣板字串，變數要用 ${} 包起來
-      const apiUrl = `http://localhost:8888/ChopHub-backend/api/getEventById.php?id=${eventId}`;
+      const apiUrl = `http://localhost:8888/ChopHub-API/api/getEventById.php?id=${eventId}`;
       console.log("正在請求詳情API:", apiUrl);
 
       const response = await axios.get(apiUrl);
@@ -51,7 +51,7 @@ async function fetchSuggestedEvents() {
    suggestedEventsError.value = null;
    try {
       // 假設這是你的推薦活動 API
-      const apiUrl = `${import.meta.env.VITE_API_BASE} +'/api/getSuggestedEvents.php?limit=3&excludeId=${eventId}'`;
+      const apiUrl = `http://localhost:8888/ChopHub-API/api/getSuggestedEvents.php?limit=3&excludeId=${eventId}'`;
       console.log("正在請求推薦活動 API:", apiUrl);
 
       const response = await axios.get(apiUrl);

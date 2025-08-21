@@ -23,7 +23,7 @@ const emit = defineEmits(['request-payment']);
         <div class="mx-auto flex max-w-5xl flex-col items-center px-4 py-12 sm:px-6 md:flex-row lg:px-8">
             <!-- --- 圖片部分 --- -->
             <div class="w-full flex-shrink-0 md:w-1/3">
-                <img :src="event.imageUrl" :alt="event.imageAlt" class="w-full rounded-lg object-cover shadow-lg" />
+                <img :src="event.imageUrl" :alt="event.title" class="w-full rounded-lg object-cover shadow-lg" />
             </div>
 
             <!-- --- 文字內容部分 --- -->

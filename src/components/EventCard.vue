@@ -17,7 +17,7 @@ const props = defineProps({
   eventDate: { type: String, default: '活動日期' },
   rating: { type: Number, default: 0 },
   reviewCount: { type: Number, default: 0 },
-  eventImage: { type: String, default: '' },
+eventImage: { type: String, default: "" }
 });
 
 
@@ -31,8 +31,20 @@ function toggleFavorite() {
 }
 
 // --- 計算圖片來源 ---
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const imageSource = computed(() => {
-  return props.eventImage || defaultEventImage;
+  if (!props.eventImage || props.eventImage.length === 0) {
+    return defaultEventImage;
+  }
+
+  const firstImage = props.eventImage;
+
+  if (typeof firstImage === "string" && firstImage.startsWith("http")) {
+    return firstImage;
+  }
+
+  return `${BASE_URL}/images/events/${firstImage}`;
 });
 
 // --- 點擊跳轉詳情頁 ---

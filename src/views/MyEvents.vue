@@ -30,7 +30,7 @@ async function fetchActivities() {
   isLoading.value = true;
   error.value = null;
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-back-end/api/myEvents.php');
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/myEvents.php');
     
     allActivities.value = response.data.data; 
 
@@ -67,7 +67,7 @@ const filteredActivities = computed(() => {
 // 6. 修改 handleCancelActivity，使其呼叫 API
 async function handleCancelActivity(activityId) {
   try {
-    await axios.post(`http://localhost:8888/ChopHub-back-end/api/cancel-activity.php`, 
+    await axios.post(`http://localhost:8888/ChopHub-API/api/cancel-activity.php`, 
     { activityId: activityId }
   );
 
@@ -92,7 +92,7 @@ async function handleToggleFavorite(activityId) {
   const newFavoriteState = !activity.isFavorited;
 
   try {
-    const apiUrl = 'http://localhost:8888/ChopHub-back-end/api/eventToggleFavorite.php';
+    const apiUrl = 'http://localhost:8888/ChopHub-API/api/eventToggleFavorite.php';
 
     await axios.post(apiUrl, {
       activityId: activityId,

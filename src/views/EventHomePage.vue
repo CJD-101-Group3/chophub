@@ -19,17 +19,19 @@ async function fetchAllEvents() {
    loading.value = true;  // 開始請求前，永遠先設定為載入中
    error.value = null;    // 清除之前的錯誤
    try {
-      const apiUrl = import.meta.env.VITE_API_BASE + '/api/getAllEvents.php';
-      console.log("正在請求 API:", apiUrl);
+      const apiUrl = `http://localhost:8888/ChopHub-API/api/getAllEvents.php`;
+      // const apiUrl = import.meta.env.VITE_API_BASE + '/api/getAllEvents.php';
+      // console.log("正在請求 API:", apiUrl);
 
       const response = await axios.get(apiUrl);
 
-      console.log("API 成功回應:", response.data);
+      // console.log("API 成功回應:", response.data);
 
       // **【核心修正】將 API 資料存入正確的 events 變數**
       // 假設您的 PHP 回傳的資料結構是 { "status": "success", "data": [...] }
       // 如果是，請使用 response.data.data。如果直接是 [...] 陣列，就用 response.data
-      allEvents.value = response.data.data || response.data;
+      allEvents.value = response.data?.data || response.data;
+      // console.log(allEvents.value)
 
    } catch (err) {
       console.error("API 請求失敗:", err);
@@ -59,8 +61,11 @@ function goToMyEvents() {
 
 const typeItems = [
    { label: '所有類型', value: 'all' },
-   { label: '實體活動', value: '實體活動' },
-   { label: '線上活動', value: '線上活動' }
+   { label: '鍛造體驗', value: '鍛造體驗' },
+   { label: '兵器展覽', value: '兵器展覽' },
+   { label: '線上講座', value: '線上講座' },
+   { label: '手作課程', value: '手作課程' },
+
 ];
 
 const timeItems = [
@@ -110,29 +115,32 @@ const image5 = getPublicImg('events/forgingman.png');
 const image6 = getPublicImg('events/viking-forges-weapons-swords-smithy-man-warrior-s-clothes-is-smithy.jpg');
 
 
-// --- 核心篩選邏輯 ---
 const filteredEvents = computed(() => {
    let result = allEvents.value;
 
    if (!result || !Array.isArray(result)) {
-      return []; // 如果資料還沒回來或是格式不對，回傳空陣列
+      return []; 
    }
 
-   // ... 您的篩選邏輯（這裡不需要改動）
+   // 類型篩選
    if (selectedType.value !== 'all') {
-      // 請注意：這裡的 event.type 要和您資料庫回傳的欄位名稱一致
-      result = result.filter(event => event.event_type === selectedType.value);
+      result = result.filter(event => event.name === selectedType.value);
    }
+
+   // 地點篩選
    if (selectedLocation.value !== 'all') {
       result = result.filter(event => event.location === selectedLocation.value);
    }
+   
+   // 時間排序
    if (selectedTime.value !== 'default') {
       result = result.slice().sort((a, b) => {
-         const dateA = new Date(a.event_date.split('(')[0]);
-         const dateB = new Date(b.event_date.split('(')[0]);
+         const dateA = new Date(a.start_time);
+         const dateB = new Date(b.start_time);
          return selectedTime.value === 'newest' ? dateB - dateA : dateA - dateB;
       });
    }
+
    return result;
 });
 
@@ -142,8 +150,8 @@ const filteredEvents = computed(() => {
 const mockTotalPages = ref(15);
 const currentPage = ref(1);
 
-console.log('Vite 提供的 BASE_URL 是:', import.meta.env.BASE_URL);
-console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
+// console.log('Vite 提供的 BASE_URL 是:', import.meta.env.BASE_URL);
+// console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
 </script>
 
 <template>
@@ -189,7 +197,7 @@ console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
                   :event-date="event.start_time" 
                   :rating="event.average_rating"
                   :review-count="event.rating_count" 
-                  :event-image="event.event_image_url" />
+                  :eventImage="event.image_path" />
          </div>
          <!-- 沒有活動時的提示 -->
          <div v-else class="text-white text-center py-10">
