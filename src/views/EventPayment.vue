@@ -1,7 +1,9 @@
 <script setup>
 import Theheader from '@/components/Theheader.vue'
+import Thefooter from '../components/Thefooter.vue'
 import { getPublicImg } from '@/utils/getPublicImg'
 import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 const price = 500
 const quantity = ref(1)
@@ -12,8 +14,11 @@ const phoneRef = ref('')
 const messageRef = ref('')
 
 
-// 你可以把 eventId 寫死或從路由/頁面帶入
-const eventId = 1 // ← TODO: 改成實際活動ID
+const route = useRoute()
+// 轉成數字；切換到不同 id
+const eventId = computed(() => Number(route.params.id ?? 0))
+
+
 
 const totalAmount = computed(() => (price * quantity.value).toLocaleString('en-US'))
 
@@ -33,18 +38,18 @@ async function handlePay(){
   }
 
   try {
-  const r = await fetch(`${import.meta.env.VITE_API_BASE}api/getAllEvents.php`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      event_id: eventId,
-      name: nameRef.value,
-      email: emailRef.value,
-      phone: phoneRef.value,
-      message: messageRef.value || '',
-      quantity: quantity.value
-    })
+  const r = await fetch(`${import.meta.env.VITE_API_BASE}/api/checkout_payment.php`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    event_id: eventId,
+    name: nameRef.value,
+    email: emailRef.value,
+    phone: phoneRef.value,
+    message: messageRef.value || '',
+    quantity: quantity.value
   })
+})
 
   // 🔍 Debug: 先拿原始文字，避免 JSON.parse 失敗
   const text = await r.text()

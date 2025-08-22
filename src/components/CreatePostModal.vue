@@ -86,7 +86,7 @@ async function handleSubmit() {
     class="fixed inset-0 bg-black/70 flex justify-center items-center z-50 p-4"
     @click.self="emit('close')"
   >
-    <div class="bg-white rounded-lg shadow-xl p-6 relative w-full max-w-lg">
+    <div class="bg-white rounded-lg shadow-xl p-6 relative w-full max-w-lg h-[80vh] overflow-y-scroll">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold text-orange-500">新增貼文</h2>
         <button @click="emit('close')" class="p-1 rounded-full hover:bg-gray-200">
