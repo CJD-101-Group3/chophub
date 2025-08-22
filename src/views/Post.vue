@@ -109,7 +109,7 @@ onMounted(() => {
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
               </button>
               <div v-if="isDropdownOpen" class="absolute top-full left-0 mt-2 w-40 bg-black/50 backdrop-blur-md border border-white/10 rounded-lg shadow-lg z-10 p-2 flex flex-col gap-2">
-                <a v-for="option in sortOptions" :key="option.value" @click.prevent="selectSort(option)" href="#" class="w-full bg-transparent text-[#F8F9FA] font-semibold border-2 border-[#F2994A] rounded-lg h-[36px] flex items-center justify-center transition-colors hover:bg-[#F2994A]/20">
+                <a v-for="option in sortOptions" :key="option.value" @click.prevent="selectSort(option)" href="#" class="w-full bg-transparent text-[#F8F9FA] font-semibold border-2 border-[#F2994A] rounded-lg h-[36px] flex items-center justify-center transition-colors hover:bg-[#F2994A]/20 hover:text-[#F2994A]">
                   {{ option.text }}
                 </a>
               </div>
