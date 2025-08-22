@@ -579,19 +579,24 @@
     />
 
     <!-- 搜尋列 -->
-    <div class="flex  justify-center md:justify-between items-center  lg:ml-[120px] xl:ml-[200px] my-6 mt-10">
-  <div class="flex items-center space-x-2">
-    <input
-      type="text"
-      placeholder="搜尋..."
-      class="w-[300px] md:w-[500px] border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F2994A]"
-    />
-    <button
-      class="w-[70px] md:w-[100px] px-4 py-2 bg-[#F2994A] text-white rounded-lg hover:bg-orange-500 transition"
-    >
-      搜尋
-    </button>
-  </div>
+        <div class="flex  justify-center md:justify-between items-center  lg:ml-[120px] xl:ml-[200px] my-6 mt-10">
+          <div class="flex items-center space-x-2">
+            <input
+            v-model="searchQuery"
+              type="text"
+              placeholder="搜尋..."
+              class="w-[300px] md:w-[500px] border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#F2994A]"
+            />
+            <button
+            @click="doSearch"
+              class="w-[70px] md:w-[100px] px-4 py-2 bg-[#F2994A] text-white rounded-lg hover:bg-orange-500 transition"
+            >
+              搜尋
+            </button>
+            
+        </div>
+
+  
 
       <div class="ml-auto   lg:mr-[120px]  xl:mr-[200px] hidden md:block">
        <DropDownFilter title="排序類型" :items="typeItems" v-model="selectedType" />
@@ -618,11 +623,11 @@
           onchange="handleCategoryChange(this.value)"
         >
           <option value="" selected disabled>請選擇分類</option>
-          <option value="劍類">劍類</option>
+          <option value="劍類">長劍</option>
           <option value="斧頭類">斧頭類</option>
-          <option value="長柄武器">長柄武器</option>
-          <option value="弓箭類">弓箭類</option>
-          <option value="盾牌">盾牌</option>
+          <option value="長柄武器">小刀</option>
+          <option value="弓箭類">匕首</option>
+          <option value="盾牌">長柄近戰武器</option>
         </select>
 
         <!-- 左側分類選單 -->
@@ -687,16 +692,14 @@
 <div v-else>
   <div v-if="weapon.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
    <WeaponCard
-              v-for="w in weapon"
-              :key="w.weapon_id"
-              :weapon_id="w.weapon_id"
-              :postImages="w.weapon_url"
-              :userName="w.user_id"
-              :postTitle="w.title"
-              :description="w.description"
-            >
-            <div>debugger {{ w.weapon_url }}</div>
-          </WeaponCard>
+            v-for="w in filteredWeapons"
+            :key="w.weapon_id"
+            :weapon_id="w.weapon_id"
+            :postImages="w.weapon_url"
+            :userName="w.user_id"
+            :postTitle="w.title"
+            :description="w.description"
+          />
   </div>
   <div v-else>找不到符合篩選條件的活動。</div>
 </div>
@@ -714,7 +717,7 @@
 </template>
 
 <script setup>
-import { ref ,onMounted} from "vue";
+import { ref ,onMounted,computed} from "vue";
 import Theheader from "../components/Theheader.vue";
 import Thefooter from "../components/Thefooter.vue";
 import WeaponCard from "../components/WeaponCard.vue";
@@ -738,7 +741,7 @@ const loading = ref(false)
 const weapon = ref([])
 const error = ref(null)
 
-
+const searchQuery = ref(""); // 搜尋字
 
 
 
@@ -747,7 +750,7 @@ async function fetchAllWeapon() {
   error.value = null
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/weaponList.php')
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/weapon/weaponList.php')
     // console.log('this is RESPONSE', response)
 
     const data = response.data?.data || null
@@ -768,6 +771,19 @@ onMounted(() => {
    fetchAllWeapon();
 });
 //API串接
+
+// 計算屬性：依 title 過濾
+const filteredWeapons = computed(() => {
+  if (!searchQuery.value) return weapon.value;
+  return weapon.value.filter(w =>
+    w.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
+
+const doSearch = () => {
+  // 不用再呼叫 API，只是做個 log 或觸發 UI
+  console.log("搜尋字：", searchQuery.value);
+};
 
 
 

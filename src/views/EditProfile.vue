@@ -2,14 +2,17 @@
 import { ref, reactive, onMounted, computed } from 'vue'; // 1. 引入 computed
 import axios from 'axios';
 import { getPublicImg } from '@/utils/getPublicImg';
+import { useAuthStore } from '@/stores/auth'; // 新增這行
 
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 
+const authStore = useAuthStore(); // 新增這行
+
 // --- 通用佈局相關的資料 ---
 const isDropdownOpen = ref(false);
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
-const activeTab = ref('其他設定'); 
+const activeTab = ref('會員資訊'); 
 const menuItems = ref([
   { name: '會員資訊', href: '/UserProfile' },
   { name: '貼文相關', href: '/PostActivity' },
@@ -58,7 +61,7 @@ const displayAvatar = computed(() => {
   return getPublicImg('users/userp.png');
 });
 
-const userId = 1;
+const userId = authStore.userId; // 用這個取代原本寫死的 userId = 1;
 
 // GET - 獲取使用者資料
 async function fetchUserProfile() {
@@ -70,11 +73,14 @@ async function fetchUserProfile() {
       const userData = response.data.data;
       Object.assign(profileForm, userData);
       
-      // 將後端傳來的 avatar_url (可能是 null 或 URL字串) 賦值給 profileForm
-      profileForm.avatarUrl = userData.avatar_url; 
+      // 這裡改成吃 role
+      profileForm.badge = userData.role || '一般會員';
       
-      // 同步更新側邊欄的頭像 (使用新的 computed 屬性確保一致性)
-      memberInfo.value.avatarUrl = displayAvatar.value;
+      // 將後端傳來的 avatar_url (可能是 null 或 URL字串) 賦值給 profileForm
+      profileForm.avatarUrl = userData.avatar_url
+        ? `http://localhost:8888/ChopHub-API/${userData.avatar_url}`
+        : getPublicImg('users/userp.png');
+      memberInfo.value.avatarUrl = profileForm.avatarUrl;
       
       profileForm.birthday = userData.birthday ? userData.birthday.split(' ')[0] : '';
       profileForm.created_at = userData.created_at ? userData.created_at.split(' ')[0].replace(/-/g, '/') : '';
@@ -182,7 +188,7 @@ async function handleUpload() {
 </script>
 
 <template>
-              <div class="absolute inset-0 -z-10">
+            <div class="absolute inset-0 -z-10">
       <vue-particles
       id="tsparticles"
       @particles-loaded="particlesLoaded"

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/user' // 1. 引入您的 user store
 import { useRouter } from 'vue-router' // ← 一定要有這行
 import logo from '@/assets/icon/LOGO.png'
@@ -13,6 +13,9 @@ import cross from '@/assets/icon/cross.svg'
 const isOpen = ref(false)
 const userStore = useUserStore() // 2. 建立 user store 的實例
 const router = useRouter() // ← 一定要有這行
+const isLoggedIn = ref('LoggedIn')
+
+
 
 // 關閉動畫
 const handleClose = () => {

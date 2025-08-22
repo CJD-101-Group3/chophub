@@ -54,10 +54,12 @@ onMounted(async () => {
       // 將獲取到的完整資料填充到 memberInfo 中
       memberInfo.value = {
         name: userData.display_name,
-        avatarUrl: userData.avatar_url || '/src/assets/users/userp.png',
+        avatarUrl: userData.avatar_url
+          ? `http://localhost:8888/ChopHub-API/${userData.avatar_url}`
+          : '/src/assets/users/userp.png',
         nickname: userData.display_name,
         realName: userData.real_name || '未設定',
-        badge: userData.badge || '一般會員',
+        badge: userData.role || '一般會員',
         birthDate: userData.birthday ? userData.birthday.split(' ')[0] : '未設定',
         gender: userData.gender || '未設定',
         joinDate: userData.created_at ? userData.created_at.split(' ')[0].replace(/-/g, '/') : 'N/A',

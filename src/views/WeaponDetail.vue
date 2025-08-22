@@ -27,8 +27,8 @@ function getWeaponModel(weapon_id) {
   switch (weapon_id) {
     case '1': return getPublicImg('models/model1.glb')
     case '2': return getPublicImg('models/model2.glb')
-    case '3': return getPublicImg('models/model3.glb')
-    default: return getPublicImg('models/model.glb') // 預設模型
+    case '3': return getPublicImg('models/model1.glb')
+    default: return getPublicImg('models/model2.glb') // 預設
   }
 }
 
@@ -121,7 +121,7 @@ function loadModel(weaponId) {
 async function loadWeaponDetail(weaponId) {
   if (!weaponId) return;
   try {
-    const res = await axios.get(`http://localhost:8888/ChopHub-API/api/getWeapon.php?weapon_id=${weaponId}`);
+    const res = await axios.get(`http://localhost:8888/ChopHub-API/api/weapon/getWeapon.php?weapon_id=${weaponId}`);
     if (res.data.status === 'success') {
       weaponDetail.value = res.data.data;
     } else {
@@ -137,7 +137,7 @@ async function loadComments(weaponId) {
   loading.value = true;
   weapons_comment.value = [];
   try {
-    const res = await axios.get(`http://localhost:8888/ChopHub-API/api/getComments.php?weapon_id=${weaponId}`);
+    const res = await axios.get(`http://localhost:8888/ChopHub-API/api/weapon/getComments.php?weapon_id=${weaponId}`);
     if (res.data.status === 'success') weapons_comment.value = res.data.data;
   } catch (err) {
     console.error(err);
@@ -151,7 +151,7 @@ async function addComment() {
   loading.value = true;
   const weaponId = route.params.weapon_id;
   try {
-    await axios.post('http://localhost:8888/ChopHub-API/api/weaponsComment.php', {
+    await axios.post('http://localhost:8888/ChopHub-API/api/weapon/weaponsComment.php', {
       user_id: currentUserId,
       weapon_id: weaponId,
       comment_content: newCommentText.value.trim()
