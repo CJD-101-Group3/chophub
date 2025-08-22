@@ -32,7 +32,7 @@ async function fetchActivities() {
   try {
     const response = await axios.get('http://localhost:8888/ChopHub-API/api/myEvents.php');
     
-    allActivities.value = response.data.data; 
+    allActivities.value = response.data.data || [];
 
   } catch (err) {
     console.error('Failed to fetch activities:', err);
@@ -90,6 +90,13 @@ async function handleToggleFavorite(activityId) {
   if (!activity) return;
 
   const newFavoriteState = !activity.isFavorited;
+
+function handleWriteReview(activityId) {
+  console.log(`準備為活動 ID: ${activityId} 撰寫評論`);
+
+  // 1. 跳轉到一個新的評論頁面
+  //    router.push(`/activity/${activityId}/review`);
+}
 
   try {
     const apiUrl = 'http://localhost:8888/ChopHub-API/api/eventToggleFavorite.php';

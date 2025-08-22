@@ -140,13 +140,27 @@ const filteredEvents = computed(() => {
 });
 
 
-// --- 頁數模擬資料 ---
-// 在實際應用中，totalPages 應該來自後端 API
-const mockTotalPages = ref(15);
+// --- 頁數資料 ---
 const currentPage = ref(1);
 
 // console.log('Vite 提供的 BASE_URL 是:', import.meta.env.BASE_URL);
 // console.log('檢查 BASE_URL 是否為空: [', import.meta.env.BASE_URL, ']');
+
+// ---分頁邏輯 ---
+
+const itemsPerPage = 6;
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredEvents.value.length / itemsPerPage);
+});
+
+// 3. 取得當前頁面要顯示的 6 筆資料
+const paginatedEvents = computed(() => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  return filteredEvents.value.slice(startIndex, endIndex);
+});
+
 </script>
 
 <template>
@@ -169,7 +183,7 @@ const currentPage = ref(1);
       <div class="flex flex-row gap-3">
          <DropDownFilter title="活動類型" :items="typeItems" v-model="selectedType" />
          <DropDownFilter title="時間排序" :items="timeItems" v-model="selectedTime" />
-         <DropDownFilter title="活動地點" :items="locationItems" v-model="selectedLocation" />
+         <!-- <DropDownFilter title="活動地點" :items="locationItems" v-model="selectedLocation" /> -->
       </div>
 
       <!-- 1. 載入中提示 -->
@@ -181,7 +195,7 @@ const currentPage = ref(1);
       <!-- 3. 成功後，顯示卡片列表或無資料提示 -->
       <div v-else>
          <div v-if="filteredEvents.length > 0" class="inline-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-5">
-         <EventCard v-for="event in filteredEvents" 
+         <EventCard v-for="event in paginatedEvents" 
                   :key="event.event_id" 
                   :id="event.event_id" 
                   :title="event.title"
@@ -198,8 +212,11 @@ const currentPage = ref(1);
       </div>
 
       <div>
-         <Pagination :total-pages="mockTotalPages" v-model:currentPage="currentPage" />
+         <Pagination :total-pages="totalPages" v-model:currentPage="currentPage" />
       </div>
    </main>
    <Thefooter />
 </template>
+
+<script scoped>
+</script>
