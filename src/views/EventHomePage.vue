@@ -10,14 +10,14 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
-const allEvents = ref([]); // 初始化一個空陣列，用來存放所有活動
-const loading = ref(true); // 用於顯示「載入中」
-const error = ref(null);   // 用於顯示錯誤訊息
+const allEvents = ref([]);
+const loading = ref(true); 
+const error = ref(null); 
 
 // --- 4. 建立獲取所有活動資料的函式 ---
 async function fetchAllEvents() {
-   loading.value = true;  // 開始請求前，永遠先設定為載入中
-   error.value = null;    // 清除之前的錯誤
+   loading.value = true;
+   error.value = null; 
    try {
       const apiUrl = import.meta.env.VITE_API_BASE + '/api/getAllEvents.php';
       // const apiUrl = import.meta.env.VITE_API_BASE + '/api/getAllEvents.php';
@@ -27,17 +27,12 @@ async function fetchAllEvents() {
 
       // console.log("API 成功回應:", response.data);
 
-      // **【核心修正】將 API 資料存入正確的 events 變數**
-      // 假設您的 PHP 回傳的資料結構是 { "status": "success", "data": [...] }
-      // 如果是，請使用 response.data.data。如果直接是 [...] 陣列，就用 response.data
       allEvents.value = response.data?.data || response.data;
-      // console.log(allEvents.value)
 
    } catch (err) {
       console.error("API 請求失敗:", err);
-      error.value = "無法載入活動資料，請稍後再試。"; // 設定錯誤訊息給使用者看
+      error.value = "無法載入活動資料，請稍後再試。";
    } finally {
-      // **【核心修正】不論成功或失敗，最後都要結束載入狀態**
       loading.value = false;
    }
 };
@@ -157,7 +152,6 @@ const currentPage = ref(1);
 <template>
    <Theheader />
    <main class="bg-[#282828] flex-1 flex flex-col items-center overflow-y-auto space-y-4 md:space-y-6">
-      <!-- Banner 和按鈕部分不需要改動 -->
       <div class="relative">
          <img :src="banner" alt="鑄造師" class="block z-index-[-1] opacity-[60%]" />
          <p class="absolute top-[40%] left-[13%] text-[#fff] text-xl font-bold tracking-widest md:text-4xl lg:text-6xl">
@@ -177,8 +171,6 @@ const currentPage = ref(1);
          <DropDownFilter title="時間排序" :items="timeItems" v-model="selectedTime" />
          <DropDownFilter title="活動地點" :items="locationItems" v-model="selectedLocation" />
       </div>
-
-      <!-- **【核心修正】更新 v-if 邏輯，讓它能正確顯示三種狀態 ** -->
 
       <!-- 1. 載入中提示 -->
       <div v-if="loading" class="text-white text-center py-10">載入活動中...</div>

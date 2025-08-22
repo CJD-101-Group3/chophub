@@ -526,7 +526,7 @@
     <Theheader />
 
 
-    <div class="w-full h-[633px] bg-black relative overflow-hidden">
+    <div class="w-full h-[633px] bg-black relative overflow-hidden">ㄗㄗ
       <img src="/src/assets/weapons/wb.png" alt="" class="w-full h-full object-cover" />
       <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
         <h1 class="text-3xl md:text-5xl font-bold text-white drop-shadow-lg mb-4">
@@ -729,6 +729,47 @@ import { EffectCoverflow, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
+
+// API串接
+import axios from 'axios';
+
+
+const loading = ref(false)
+const weapon = ref([])
+const error = ref(null)
+
+
+
+
+
+async function fetchAllWeapon() {
+  loading.value = true
+  error.value = null
+
+  try {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/weaponList.php')
+    // console.log('this is RESPONSE', response)
+
+    const data = response.data?.data || null
+    weapon.value = Array.isArray(data) ? data : []; // 確保是陣列
+    // console.log('this is desired url', ...weapon.value)
+    
+
+  } catch (err) {
+    console.error(err)
+    error.value = err?.response?.data?.message || err.message
+  } finally {
+    loading.value = false
+  }
+};
+
+
+onMounted(() => {
+   fetchAllWeapon();
+});
+//API串接
+
+
 
 const particlesLoaded = async (container) => {
   console.log("Particles container loaded", container);
