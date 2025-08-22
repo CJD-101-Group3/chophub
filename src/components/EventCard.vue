@@ -1,8 +1,8 @@
 <script setup>
 import { defineProps, ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
+import axios from 'axios';
 
-// --- 匯入所有圖示 ---
 import bigStarIcon from '@/assets/icon/bigstar.svg';
 import bigStarActiveIcon from '@/assets/icon/bigstar_h.svg';
 import filledStarIcon from '@/assets/icon/starevaluate1.svg';
@@ -23,6 +23,7 @@ eventImage: { type: String, default: "" }
 
 // --- 收藏狀態 ---
 const isFavorited = ref(false);
+const isProcessingFavorite = ref(false);
 const favoriteStarSrc = computed(() => {
   return isFavorited.value ? bigStarActiveIcon : bigStarIcon;
 });
