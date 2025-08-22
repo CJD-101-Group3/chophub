@@ -41,7 +41,7 @@ const routes = [
     { path: '/EventHomePage', component: EventHomePage },
     { path: '/EventReviewsOverview', component: EventReviewsOverview },
     { path: '/post/:id', component: PostDetail },
-    { path: '/Weaponslist/:WeaponDetail', component: WeaponDetail },
+    { path: '/weaponslist/weapondetail/:weapon_id', component:WeaponDetail},
     { path: '/ArtisanShowcase/:userId', name: 'ArtisanShowcase', component: ArtisanShowcase }, // 公開的刀匠展示頁
     { path: '/event/:id', name: 'EventDetail', component: () => import('@/views/EventDetail.vue') },
     

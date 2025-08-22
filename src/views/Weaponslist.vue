@@ -526,7 +526,7 @@
     <Theheader />
 
 
-    <div class="w-full h-[633px] bg-black relative overflow-hidden">
+    <div class="w-full h-[633px] bg-black relative overflow-hidden">ㄗㄗ
       <img src="/src/assets/weapons/wb.png" alt="" class="w-full h-full object-cover" />
       <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
         <h1 class="text-3xl md:text-5xl font-bold text-white drop-shadow-lg mb-4">
@@ -679,12 +679,31 @@
           </ul>
         </aside>
 
+
+         <!-- **【核心修正】更新 v-if 邏輯，讓它能正確顯示三種狀態 ** -->
+
+      <div v-if="loading">載入中...</div>
+<div v-else-if="error">{{ error }}</div>
+<div v-else>
+  <div v-if="weapon.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+   <WeaponCard
+              v-for="w in weapon"
+              :key="w.weapon_id"
+              :weapon_id="w.weapon_id"
+              :postImages="w.weapon_url"
+              :userName="w.user_id"
+              :postTitle="w.title"
+              :description="w.description"
+            >
+            <div>debugger {{ w.weapon_url }}</div>
+          </WeaponCard>
+  </div>
+  <div v-else>找不到符合篩選條件的活動。</div>
+</div>
+
+
         <!-- 右側商品卡片區 -->
-        <main>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
-            <WeaponCard v-for="post in posts" :key="post.id" v-bind="post" />
-          </div>
-        </main>
+       
       </div>
     </div>
 
@@ -695,7 +714,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref ,onMounted} from "vue";
 import Theheader from "../components/Theheader.vue";
 import Thefooter from "../components/Thefooter.vue";
 import WeaponCard from "../components/WeaponCard.vue";
@@ -710,6 +729,47 @@ import { EffectCoverflow, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
+
+// API串接
+import axios from 'axios';
+
+
+const loading = ref(false)
+const weapon = ref([])
+const error = ref(null)
+
+
+
+
+
+async function fetchAllWeapon() {
+  loading.value = true
+  error.value = null
+
+  try {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/weaponList.php')
+    // console.log('this is RESPONSE', response)
+
+    const data = response.data?.data || null
+    weapon.value = Array.isArray(data) ? data : []; // 確保是陣列
+    // console.log('this is desired url', ...weapon.value)
+    
+
+  } catch (err) {
+    console.error(err)
+    error.value = err?.response?.data?.message || err.message
+  } finally {
+    loading.value = false
+  }
+};
+
+
+onMounted(() => {
+   fetchAllWeapon();
+});
+//API串接
+
+
 
 const particlesLoaded = async (container) => {
   console.log("Particles container loaded", container);
@@ -739,6 +799,9 @@ const imgs = [
 
   // 可依需求多加
 ];
+
+
+const filteredWeapon = ref([])
 
 // ✅ 正確的 posts 陣列合併方式
 const posts = ref(
