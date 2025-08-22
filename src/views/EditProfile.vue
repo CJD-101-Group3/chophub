@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, computed } from 'vue'; // 1. 引入 computed
 import axios from 'axios';
 import { getPublicImg } from '@/utils/getPublicImg';
 
@@ -27,9 +27,13 @@ const loading = ref(true);
 const error = ref(null);
 const saving = ref(false);
 
-// --- 新增：編輯模式狀態 ---
-const isEditingAccount = ref(false); // 控制帳號區塊的編輯狀態
-const isEditingProfile = ref(false); // 控制會員資訊區塊的編輯狀態
+// --- 編輯模式狀態 ---
+const isEditingAccount = ref(false);
+const isEditingProfile = ref(false);
+
+// --- 圖片上傳相關變數 ---
+const fileInput = ref(null);
+const selectedFile = ref(null);
 
 const profileForm = reactive({
   email: '',
@@ -41,7 +45,17 @@ const profileForm = reactive({
   gender: '',
   created_at: '',
   location: '',
-  avatarUrl: getPublicImg('users/userp.png'),
+  avatarUrl: null, // 初始值設為 null，由 computed 處理預設圖
+});
+
+// ******** 2. 新增：用於動態決定顯示頭像的 computed 屬性 ********
+const displayAvatar = computed(() => {
+  // 優先顯示 profileForm 中的頭像路徑
+  if (profileForm.avatarUrl) {
+    return profileForm.avatarUrl;
+  }
+  // 否則，回傳我們預設的頭像路徑
+  return getPublicImg('users/userp.png');
 });
 
 const userId = 1;
@@ -55,6 +69,13 @@ async function fetchUserProfile() {
     if (response.data.status === 'success') {
       const userData = response.data.data;
       Object.assign(profileForm, userData);
+      
+      // 將後端傳來的 avatar_url (可能是 null 或 URL字串) 賦值給 profileForm
+      profileForm.avatarUrl = userData.avatar_url; 
+      
+      // 同步更新側邊欄的頭像 (使用新的 computed 屬性確保一致性)
+      memberInfo.value.avatarUrl = displayAvatar.value;
+      
       profileForm.birthday = userData.birthday ? userData.birthday.split(' ')[0] : '';
       profileForm.created_at = userData.created_at ? userData.created_at.split(' ')[0].replace(/-/g, '/') : '';
       profileForm.password = '';
@@ -116,10 +137,52 @@ function handleCancel(formType) {
     fetchUserProfile();
   }
 }
+
+// --- 處理圖片上傳的相關函式 ---
+function handleAvatarUploadClick() {
+  fileInput.value.click();
+}
+
+function onFileChange(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    alert('請選擇有效的圖片檔案 (例如 .jpg, .png, .gif)。');
+    return;
+  }
+
+  selectedFile.value = file;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    profileForm.avatarUrl = e.target.result;
+    memberInfo.value.avatarUrl = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  
+  handleUpload(); 
+}
+
+async function handleUpload() {
+  if (!selectedFile.value) {
+    alert('您尚未選擇任何圖片！');
+    return;
+  }
+  saving.value = true;
+  console.log(`準備上傳圖片: ${selectedFile.value.name}`);
+  
+  // 模擬 1.5 秒的上傳延遲
+  setTimeout(() => {
+    alert('圖片上傳成功！');
+    saving.value = false;
+    // 下一步將在這裡呼叫真實的 API
+  }, 1500);
+}
 </script>
 
 <template>
-            <div class="absolute inset-0 -z-10">
+              <div class="absolute inset-0 -z-10">
       <vue-particles
       id="tsparticles"
       @particles-loaded="particlesLoaded"
@@ -640,7 +703,6 @@ function handleCancel(formType) {
       }"
     />
     </div>
-
   <div class="flex flex-col min-h-screen ">
     <Theheader />
     <div class="flex-1 container mx-auto p-4 lg:flex lg:gap-8 lg:p-8">
@@ -648,7 +710,7 @@ function handleCancel(formType) {
          <div class="bg-white p-4 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)] sticky top-24">
           <div class="flex flex-col items-center text-center border-b pb-4 mb-4">
             <img 
-              :src="memberInfo.avatarUrl" 
+              :src="displayAvatar" 
               alt="Avatar" 
               class="w-40 h-40 rounded-full object-cover mb-3"
             />
@@ -675,7 +737,7 @@ function handleCancel(formType) {
         <div class="relative lg:hidden mb-6">
            <button @click="toggleDropdown" class="w-full flex items-center justify-between p-3 bg-white border border-gray-300 rounded-md shadow-sm">
             <div class="flex items-center">
-              <img :src="memberInfo.avatarUrl" alt="Avatar" class="w-8 h-8 rounded-full object-cover mr-3"/>
+              <img :src="displayAvatar" alt="Avatar" class="w-8 h-8 rounded-full object-cover mr-3"/>
               <span class="font-semibold">{{ memberInfo.name }}</span>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform" :class="{'rotate-180': isDropdownOpen}"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
@@ -692,9 +754,18 @@ function handleCancel(formType) {
         <div v-else class="space-y-8 max-w-2xl mx-auto">
           
           <div class="relative w-72 h-72 mx-auto group">
-            <img :src="profileForm.avatarUrl" alt="User Avatar" class="w-full h-full object-cover rounded-full border-4 border-white">
+            <img :src="displayAvatar" alt="User Avatar" class="w-full h-full object-cover rounded-full border-4 border-white">
             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 rounded-full flex items-center justify-center gap-4 p-2 transition-opacity duration-300">
-              <button class="text-sm bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-[8px] transition-all opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 duration-300">圖片上傳</button>
+              <button @click="handleAvatarUploadClick" class="text-sm bg-[#F2994A] hover:bg-[#E88C3A] text-white font-bold py-2 px-4 rounded-[8px] transition-all opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 duration-300">
+                圖片上傳
+              </button>
+              <input 
+                type="file" 
+                ref="fileInput" 
+                @change="onFileChange" 
+                accept="image/png, image/jpeg, image/gif" 
+                class="hidden"
+              >
             </div>
           </div>
           
