@@ -1,4 +1,4 @@
-<script setup>
+ <script setup>
 // --- Script 區塊維持不變 ---
 import { defineProps, ref, computed } from 'vue';
 import fireIcon from '@/assets/icon/fire.svg';
@@ -8,16 +8,14 @@ import smallStarIcon from '@/assets/icon/smallstar.svg';
 import smallStarActiveIcon from '@/assets/icon/smallstar_h.svg';
 
 const props = defineProps({
-  id: { type: Number, required: true },
-  postImage: { type: String, required: true },
+  weapon_id: { type: Number, required: true },
+  postImages: { type: Array, default: () => [] }, // 改成陣列
   userName: { type: String, default: '使用者名稱' },
   postTitle: { type: String, default: '手裡劍' },
-  isHot: { type: Boolean, default: false },
-  description: { type: String, default: '四爪對稱手裡劍，結構精準銳利，中心圓孔設計，兼具工藝美感與穩定投擲性能。' },
-  likes: { type: Number, default: 82 },
-  stars: { type: Number, default: 24 },
+  description: { type: String, default: '' },
+  likes: { type: Number, default: 0 },
+  stars: { type: Number, default: 0 },
 });
-
 const isStarred = ref(false);
 const localStars = ref(props.stars);
 
@@ -38,7 +36,7 @@ function toggleStar() {
   <div class="flex flex-col w-full bg-[#FEFEFE] rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2">
     
     <div class="relative">
-      <img :src="postImage" alt="Post Image" class="w-full h-auto object-cover" />
+      <img :src="postImages" alt="Post Image" class="w-full h-auto object-cover" />
     </div>
 
     <div class="flex flex-col flex-grow p-5">
@@ -72,11 +70,11 @@ function toggleStar() {
       </div>
       
       <router-link 
-        :to="`/weaponslist/weapondetail`"
-        class="w-full bg-[#F2994A] text-[#ffffff] font-semibold rounded-lg text-base h-[59px] flex items-center justify-center focus:outline-none focus:ring-0 hover:text-white"
-      >
-        查看更多
-      </router-link>
+  :to="`/weaponslist/weapondetail/${weapon_id}`"  
+  class="w-full bg-[#F2994A] text-[#ffffff] font-semibold rounded-lg text-base h-[59px] flex items-center justify-center focus:outline-none focus:ring-0 hover:text-white"
+>
+  查看更多
+</router-link>
     </div>
   </div>
 </template>
