@@ -1,23 +1,21 @@
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios'; // 【新增】引入 axios
+import axios from 'axios';
 
 import userIcon from '@/assets/icon/smalluser.svg';
 import closeIcon from '@/assets/icon/postclose.svg';
 import imageIcon from '@/assets/icon/postpicture.svg';
 
-// 【修改】定義 emits，增加 'post-success' 事件
 const emit = defineEmits(['close', 'post-success']);
 
-// --- 響應式狀態 (與您原始碼相同，但增加了 loading 和 error) ---
 const postTitle = ref('');
 const postContent = ref('');
 const imagePreviewUrl = ref(null);
 const selectedFile = ref(null);
 const fileInput = ref(null);
-const isLoading = ref(false); // 【新增】載入狀態
-const errorMessage = ref(''); // 【新增】錯誤訊息
-const currentUserId = 1; // 假設的當前使用者 ID
+const isLoading = ref(false);
+const errorMessage = ref('');
+const currentUserId = 1;
 
 function triggerFileInput() {
   fileInput.value.click();
@@ -35,7 +33,6 @@ function handleFileChange(event) {
   }
 }
 
-// --- 【關鍵修改】將 handleSubmit 函式替換為真實的 API 呼叫 ---
 async function handleSubmit() {
   if (!postTitle.value.trim() || !postContent.value.trim()) {
     alert('請填寫標題和內文！');
@@ -45,7 +42,6 @@ async function handleSubmit() {
   isLoading.value = true;
   errorMessage.value = '';
 
-  // 使用 FormData 來傳送包含檔案的表單
   const formData = new FormData();
   formData.append('user_id', currentUserId);
   formData.append('title', postTitle.value);
@@ -55,25 +51,22 @@ async function handleSubmit() {
   }
 
   try {
-    const apiUrl = 'http://localhost:8888/ChopHub-API/api/createPost.php';
+    const apiUrl = 'http://localhost:8888/ChopHub-API/api/posts/createPost.php';
     const response = await axios.post(apiUrl, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     });
     if (response.data && response.data.status === 'success') {
-      // 發送成功事件給父元件
       emit('post-success');
-      // 關閉彈窗
       emit('close');
     } else {
       throw new Error(response.data.message || '發布失敗');
     }
   } catch (err) {
     console.error('發布貼文失敗:', err);
-    // 將錯誤訊息顯示在畫面上
     errorMessage.value = err.response?.data?.message || err.message || '發生未知錯誤。';
-    alert(`發布失敗: ${errorMessage.value}`); // 也可以用 alert 提示
+    alert(`發布失敗: ${errorMessage.value}`);
   } finally {
     isLoading.value = false;
   }
@@ -81,12 +74,12 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <!-- Template 內容完全是您提供的原始碼，沒有做任何修改 -->
   <div 
     class="fixed inset-0 bg-black/70 flex justify-center items-center z-50 p-4"
     @click.self="emit('close')"
   >
-    <div class="bg-white rounded-lg shadow-xl p-6 relative w-full max-w-lg h-[80vh] overflow-y-scroll">
+    <!-- 【關鍵修改處】將 h-[80vh] 改為 max-h-[80vh]，overflow-y-scroll 改為 overflow-y-auto -->
+    <div class="bg-white rounded-lg shadow-xl p-6 relative w-full max-w-md md:max-w-xl lg:max-w-2xl max-h-[80vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold text-orange-500">新增貼文</h2>
         <button @click="emit('close')" class="p-1 rounded-full hover:bg-gray-200">

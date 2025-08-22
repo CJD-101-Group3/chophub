@@ -13,6 +13,7 @@ import shareIcon from '@/assets/icon/postshare.svg';
 import badge1 from '@/assets/icon/badge1.png';
 import badge2 from '@/assets/icon/badge2.png';
 import badge3 from '@/assets/icon/badge3.png';
+import defaultAvatar from '@/assets/icon/smalluser.svg';
 
 // --- 路由 ---
 const route = useRoute();
@@ -24,16 +25,12 @@ const comments = ref([]);
 const isLoading = ref(true);
 const error = ref(null);
 
-// ADDED: A dedicated object for the currently logged-in user.
-// In a real application, this would be populated after login from your auth system.
+// 當前登入者設定為 rubyforge (ID: 1)
 const currentUser = ref({
-  id: 1, // Example ID
-  name: 'current_user_name', // Example name
-  // IMPORTANT: Replace this with the actual, valid URL to the logged-in user's avatar.
-  avatar: 'http://localhost:8888/ChopHub-API/uploads/avatars/your_avatar_filename.png' 
+  id: 1, 
+  name: '載入中...',
+  avatar: defaultAvatar
 });
-
-// MODIFIED: Use the ID from the new currentUser object for consistency.
 const currentUserId = currentUser.value.id;
 
 // 分享提示
@@ -48,13 +45,27 @@ const reportReason = ref('');
 const isCommentSubmittable = computed(() => newCommentText.value.trim() !== '');
 
 // --- API 呼叫 ---
+const fetchCurrentUser = async () => {
+  try {
+    // 【關鍵修改】更新 API 的路徑，指向您新建立的檔案
+    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/posts/getPostUser.php?user_id=${currentUserId}`);
+    
+    if (response.data && response.data.status === 'success') {
+      currentUser.value = response.data.data;
+    }
+  } catch (err) {
+    console.error('獲取當前使用者資訊失敗:', err);
+    currentUser.value.name = '訪客';
+  }
+};
+
 const fetchPostDetail = async () => {
   const postId = route.params.id;
   if (!postId) { error.value = "無效的貼文 ID。"; isLoading.value = false; return; }
   isLoading.value = true;
   error.value = null;
   try {
-    const apiUrl = `http://localhost:8888/ChopHub-API/api/getPostDetail.php?post_id=${postId}&user_id=${currentUserId}`;
+    const apiUrl = `http://localhost:8888/ChopHub-API/api/posts/getPostDetail.php?post_id=${postId}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       response.data.data.post.author.badges = [badge1, badge2, badge3];
@@ -73,89 +84,46 @@ const fetchPostDetail = async () => {
 };
 
 // --- 互動函式 (API驅動) ---
-async function handleShare() {
-  try {
-    await navigator.clipboard.writeText(window.location.href);
-    shareFeedback.value = '<已複製連結>';
-    setTimeout(() => { shareFeedback.value = ''; }, 800);
-  } catch (err) {
-    alert('複製連結失敗，請手動複製網址。');
-  }
-}
-
-async function toggleLike() {
-  if (!post.value) return;
-  post.value.isLikedByUser = !post.value.isLikedByUser;
-  post.value.likes += post.value.isLikedByUser ? 1 : -1;
-  try {
-    await axios.post('http://localhost:8888/ChopHub-API/api/toggleLike.php', { post_id: post.value.id, user_id: currentUserId });
-  } catch (err) {
-    post.value.isLikedByUser = !post.value.isLikedByUser;
-    post.value.likes += post.value.isLikedByUser ? 1 : -1;
-  }
-}
-
-async function toggleSave() {
-  if (!post.value) return;
-  post.value.isFavoritedByUser = !post.value.isFavoritedByUser;
-  post.value.saves += post.value.isFavoritedByUser ? 1 : -1;
-  try {
-    await axios.post('http://localhost:8888/ChopHub-API/api/toggleFavorite.php', { post_id: post.value.id, user_id: currentUserId });
-  } catch (err) {
-    post.value.isFavoritedByUser = !post.value.isFavoritedByUser;
-    post.value.saves += post.value.isFavoritedByUser ? 1 : -1;
-  }
-}
-
-async function toggleCommentLike(comment) {
-  comment.isLikedByUser = !comment.isLikedByUser;
-  comment.likes += comment.isLikedByUser ? 1 : -1;
-  try {
-    await axios.post('http://localhost:8888/ChopHub-API/api/toggleCommentLike.php', { comment_id: comment.id, user_id: currentUserId });
-  } catch (err) {
-    comment.isLikedByUser = !comment.isLikedByUser;
-    comment.likes += comment.isLikedByUser ? 1 : -1;
-  }
-}
-
 async function postComment() {
   if (!isCommentSubmittable.value || !post.value) return;
   try {
-    const apiUrl = 'http://localhost:8888/ChopHub-API/api/postComment.php';
-    const response = await axios.post(apiUrl, { post_id: post.value.id, user_id: currentUserId, content: newCommentText.value });
+    const apiUrl = 'http://localhost:8888/ChopHub-API/api/posts/postComment.php';
+    const response = await axios.post(apiUrl, { 
+      post_id: post.value.id, 
+      user_id: currentUserId,
+      content: newCommentText.value 
+    });
+    
     if (response.data && response.data.status === 'success') {
-      comments.value.unshift(response.data.data);
+      const newCommentFromServer = response.data.data;
+      comments.value.unshift(newCommentFromServer);
       newCommentText.value = '';
+    } else {
+      throw new Error(response.data.message || '無法新增留言。');
     }
   } catch (err) {
+    console.error("新增留言失敗:", err);
     alert('無法新增留言，請稍後再試。');
   }
 }
 
-// --- 其他函式 ---
+// --- 其他函式 (省略以保持簡潔) ---
+async function handleShare() { try { await navigator.clipboard.writeText(window.location.href); shareFeedback.value = '<已複製連結>'; setTimeout(() => { shareFeedback.value = ''; }, 800); } catch (err) { alert('複製連結失敗，請手動複製網址。'); } }
+async function toggleLike() { if (!post.value) return; post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; try { await axios.post('http://localhost:8888/ChopHub-API/api/posts/toggleLike.php', { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; } }
+async function toggleSave() { if (!post.value) return; post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; try { await axios.post('http://localhost:8888/ChopHub-API/api/posts/toggleFavorite.php', { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; } }
+async function toggleCommentLike(comment) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; try { await axios.post('http://localhost:8888/ChopHub-API/api/posts/toggleCommentLike.php', { comment_id: comment.id, user_id: currentUserId }); } catch (err) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; } }
 function openReportModal() { showReportModal.value = true; }
 function closeReportModal() { showReportModal.value = false; reportReason.value = ''; }
-function submitReport() {
-  if (!reportReason.value.trim()) { alert('請輸入檢舉事由。'); return; }
-  try {
-      axios.post('http://localhost:8888/ChopHub-API/api/submitReport.php', {
-          post_id: post.value.id,
-          user_id: currentUserId,
-          reason: reportReason.value
-      });
-      alert('檢舉已成功送出，感謝您的回報。');
-      closeReportModal();
-  } catch (err) {
-      alert('提交失敗，請稍後再試。');
-  }
-}
+function submitReport() { if (!reportReason.value.trim()) { alert('請輸入檢舉事由。'); return; } try { axios.post('http://localhost:8888/ChopHub-API/api/posts/submitReport.php', { post_id: post.value.id, user_id: currentUserId, reason: reportReason.value }); alert('檢舉已成功送出，感謝您的回報。'); closeReportModal(); } catch (err) { alert('提交失敗，請稍後再試。'); } }
 const inverseScale = ref(1);
 const modalStyle = computed(() => ({ transform: `scale(${inverseScale.value})`}));
 function detectZoom() { const zoomLevel = window.devicePixelRatio || 1; inverseScale.value = 1 / zoomLevel; }
 
+
 // --- 生命週期鉤子 ---
 onMounted(() => {
   fetchPostDetail();
+  fetchCurrentUser();
   detectZoom();
   window.addEventListener('resize', detectZoom);
 });
@@ -163,7 +131,6 @@ onUnmounted(() => {
   window.removeEventListener('resize', detectZoom);
 });
 </script>
-
 <template>
   <div @click.self="router.back()" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-40 p-0 lg:p-4">
     <button @click="router.back()" class="hidden lg:block absolute top-4 right-4 text-white z-50 p-2 rounded-full bg-black bg-opacity-50 hover:bg-opacity-75 transition">
