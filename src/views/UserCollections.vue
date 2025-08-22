@@ -4,7 +4,8 @@ import axios from 'axios';
 import { getPublicImg } from '@/utils/getPublicImg';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
-
+import { useAuthStore } from '@/stores/auth';
+const authStore = useAuthStore();
 // 定義響應式變量
 const particlesLoaded = async (container) => {
   console.log("Particles container loaded", container);
@@ -45,7 +46,7 @@ const errorBadges = ref(null);
 async function fetchFavoriteWeapons() {
   loadingWeapons.value = true;
   errorWeapons.value = null;
-  const userId = 2; // 未來應動態獲取
+  const userId = authStore.userId;
 
   try {
     const response = await axios.get(`http://localhost:8888/ChopHub-API/api/get_user_favorite_weapons.php?user_id=${userId}`);
@@ -66,7 +67,7 @@ async function fetchFavoriteWeapons() {
 async function fetchUserAchievements() {
   loadingBadges.value = true;
   errorBadges.value = null;
-  const userId = 1; // 未來應動態獲取
+  const userId = authStore.userId;
 
   try {
     const response = await axios.get(`http://localhost:8888/ChopHub-API/api/get_user_achievements.php?user_id=${userId}`);
@@ -84,9 +85,27 @@ async function fetchUserAchievements() {
 }
 
 // 在元件掛載後同時執行兩個 API 請求
-onMounted(() => {
+onMounted(async () => {
   fetchFavoriteWeapons();
   fetchUserAchievements();
+
+  // 取得使用者頭像
+  try {
+    const userId = authStore.userId;
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/userProfile.php', {
+      params: { user_id: userId }
+    });
+    if (response.data.status === 'success') {
+      const userData = response.data.data;
+      memberInfo.value.avatarUrl = userData.avatar_url
+        ? `http://localhost:8888/ChopHub-API/${userData.avatar_url}`
+        : getPublicImg('users/userp.png');
+      memberInfo.value.name = userData.display_name;
+    }
+  } catch (err) {
+    console.error('載入使用者頭像失敗:', err);
+    memberInfo.value.avatarUrl = getPublicImg('users/userp.png');
+  }
 });
 
 

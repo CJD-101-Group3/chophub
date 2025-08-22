@@ -5,6 +5,10 @@ import { getPublicImg } from '@/utils/getPublicImg';
 import { useRoute } from 'vue-router';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
+const userId = authStore.userId;
 
 // --- 通用佈局相關的資料 ---
 const isDropdownOpen = ref(false);
@@ -72,8 +76,6 @@ const displayAvatar = computed(() => {
   return getPublicImg('users/userp.png');
 });
 
-const userId = 1;
-
 // --- GET 請求 ---
 async function fetchUserProfile() {
   try {
@@ -81,12 +83,17 @@ async function fetchUserProfile() {
     if (response.data.status === 'success') {
       const userData = response.data.data;
       Object.assign(profileForm, userData);
-      profileForm.avatarUrl = userData.avatar_url;
+      profileForm.avatarUrl = userData.avatar_url
+        ? `http://localhost:8888/ChopHub-API/${userData.avatar_url}`
+        : getPublicImg('users/userp.png');
+      memberInfo.value.name = userData.display_name;
+      memberInfo.value.avatarUrl = profileForm.avatarUrl;
+      // 其他欄位...
       profileForm.birthday = userData.birthday ? userData.birthday.split(' ')[0] : '';
       profileForm.created_at = userData.created_at ? userData.created_at.split(' ')[0].replace(/-/g, '/') : '';
       profileForm.password = '';
       memberInfo.value.name = userData.display_name;
-      memberInfo.value.avatarUrl = userData.avatar_url || getPublicImg('users/userp.png');
+      memberInfo.value.avatarUrl = profileForm.avatarUrl;
     }
   } catch (err) { throw err; }
 }

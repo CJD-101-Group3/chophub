@@ -2,10 +2,12 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { getPublicImg } from '@/utils/getPublicImg';
+import { useAuthStore } from '@/stores/auth'; // 新增這行
 
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 
+const authStore = useAuthStore(); // 新增這行
 
 // 定義響應式變量
 const particlesLoaded = async (container) => {
@@ -69,7 +71,7 @@ const errorMyReports = ref(null);
 // 呼叫「貼文相關紀錄」API 的函式
 async function fetchPostStats() {
   loadingPostStats.value = true;
-  const userId = 1;
+  const userId = authStore.userId; // 改這裡
 
   try {
     const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_post_stats.php', {
@@ -93,7 +95,7 @@ async function fetchPostStats() {
 async function fetchMyPosts() {
   loadingMyPosts.value = true;
   errorMyPosts.value = null;
-  const userId = 7;
+  const userId = authStore.userId; // 改這裡
 
   try {
     const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_posts.php', {
@@ -116,7 +118,7 @@ async function fetchMyPosts() {
 async function fetchMyReplies() {
   loadingMyReplies.value = true;
   errorMyReplies.value = null;
-  const userId = 1;
+  const userId = authStore.userId; // 改這裡
 
   try {
     const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_post_comments.php', {
@@ -139,7 +141,7 @@ async function fetchMyReplies() {
 async function fetchMyCollectedPosts() {
   loadingCollectedPosts.value = true;
   errorCollectedPosts.value = null;
-  const userId = 1;
+  const userId = authStore.userId; // 改這裡
 
   try {
     const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_favorites_posts.php', {
@@ -162,7 +164,7 @@ async function fetchMyCollectedPosts() {
 async function fetchMyReports() {
   loadingMyReports.value = true;
   errorMyReports.value = null;
-  const userId = 1;
+  const userId = authStore.userId; // 改這裡
 
   try {
     const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_reports.php', {
@@ -185,7 +187,7 @@ async function fetchMyReports() {
 async function fetchReportedRecords() {
   loadingReportedRecords.value = true;
   errorReportedRecords.value = null;
-  const userId = 1;
+  const userId = authStore.userId; // 改這裡
 
   try {
     const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_reports_on_user.php', {
@@ -205,13 +207,32 @@ async function fetchReportedRecords() {
 }
 
 // 使用 onMounted 生命週期鉤子，在元件掛載後同時執行所有 API 請求
-onMounted(() => {
+onMounted(async () => {
+  // 取得貼文相關資料
   fetchPostStats();
   fetchMyPosts();
   fetchMyReplies();
   fetchMyCollectedPosts();
   fetchMyReports();
   fetchReportedRecords();
+
+  // 取得使用者頭像
+  try {
+    const userId = authStore.userId; // 改這裡
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/userProfile.php', {
+      params: { user_id: userId }
+    });
+    if (response.data.status === 'success') {
+      const userData = response.data.data;
+      memberInfo.value.avatarUrl = userData.avatar_url
+        ? `http://localhost:8888/ChopHub-API/${userData.avatar_url}`
+        : getPublicImg('users/userp.png');
+      memberInfo.value.name = userData.display_name;
+    }
+  } catch (err) {
+    console.error('載入使用者頭像失敗:', err);
+    memberInfo.value.avatarUrl = getPublicImg('users/userp.png');
+  }
 });
 
 // 日期格式化輔助函式
@@ -223,7 +244,7 @@ function formatDate(dateString) {
 </script>
 
 <template>
-          <div class="absolute inset-0 -z-10">
+            <div class="absolute inset-0 -z-10">
       <vue-particles
       id="tsparticles"
       @particles-loaded="particlesLoaded"
