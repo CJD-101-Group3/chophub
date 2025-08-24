@@ -714,7 +714,7 @@ onMounted(async () => {
         <section v-if="artisanProfile.privacySettings.is_collections_public" class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選作品</h2>
           <div class="flex space-x-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-5 lg:gap-6 lg:space-x-0 lg:pb-0">
-            <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="'/weapon/' + work.id" class="flex-shrink-0 group w-56 lg:w-full">
+            <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="'/Weaponslist/weapondetail/' + work.id" class="flex-shrink-0 group w-56 lg:w-full">
               <div class="bg-black p-2 rounded-lg shadow-md overflow-hidden">
                 <img :src="work.imageUrl" :alt="'作品 ' + work.id" class="w-full h-48 lg:h-40 object-contain">
               </div>
@@ -730,7 +730,7 @@ onMounted(async () => {
             <thead><tr class="border-b-2"><th class="py-2 font-semibold">文章標題</th><th class="py-2 font-semibold text-right">發表日期</th></tr></thead>
             <tbody>
               <tr v-for="post in artisanProfile.featuredPosts" :key="post.id" class="border-b last:border-b-0">
-                <td class="py-4"><a :href="post.link" class="text-gray-800 hover:text-[#F2994A] transition-colors"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</a></td>
+                <td class="py-4"><a :href="`/post/${post.id}`" class="text-gray-800 hover:text-[#F2994A] transition-colors"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</a></td>
                 <td class="py-4 text-right text-gray-500">{{ post.date }}</td>
               </tr>
             </tbody>
