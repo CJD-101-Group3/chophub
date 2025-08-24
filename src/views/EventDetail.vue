@@ -2,6 +2,7 @@
 import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
 import { ref, computed, onMounted } from 'vue';
+import { unref } from 'vue'
 import EventInfoCard from '@/components/EventInfoCard.vue';
 import RegisterBanner from '@/components/RegisterBanner.vue';
 import GeneralButton from '../components/GeneralButton.vue';
@@ -105,16 +106,15 @@ function handleViewDetails(eventId) {
    window.location.reload();
 }
 
-function goToPayment() {
-   router.push({
-      path: '/EventPayment',
-      query: {
-         eventId: eventId,
-         quantity: quantity.value
-      }
-   });
+function goToPayment () {
+router.push({
+   path: '/EventPayment',
+   query: {
+      eventId: unref(eventId),      
+      quantity: unref(quantity)     
+   }
+})
 }
-
 </script>
 <template>
    <div class=" bg-[#282828] text-gray-200 font-sans">
