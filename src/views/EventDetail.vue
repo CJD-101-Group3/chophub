@@ -1,12 +1,8 @@
 <script setup>
 import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
-<<<<<<< HEAD
-import { ref, computed, onMounted, watch } from 'vue';
-=======
 import { ref, computed, onMounted } from 'vue';
 import { unref } from 'vue'
->>>>>>> c4eb42fb621e707e84d2dbf9769cab62130cbcc2
 import EventInfoCard from '@/components/EventInfoCard.vue';
 import RegisterBanner from '@/components/RegisterBanner.vue';
 import GeneralButton from '../components/GeneralButton.vue';
@@ -101,17 +97,15 @@ function handleViewDetails(eventId) {
    router.push({ name: 'event-detail', params: { id: eventId } });
 }
 
-<<<<<<< HEAD
-// 【已修正】修正 eventId 變數來源
-function goToPayment() {
-   router.push({
-      path: '/EventPayment',
-      query: {
-         eventId: route.params.id, // 從 route.params 獲取當前頁面的 ID
-         quantity: quantity.value
-      }
-   });
-=======
+// function goToPayment() {
+//    router.push({
+//       path: '/EventPayment',
+//       query: {
+//          eventId: route.params.id, // 從 route.params 獲取當前頁面的 ID
+//          quantity: quantity.value
+//       }
+//    });
+
 function goToPayment () {
 router.push({
    path: '/EventPayment',
@@ -120,7 +114,6 @@ router.push({
       quantity: unref(quantity)     
    }
 })
->>>>>>> c4eb42fb621e707e84d2dbf9769cab62130cbcc2
 }
 </script>
 
