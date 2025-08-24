@@ -3,6 +3,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import axios from 'axios' // ⬅️ 新增
 import { useAuthStore } from '@/stores/auth'
 
+  // ✅ 統一 API base（可用 .env 設定 VITE_API_BASE，否則用本機預設）
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8888/ChopHub-API'
+
 // --- 頁面元件 ---
 import Home from '@/views/Home.vue'
 import About from '@/views/AboutUs.vue'
@@ -31,45 +34,6 @@ import PageNotFound from '@/views/PageNotFound.vue'
 import WeaponDetail from '@/views/WeaponDetail.vue'
 import TicketDetailPage from '@/views/TicketDetailPage.vue'
 
-<<<<<<< HEAD
-const routes = [
-    // --- 公開頁面 (不需要登入) ---
-    { path: '/', name: 'Home', component: Home },
-    { path: '/About', component: About },
-    { path: '/post', component: Post },
-    { path: '/Weaponslist', component: Weaponslist },
-    { path: '/Login', name: 'Login', component: Login }, // 建議為登入頁加上 name
-    { path: '/Register', name: 'Register', component: Register }, // 建議為註冊頁加上 name
-    { path: '/events', component: events },
-    { path: '/EventHomePage', component: EventHomePage },
-    { path: '/EventReviewsOverview', component: EventReviewsOverview },
-    { path: '/post/:id', component: PostDetail },
-    { path: '/weaponslist/weapondetail/:weapon_id', component:WeaponDetail},
-    { path: '/ArtisanShowcase/:userId', name: 'ArtisanShowcase', component: ArtisanShowcase }, // 公開的刀匠展示頁
-    { path: '/event/:id', name: 'EventDetail',
-      name: 'event-detail',
-      component: () => import('@/views/EventDetail.vue') },
-    
-    // --- 需要登入才能訪問的頁面 ---
-    { path: '/EventPayment', component: EventPayment, meta: { requiresAuth: true } },
-    { path: '/PaymentSuccess', component: PaymentSuccess, meta: { requiresAuth: true } },
-    { path: '/EventReview', component: EventReview, meta: { requiresAuth: true } },
-    { path: '/UserProfile', component: UserProfile, meta: { requiresAuth: true } },
-    { path: '/ApplicationGuide', component: ApplicationGuide, meta: { requiresAuth: true } },
-    { path: '/OtherSettings', component: OtherSettings, meta: { requiresAuth: true } },
-    { path: '/EditProfile', component: EditProfile, meta: { requiresAuth: true } },
-    { path: '/UserCollections', component: UserCollections, meta: { requiresAuth: true } },
-    { path: '/MyActivities', component: MyActivities, meta: { requiresAuth: true } },
-    { path: '/MyEvents', component: MyEvents, meta: { requiresAuth: true } },
-    { path: '/EventDetailRegistered', component: () => import('@/views/EventDetailRegistered.vue'), meta: { requiresAuth: true } },    
-    { path: '/PostActivity', component: PostActivity, meta: { requiresAuth: true } },
-    { path: '/TicketDetailPage/:id', name: 'TicketDetail', component: TicketDetailPage, meta: { requiresAuth: true } },
-    { path: '/my-events', name: 'My-Events', component: MyEvents, meta: { requiresAuth: true } },
-=======
-// ✅ 統一 API base（可用 .env 設定 VITE_API_BASE，否則用本機預設）
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8888/ChopHub-API'
->>>>>>> c4eb42fb621e707e84d2dbf9769cab62130cbcc2
-
 const routes = [
   // --- 公開頁面 ---
   { path: '/', name: 'Home', component: Home },
@@ -83,6 +47,8 @@ const routes = [
   { path: '/EventReviewsOverview', component: EventReviewsOverview },
   { path: '/post/:id', component: PostDetail },
   { path: '/weaponslist/weapondetail/:weapon_id', component: WeaponDetail },
+  
+  { path: '/event/:id', name: 'EventDetail', name: 'event-detail', component: () => import('@/views/EventDetail.vue') },
 
   // ⭐ 只允許「刀匠」ID 才能進入（人人都能看，但若手動輸入非刀匠 ID，就導回首頁）
   {
@@ -120,8 +86,6 @@ const routes = [
     }
   },
 
-  { path: '/event/:id', name: 'EventDetail', component: () => import('@/views/EventDetail.vue') },
-
   // --- 需要登入 ---
   { path: '/EventPayment', component: EventPayment, meta: { requiresAuth: true } },
   { path: '/PaymentSuccess', component: PaymentSuccess, meta: { requiresAuth: true } },
@@ -136,6 +100,7 @@ const routes = [
   { path: '/EventDetailRegistered', component: () => import('@/views/EventDetailRegistered.vue'), meta: { requiresAuth: true } },
   { path: '/PostActivity', component: PostActivity, meta: { requiresAuth: true } },
   { path: '/TicketDetailPage/:id', name: 'TicketDetail', component: TicketDetailPage, meta: { requiresAuth: true } },
+  { path: '/my-events', name: 'My-Events', component: MyEvents, meta: { requiresAuth: true } },
 
   // --- 需要特定角色 ---
   {
