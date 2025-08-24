@@ -123,7 +123,7 @@ async function handlePay() {
     }
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE}api/checkout_payment.php`, {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE}linepay/checkout_payment.php`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
