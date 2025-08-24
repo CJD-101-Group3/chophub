@@ -1019,7 +1019,93 @@ const removeSocialLink = (index) => {
           </div>
 
           <!-- 其餘（刀匠簡介 / 卡片 / 社群連結）照原樣，已略 -->
-          <!-- ... 你的其餘區塊原樣保留 ... -->
+                  <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠簡介</h2>
+             <div class="space-y-4 text-xl">
+              <template v-if="isEditingIntro">
+                <div class="grid grid-cols-3 gap-4">
+                  <label class="text-gray-600 col-span-1 pt-2">簡介內容</label>
+                  <textarea v-model="profileForm.artisanIntro" rows="5" class="col-span-2 w-full p-3 bg-gray-100 border border-gray-300 rounded-md"></textarea>
+                </div>
+              </template>
+              <template v-else>
+                <p class="text-gray-800 whitespace-pre-line">{{ profileForm.artisanIntro || '尚未填寫簡介' }}</p>
+              </template>
+            </div>
+             <div class="mt-6 flex gap-4">
+              <template v-if="isEditingIntro">
+                <button @click="handleSave('artisan')" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors" :disabled="saving">{{ saving ? '儲存中...' : '儲存' }}</button>
+                <button @click="handleCancel('artisanIntro')" class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">放棄修改</button>
+              </template>
+              <template v-else>
+                <button @click="isEditingIntro = true" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:bg-white hover:text-black hover:border hover:border-[#F2994A]">編輯</button>
+              </template>
+            </div>
+          </div>
+          
+          <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠卡片</h2>
+            <div class="space-y-4 text-xl">
+              <template v-if="isEditingCard">
+                <div class="grid grid-cols-3 items-center gap-4"><label class="font-bold text-gray-600 col-span-1">刀匠語錄</label><input type="text" v-model="profileForm.artisanCard.tagline" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+                <div class="grid grid-cols-3 items-center gap-4"><label class="font-bold text-gray-600 col-span-1">鍛造資歷</label><input type="text" v-model="profileForm.artisanCard.years_experience" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+                <div class="grid grid-cols-3 items-center gap-4"><label class="font-bold text-gray-600 col-span-1">專精領域</label><input type="text" v-model="profileForm.artisanCard.specialty" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+                <div class="grid grid-cols-3 items-center gap-4"><label class="font-bold text-gray-600 col-span-1">流派</label><input type="text" v-model="profileForm.artisanCard.sect" class="col-span-2 w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"></div>
+              </template>
+              <template v-else>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">刀匠語錄</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.artisanCard.tagline }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">鍛造資歷</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.artisanCard.years_experience }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">專精領域</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.artisanCard.specialty }}</span></div>
+                <div class="grid grid-cols-3 items-center gap-4"><span class="font-bold text-gray-600 col-span-1">流派</span><span class="font-medium text-gray-900 col-span-2">{{ profileForm.artisanCard.sect }}</span></div>
+              </template>
+            </div>
+             <div class="mt-6 flex gap-4">
+              <template v-if="isEditingCard">
+                <button @click="handleSave('artisan')" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors" :disabled="saving">{{ saving ? '儲存中...' : '儲存' }}</button>
+                <button @click="handleCancel('artisanCard')" class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">放棄修改</button>
+              </template>
+              <template v-else>
+                <button @click="isEditingCard = true" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:bg-white hover:text-black hover:border hover:border-[#F2994A]">編輯</button>
+              </template>
+            </div>
+          </div>
+          
+          <div class="bg-white p-6 lg:p-8 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)]">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">社群連結</h2>
+            <div class="space-y-4">
+              <template v-if="isEditingSocials">
+                <div v-for="(link, index) in profileForm.socialLinks" :key="link.id" class="flex items-center gap-2">
+                  <select v-model="link.platform" class="w-1/3 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md">
+                    <option disabled value="">請選擇平台</option>
+                    <option v-for="platform in socialPlatforms" :key="platform" :value="platform">{{ platform }}</option>
+                  </select>
+                  <input type="text" v-model="link.handle" placeholder="帳號或連結" class="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-md">
+                  <button @click="removeSocialLink(index)" class="p-2 text-[#D96570] hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.134-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.067-2.09 1.02-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button>
+                </div>
+                <div class="mt-4 flex justify-center">
+                  <button @click="addSocialLink" class="w-12 h-12 bg-[#F2994A] rounded-full text-white text-3xl flex items-center justify-center shadow-lg hover:bg-[#E88C3A] transform hover:scale-110 transition-transform">+</button>
+                </div>
+              </template>
+              <template v-else>
+                <div v-if="profileForm.socialLinks.length > 0" class="space-y-2">
+                   <div v-for="link in profileForm.socialLinks" :key="link.id" class="grid grid-cols-3 items-center gap-4 text-xl">
+                      <span class="font-bold text-gray-600 col-span-1">{{ link.platform }}</span>
+                      <a :href="link.handle" target="_blank" class="font-medium text-gray-900 col-span-2 truncate hover:text-orange-600">{{ link.handle }}</a>
+                   </div>
+                </div>
+                <p v-else class="text-gray-500 text-xl">尚未設定社群連結</p>
+              </template>
+            </div>
+             <div class="mt-6 flex gap-4">
+              <template v-if="isEditingSocials">
+                <button @click="handleSave('artisan')" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors" :disabled="saving">{{ saving ? '儲存中...' : '儲存連結' }}</button>
+                <button @click="handleCancel('socials')" class="flex-1 bg-white hover:bg-gray-100 text-gray-700 border border-gray-400 font-bold py-2 px-4 rounded-[8px] transition-colors">放棄修改</button>
+              </template>
+              <template v-else>
+                 <button @click="isEditingSocials = true" class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:bg-white hover:text-black hover:border hover:border-[#F2994A]">編輯</button>
+              </template>
+            </div>
+          </div>
 
         </div>
       </main>
