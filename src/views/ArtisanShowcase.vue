@@ -69,6 +69,9 @@ onMounted(async () => {
       artisanProfile.value.name = userData.display_name;
       artisanProfile.value.joinDate = userData.created_at ? userData.created_at.split(' ')[0].replace(/-/g, '/') : '';
       artisanProfile.value.location = userData.location;
+      artisanProfile.value.avatarUrl = userData.avatar_url
+        ? `http://localhost:8888/ChopHub-API/${userData.avatar_url}`
+        : getPublicImg('users/userp.png');
       
       // ******** 將隱私設定存入 ref ********
       artisanProfile.value.privacySettings.is_collections_public = !!parseInt(userData.is_collections_public);
@@ -660,7 +663,12 @@ onMounted(async () => {
 
         <!-- 頂部個人資訊 -->
         <section class="text-center space-y-4 lg:flex lg:gap-8 lg:text-left lg:items-center">
-          <img :src="artisanProfile.avatarUrl" alt="Artisan Avatar" class="w-full max-w-sm mx-auto rounded-lg shadow-[0_0_30px_rgba(255,255,255,0.4)] lg:w-60 lg:h-60 lg:mx-0 lg:flex-shrink-0 object-cover">
+          <img 
+            :src="artisanProfile.avatarUrl" 
+            alt="Artisan Avatar" 
+            class="w-full max-w-sm mx-auto rounded-lg shadow-[0_0_30px_rgba(255,255,255,0.4)] lg:w-60 lg:h-60 lg:mx-0 lg:flex-shrink-0 object-cover"
+            @error="event.target.src = getPublicImg('users/userp.png')"
+          >
           <div class="space-y-3">
             <h1 class="text-4xl lg:text-5xl font-bold text-white">{{ artisanProfile.name }}</h1>
             <div v-if="artisanProfile.mainBadge.name && artisanProfile.privacySettings.is_achievements_public" class="flex items-center justify-center lg:justify-start gap-2 text-xl font-semibold text-white">

@@ -1,5 +1,6 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
+import axios from 'axios' // ⬅️ 新增
 import { useAuthStore } from '@/stores/auth'
 
 // --- 頁面元件 ---
@@ -30,13 +31,15 @@ import PageNotFound from '@/views/PageNotFound.vue'
 import WeaponDetail from '@/views/WeaponDetail.vue'
 import TicketDetailPage from '@/views/TicketDetailPage.vue'
 
+// ✅ 統一 API base（可用 .env 設定 VITE_API_BASE，否則用本機預設）
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8888/ChopHub-API'
+
 const routes = [
   // --- 公開頁面 ---
   { path: '/', name: 'Home', component: Home },
   { path: '/About', component: About },
   { path: '/post', component: Post },
   { path: '/Weaponslist', component: Weaponslist },
-  // 「guestOnly: true」=> 已登入者不可再進入
   { path: '/Login', name: 'Login', component: Login, meta: { guestOnly: true } },
   { path: '/Register', name: 'Register', component: Register, meta: { guestOnly: true } },
   { path: '/events', component: events },
@@ -44,7 +47,43 @@ const routes = [
   { path: '/EventReviewsOverview', component: EventReviewsOverview },
   { path: '/post/:id', component: PostDetail },
   { path: '/weaponslist/weapondetail/:weapon_id', component: WeaponDetail },
-  { path: '/ArtisanShowcase/:userId', name: 'ArtisanShowcase', component: ArtisanShowcase },
+
+  // ⭐ 只允許「刀匠」ID 才能進入（人人都能看，但若手動輸入非刀匠 ID，就導回首頁）
+  {
+    path: '/ArtisanShowcase/:userId',
+    name: 'ArtisanShowcase',
+    component: ArtisanShowcase,
+    beforeEnter: async (to, from, next) => {
+      const { userId } = to.params
+      if (!userId || isNaN(Number(userId))) {
+        return next({ name: 'Home', replace: true })
+      }
+      try {
+        // 1) 優先打輕量檢查 API：/api/is_artisan.php?user_id=xxx
+        const res = await axios.get(`${API_BASE}/api/is_artisan.php`, { params: { user_id: userId } })
+        if (res?.data?.is_artisan) {
+          return next()
+        }
+        // 非刀匠
+        return next({ name: 'Home', replace: true })
+      } catch (err) {
+        const status = err?.response?.status
+        if (status === 404 || status === 403) {
+          // 明確不是刀匠 / 禁止
+          return next({ name: 'Home', replace: true })
+        }
+        // 2) 後備方案：若還沒有 is_artisan.php，就探一次 artisanProfile.php
+        try {
+          const r = await axios.get(`${API_BASE}/api/artisanProfile.php`, { params: { user_id: userId } })
+          const ok = r?.data?.status === 'success' && r?.data?.data
+          return ok ? next() : next({ name: 'Home', replace: true })
+        } catch {
+          return next({ name: 'Home', replace: true })
+        }
+      }
+    }
+  },
+
   { path: '/event/:id', name: 'EventDetail', component: () => import('@/views/EventDetail.vue') },
 
   // --- 需要登入 ---
@@ -74,7 +113,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.VITE_BASE), // 你專案用 VITE_BASE 就保留
+  history: createWebHistory(import.meta.env.VITE_BASE),
   routes,
   scrollBehavior() {
     return { top: 0 }
@@ -84,21 +123,21 @@ const router = createRouter({
 /**
  * 全域前置守衛
  * 1) 需要登入的頁面：未登入 => 轉到 Login，並帶 redirect 回跳
- * 2) 已登入者禁止進入的頁面（Login / Register）：已登入 => 轉到 Home
- * 3) 需要特定角色的頁面：角色不符 => 轉到 Home（或改成 403）
+ * 2) 已登入者不可再進入（Login / Register）
+ * 3) 需要特定角色：角色不符 => 轉 Home（或 403 頁）
  */
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore()
 
-  const isLoggedIn = !!auth.isLoggedIn // 你的 store 已有 isLoggedIn 布林或 getter
-  const userRole = auth.userRole || '' // 你的 store 已有 userRole（如 '刀匠' / '一般會員'）
+  const isLoggedIn = !!auth.isLoggedIn
+  const userRole = auth.userRole || ''
 
   // 1) 需要登入
   if (to.meta.requiresAuth && !isLoggedIn) {
     return next({ name: 'Login', query: { redirect: to.fullPath } })
   }
 
-  // 2) 已登入者不可進入的頁面（登入/註冊）
+  // 2) 已登入者不可進入（登入/註冊）
   if (to.meta.guestOnly && isLoggedIn) {
     return next({ name: 'Home' })
   }
@@ -107,7 +146,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiredRole) {
     const roles = Array.isArray(to.meta.requiredRole) ? to.meta.requiredRole : [to.meta.requiredRole]
     if (!roles.includes(userRole)) {
-      return next({ name: 'Home' }) // 或者導到一個 403 頁
+      return next({ name: 'Home' })
     }
   }
 
