@@ -14,7 +14,7 @@ const userId = authStore.userId;
 const isDropdownOpen = ref(false);
 const toggleDropdown = () => isDropdownOpen.value = !isDropdownOpen.value;
 const route = useRoute();
-const activeTab = ref('其他設定'); 
+const activeTab = ref('會員資訊'); 
 const menuItems = ref([
   { name: '會員資訊', href: '/UserProfile' },
   { name: '貼文相關', href: '/PostActivity' },

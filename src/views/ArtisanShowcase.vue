@@ -6,11 +6,14 @@ import { getPublicImg } from '@/utils/getPublicImg';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 import SocialIcon from '../components/SocialIcon.vue'; 
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
+const route = useRoute();
 
 // --- API 相關狀態 ---
 const loading = ref(true);
 const error = ref(null);
-const route = useRoute();
 
 // --- 刀匠的所有展示資料都集中管理 ---
 const artisanProfile = ref({
@@ -37,7 +40,8 @@ const artisanProfile = ref({
   }
 });
 
-const userId = ref(route.params.userId || 1);
+// 這樣 userId 會優先用路由參數，沒有就用自己的 id
+const userId = ref(route.params.userId || authStore.userId);
 
 // --- GET 請求 ---
 onMounted(async () => {
