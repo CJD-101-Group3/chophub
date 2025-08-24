@@ -74,7 +74,7 @@ const routes = [
         }
         // 2) 後備方案：若還沒有 is_artisan.php，就探一次 artisanProfile.php
         try {
-          const r = await axios.get(`${API_BASE}/api/artisanProfile.php`, { params: { user_id: userId } })
+          const r = await axios.get(`${API_BASE}/api/user/artisanProfile.php`, { params: { user_id: userId } })
           const ok = r?.data?.status === 'success' && r?.data?.data
           return ok ? next() : next({ name: 'Home', replace: true })
         } catch {

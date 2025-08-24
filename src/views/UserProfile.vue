@@ -46,7 +46,7 @@ onMounted(async () => {
 
   try {
     // **核心：讓此頁面自己呼叫 userProfile.php API**
-    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/userProfile.php?user_id=${currentUserId}`);
+    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/user/userProfile.php?user_id=${currentUserId}`);
     
     if (response.data.status === 'success') {
       const userData = response.data.data;

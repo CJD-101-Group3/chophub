@@ -56,11 +56,11 @@ onMounted(async () => {
       postsRes,
       weaponsRes
     ] = await Promise.all([
-      axios.get(`http://localhost:8888/ChopHub-API/api/userProfile.php?user_id=${userId.value}`),
-      axios.get(`http://localhost:8888/ChopHub-API/api/artisanProfile.php?user_id=${userId.value}`),
-      axios.get(`http://localhost:8888/ChopHub-API/api/get_user_achievements.php?user_id=${userId.value}`),
-      axios.get(`http://localhost:8888/ChopHub-API/api/get_user_posts.php?user_id=${userId.value}`),
-      axios.get(`http://localhost:8888/ChopHub-API/api/get_user_favorite_weapons.php?user_id=${userId.value}`)
+      axios.get(`http://localhost:8888/ChopHub-API/api/user/userProfile.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/user/artisanProfile.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/user/get_user_achievements.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/user/get_user_posts.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/user/get_user_favorite_weapons.php?user_id=${userId.value}`)
     ]);
 
     // 1. 處理一般使用者資料 (已修改)

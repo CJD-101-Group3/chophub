@@ -74,7 +74,7 @@ async function fetchPostStats() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_post_stats.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_user_post_stats.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -98,7 +98,7 @@ async function fetchMyPosts() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_posts.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_user_posts.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -121,7 +121,7 @@ async function fetchMyReplies() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_post_comments.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_user_post_comments.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -144,7 +144,7 @@ async function fetchMyCollectedPosts() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_favorites_posts.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_user_favorites_posts.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -167,7 +167,7 @@ async function fetchMyReports() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_reports.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_user_reports.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -190,7 +190,7 @@ async function fetchReportedRecords() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_reports_on_user.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_reports_on_user.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -219,7 +219,7 @@ onMounted(async () => {
   // 取得使用者頭像
   try {
     const userId = authStore.userId; // 改這裡
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/userProfile.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/userProfile.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
