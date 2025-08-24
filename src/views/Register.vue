@@ -1,51 +1,85 @@
 <script setup>
-import { ref } from 'vue';
-import Theheader from '../components/Theheader.vue';
-import Thefooter from '../components/Thefooter.vue';
-import Basebutton from '../components/Basebutton.vue';
+import { ref } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router' // 新增這行
+import Theheader from '../components/Theheader.vue'
+import Thefooter from '../components/Thefooter.vue'
+import Basebutton from '../components/Basebutton.vue'
 
-// 定義響應式變量
+// 粒子用（保留）
 const particlesLoaded = async (container) => {
-  console.log("Particles container loaded", container);
-};
+  console.log('Particles container loaded', container)
+}
 
+// API Base（尾端不要 /）
+const API_BASE =
+  (import.meta.env.VITE_API_BASE ? import.meta.env.VITE_API_BASE.replace(/\/$/, '') : 'http://localhost:8888/ChopHub-API')
 
-// emit 保持不變
-const emit = defineEmits(['submit']);
+// 表單欄位
+const account = ref('')
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const loading = ref(false)
 
-// ref 欄位保持不變
-const account = ref('');
-const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
+const baseUrl = import.meta.env.BASE_URL || '/'
 
-// 處理表單提交的函數
-function handleSubmit() {
-  // 驗證邏輯保持不變
+const router = useRouter() // 新增這行
+
+// 表單送出
+async function handleSubmit() {
+  // 前端驗證
   if (!account.value || !email.value || !password.value || !confirmPassword.value) {
-    alert('所有欄位都必須填寫！');
-    return;
+    alert('所有欄位都必須填寫！')
+    return
   }
   if (password.value !== confirmPassword.value) {
-    alert('兩次輸入的密碼不一致！');
-    return;
+    alert('兩次輸入的密碼不一致！')
+    return
+  }
+  // 最基本 email 檢查
+  if (!/^\S+@\S+\.\S+$/.test(email.value)) {
+    alert('Email 格式不正確')
+    return
+  }
+  if (password.value.length < 6) {
+    alert('密碼長度至少需要 6 個字元')
+    return
   }
 
-  const registrationData = {
-    account: account.value,
-    email: email.value,
-    password: password.value,
-  };
+  loading.value = true
+  try {
+    const payload = {
+      account: account.value.trim(),
+      email: email.value.trim(),
+      password: password.value
+    }
 
-  emit('submit', registrationData);
-  console.log('註冊表單已提交:', registrationData);
-  alert('註冊成功！');
+    const { data } = await axios.post(`${API_BASE}/api/signup.php`, payload, {
+      headers: { 'Content-Type': 'application/json' }
+    })
+
+    if (data?.status === 'success') {
+      alert('註冊成功！')
+      account.value = ''
+      email.value = ''
+      password.value = ''
+      confirmPassword.value = ''
+      router.push('/login') // 新增這行，導向登入頁
+    } else {
+      throw new Error(data?.message || '註冊失敗')
+    }
+  } catch (err) {
+    console.error('註冊失敗：', err?.response?.status, err?.response?.data || err)
+    alert(`註冊失敗：${err?.response?.data?.message || err.message || '發生不明錯誤'}`)
+  } finally {
+    loading.value = false
+  }
 }
-const baseUrl = import.meta.env.BASE_URL; 
 </script>
 
 <template>
-      <div class="absolute inset-0 -z-10">
+                  <div class="absolute inset-0 -z-10">
       <vue-particles
       id="tsparticles"
       @particles-loaded="particlesLoaded"
@@ -566,84 +600,70 @@ const baseUrl = import.meta.env.BASE_URL;
       }"
     />
     </div>
-
-  <!-- 主容器：背景色維持白色 -->
-  <div class="flex flex-col min-h-screen ">
+  <div class="flex flex-col min-h-screen">
     <Theheader />
 
-    <!-- 內容區塊 flex-1，讓內容自動填滿剩餘空間 -->
     <div class="flex-1 flex items-center justify-center">
-      <!-- 
-        表單容器：
-        手機 (預設): 寬度 11/12, 最大寬度 xs, 內距 p-4, 文字置中
-        電腦 (lg): 最大寬度 sm, 內距 p-8
-      -->
       <div class="w-11/12 max-w-xs p-4 text-center lg:max-w-sm lg:p-8">
-        
-        <!-- Logo 和標題 -->
         <div class="mx-auto mb-6">
-          <!--
-            Logo 圖片：
-            手機 (預設): 寬高設為 200px
-            電腦 (lg): 寬高恢復到 250px
-          -->
-          <img src="/src/assets/icon/LOGO.png" alt="ChopHub Logo" class="w-[200px] h-[200px] mx-auto
-                                                                      lg:w-[250px] lg:h-[250px]">
+          <img
+            src="/src/assets/icon/LOGO.png"
+            alt="ChopHub Logo"
+            class="w-[200px] h-[200px] mx-auto lg:w-[250px] lg:h-[250px]"
+          />
         </div>
-        
-        <!-- 「已有帳號」連結：在手機和電腦上都保持置中 -->
+
         <div class="text-left mb-6">
           <span class="text-sm text-white">已經有帳號嗎？</span>
-          <a :href="`${baseUrl}login`" class="text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors">立即登入</a>
+          <a :href="`${baseUrl}login`" class="text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors">
+            立即登入
+          </a>
         </div>
 
         <form @submit.prevent="handleSubmit" class="space-y-4">
-          <!-- 帳號輸入欄：通用樣式，不需修改 -->
           <div>
-            <input 
-              v-model="account" 
-              type="text" 
-              placeholder="帳號" 
+            <input
+              v-model="account"
+              type="text"
+              placeholder="帳號"
               class="w-full px-4 py-3 bg-[#F8F9FA] border-2 border-[#F2994A] rounded-md transition-colors
                      focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"
-            >
-          </div>
-          
-          <!-- Email 輸入欄：通用樣式，不需修改 -->
-          <div>
-            <input 
-              v-model="email" 
-              type="email" 
-              placeholder="信箱" 
-              class="w-full px-4 py-3 bg-[#F8F9FA] border-2 border-[#F2994A] rounded-md transition-colors
-                     focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"
-            >
+            />
           </div>
 
-          <!-- 密碼輸入欄：通用樣式，不需修改 -->
-          <div class="relative">
-            <input 
-              v-model="password" 
-              type="password"  
-              placeholder="密碼" 
+          <div>
+            <input
+              v-model="email"
+              type="email"
+              placeholder="信箱"
               class="w-full px-4 py-3 bg-[#F8F9FA] border-2 border-[#F2994A] rounded-md transition-colors
                      focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"
-            >
+            />
           </div>
-          
-          <!-- 確認密碼輸入欄：通用樣式，不需修改 -->
+
           <div class="relative">
-            <input 
-              v-model="confirmPassword" 
-              type="password" 
-              placeholder="確認密碼" 
+            <input
+              v-model="password"
+              type="password"
+              placeholder="密碼"
               class="w-full px-4 py-3 bg-[#F8F9FA] border-2 border-[#F2994A] rounded-md transition-colors
                      focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"
-            >
+            />
           </div>
-          
-          <!-- 註冊按鈕：通用樣式，不需修改 -->
-          <Basebutton type="submit" variant="primary" class="w-full h-12">立即註冊</Basebutton>
+
+          <div class="relative">
+            <input
+              v-model="confirmPassword"
+              type="password"
+              placeholder="確認密碼"
+              class="w-full px-4 py-3 bg-[#F8F9FA] border-2 border-[#F2994A] rounded-md transition-colors
+                     focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"
+            />
+          </div>
+
+          <Basebutton type="submit" variant="primary" class="w-full h-12">
+            {{ loading ? '送出中…' : '立即註冊' }}
+          </Basebutton>
         </form>
       </div>
     </div>

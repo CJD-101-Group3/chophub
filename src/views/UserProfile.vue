@@ -657,6 +657,7 @@ const goToApplicationGuide = () => {
               :src="memberInfo.avatarUrl" 
               alt="Avatar" 
               class="w-40 h-40 rounded-full object-cover mb-3"
+              @error="event.target.src = '/src/assets/users/userp.png'"
             />
             <h2 class="text-xl font-bold text-gray-800">{{ memberInfo.name }}</h2>
           </div>
@@ -705,6 +706,7 @@ const goToApplicationGuide = () => {
               :src="memberInfo.avatarUrl" 
               alt="User Avatar" 
               class="w-64 h-64 lg:w-80 lg:h-80 object-cover rounded-full border-4 border-white"
+              @error="event.target.src = '/src/assets/users/userp.png'"
             >
           </div>
 

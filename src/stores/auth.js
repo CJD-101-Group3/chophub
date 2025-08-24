@@ -1,30 +1,37 @@
 // src/stores/auth.js
-import { defineStore } from 'pinia';
-import { login, signup, getMe } from '@/api/auth.js';
+import { defineStore } from 'pinia'
+import { login, signup, getMe } from '@/api/auth.js'
 
-const USER_KEY = 'user';
+const USER_KEY = 'user'
+
+// 讓使用者物件穩定：補上缺少的欄位（特別是 role）
+function normalizeUser(u) {
+  if (!u) return null
+  // 後端有時用 role、有時用 badge；都沒有就給預設「一般會員」
+  const role = u.role || u.badge || '一般會員'
+  return { ...u, role }
+}
 
 function safeReadUser() {
-  // 某些情況下會被寫入字串 "undefined"/"null" 或壞 JSON
-  if (typeof window === 'undefined') return null;
-  const raw = localStorage.getItem(USER_KEY);
-  if (!raw || raw === 'undefined' || raw === 'null') return null;
+  if (typeof window === 'undefined') return null
+  const raw = localStorage.getItem(USER_KEY)
+  if (!raw || raw === 'undefined' || raw === 'null') return null
   try {
-    return JSON.parse(raw);
+    const u = JSON.parse(raw)
+    return normalizeUser(u)
   } catch {
-    // 內容壞掉就清掉，避免下一次再炸
-    localStorage.removeItem(USER_KEY);
-    return null;
+    localStorage.removeItem(USER_KEY)
+    return null
   }
 }
 
 function safeWriteUser(val) {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') return
   if (!val) {
-    localStorage.removeItem(USER_KEY);
-    return;
-    }
-  localStorage.setItem(USER_KEY, JSON.stringify(val));
+    localStorage.removeItem(USER_KEY)
+    return
+  }
+  localStorage.setItem(USER_KEY, JSON.stringify(val))
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -43,43 +50,44 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async loginAction(credentials) {
       try {
-        const responseData = await login(credentials);
-        // 防呆：確保後端真的帶回 user
-        const nextUser = responseData?.user ?? null;
-        this.user = nextUser;
-        safeWriteUser(nextUser);
-        return responseData;
+        const res = await login(credentials)   // 期望回傳 { user: {...} }
+        const nextUser = normalizeUser(res?.user ?? null)
+        this.user = nextUser
+        safeWriteUser(nextUser)
+        return res
       } catch (error) {
-        this.user = null;
-        safeWriteUser(null);
-        throw error;
+        this.user = null
+        safeWriteUser(null)
+        throw error
       }
     },
 
-    async signupAction(credentials) {
-      const response = await signup(credentials);
-      return response.message;
+    async signupAction(payload) {
+      const res = await signup(payload)        // 期望回傳 { message: '...' }
+      return res?.message ?? 'OK'
     },
 
     logoutAction() {
-      this.user = null;
-      safeWriteUser(null);
-      window.location.href = '/login';
+      this.user = null
+      safeWriteUser(null)
+      // 與路由的 path 大小寫一致：/Login
+      const base = import.meta.env.BASE_URL || '/'
+      window.location.href = `${base}Login`
     },
 
-    // 在 App 啟動時呼叫一次
+    // App 啟動時可呼叫，用於恢復登入狀態（若你用 Cookie / Session）
     async fetchUser() {
       try {
-        const userData = await getMe(); // 可能丟錯（例如 Cookie 過期）
-        this.user = userData ?? null;
-        safeWriteUser(this.user);
-      } catch (error) {
-        console.log('恢復登入狀態失敗:', error.message);
-        this.user = null;
-        safeWriteUser(null);
+        const me = await getMe()               // 期望回傳使用者物件；未登入應丟錯/回 null
+        const normalized = normalizeUser(me ?? null)
+        this.user = normalized
+        safeWriteUser(normalized)
+      } catch {
+        this.user = null
+        safeWriteUser(null)
       } finally {
-        this.isAuthReady = true;
+        this.isAuthReady = true
       }
     },
   },
-});
+})

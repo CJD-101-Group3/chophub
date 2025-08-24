@@ -737,23 +737,23 @@ const toggleEquip = (badgeId) => {
                     <img :src="badge.imageUrl" :alt="badge.name" class="w-full h-full object-contain">
                   </div>
                   <span class="font-semibold text-gray-800">{{ badge.name }}</span>
-                  <button
+                  <!-- <button
                     @click="toggleEquip(badge.id)"
                     class="w-32 text-white font-bold py-2 px-4 rounded-[8px] transition-colors duration-200"
                     :class="badge.isEquipped ? 'bg-[#D15B5B] hover:bg-[#b94a4a]' : 'bg-gray-400 hover:bg-gray-500'"
                   >
                     {{ badge.isEquipped ? '配戴中' : '配戴' }}
-                  </button>
+                  </button> -->
                 </div>
               </div>
               <!-- 儲存按鈕 -->
               <div class="mt-6 text-center">
-                <button
+                <!-- <button
                   class="w-full lg:w-auto bg-[#F2994A] text-white font-bold py-3 px-16 rounded-[8px] transition-colors duration-300 border-2 border-transparent
                          hover:bg-white hover:text-black hover:border-[#F2994A]"
                 >
                   儲存
-                </button>
+                </button> -->
               </div>
             </div>
 
