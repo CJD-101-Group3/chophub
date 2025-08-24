@@ -1,7 +1,7 @@
 <script setup>
 import Theheader from '@/components/Theheader.vue';
 import Thefooter from '@/components/Thefooter.vue';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import EventInfoCard from '@/components/EventInfoCard.vue';
 import RegisterBanner from '@/components/RegisterBanner.vue';
 import GeneralButton from '../components/GeneralButton.vue';
@@ -9,75 +9,69 @@ import { getPublicImg } from '@/utils/getPublicImg'
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 
-// --- 主要活動詳情 State ---
-const eventDetails = ref(null); // 修改：初始值建議給 null 而非 []
+// --- State ---
+const eventDetails = ref(null);
 const loading = ref(true);
 const error = ref(null);
-
-// --- 【新增】推薦活動 State ---
-const suggestedEvents = ref([]); // 修改：初始化為空陣列
-const suggestedEventsLoading = ref(true); // 新增：推薦活動的讀取狀態
-const suggestedEventsError = ref(null);   // 新增：推薦活動的錯誤狀態
+const suggestedEvents = ref([]);
+const suggestedEventsLoading = ref(true);
+const suggestedEventsError = ref(null);
 
 const route = useRoute();
 const router = useRouter();
-const eventId = route.params.id;
 
-// --- 取得主要活動詳情的 API ---
-async function fetchEventDetails() {
+// --- API 函式 ---
+async function fetchEventDetails(id) {
    loading.value = true;
-   error.value = null; // 修正：應為 .value
+   error.value = null;
    try {
-      // 修正：使用樣板字串，變數要用 ${} 包起來
-      const apiUrl = `http://localhost:8888/ChopHub-API/api/getEventById.php?id=${eventId}`;
-      console.log("正在請求詳情API:", apiUrl);
-
+      const apiUrl = `http://localhost:8888/ChopHub-API/api/events/getEventById.php?id=${id}`;
       const response = await axios.get(apiUrl);
-      console.log("詳情API成功回應", response.data);
-
-      // 如果 API 回傳的資料在 data.data 中，確保正確存取
       eventDetails.value = response.data.data || response.data;
    } catch (err) {
-      console.error("詳情 API 請求失敗:", err);
       error.value = "無法載入活動詳情，請稍後再試。";
    } finally {
       loading.value = false;
    }
 }
 
-// --- 【新增】取得推薦活動的 API ---
-async function fetchSuggestedEvents() {
+// 【已修正】讓此函式接收一個要排除的 ID
+async function fetchSuggestedEvents(idToExclude) {
    suggestedEventsLoading.value = true;
    suggestedEventsError.value = null;
    try {
-      // 假設這是你的推薦活動 API
-      const apiUrl = `http://localhost:8888/ChopHub-API/api/getSuggestedEvents.php?limit=3&excludeId=${eventId}'`;
-      console.log("正在請求推薦活動 API:", apiUrl);
-
+      // 【已修正】使用傳入的 idToExclude 變數
+      const apiUrl = `http://localhost:8888/ChopHub-API/api/events/getSuggestedEvents.php?limit=3&excludeId=${idToExclude}`;
       const response = await axios.get(apiUrl);
-      console.log("推薦活動 API 成功回應:", response.data);
-
       suggestedEvents.value = response.data.data || response.data;
-
    } catch (err) {
-      console.error("推薦活動 API 請求失敗:", err);
       suggestedEventsError.value = "無法載入推薦活動，請稍後再試。";
    } finally {
       suggestedEventsLoading.value = false;
    }
 }
 
+// --- 路由監聽 ---
+watch(
+  () => route.params.id,
+  (newId, oldId) => {
+    if (newId && newId !== oldId) {
+      fetchEventDetails(newId);
+      // 【已修正】呼叫時傳入新的 ID
+      fetchSuggestedEvents(newId); 
+      window.scrollTo(0, 0);
+    }
+  }
+);
 
-// --- 修改 onMounted ---
+// --- 生命週期鉤子 ---
 onMounted(() => {
-   // 使用 Promise.all 可以讓兩個 API 請求並行發送，速度更快
-   Promise.all([
-      fetchEventDetails(),
-      fetchSuggestedEvents()
-   ]);
+   fetchEventDetails(route.params.id);
+   // 【已修正】呼叫時傳入當前的 ID
+   fetchSuggestedEvents(route.params.id);
 });
 
-// --- 以下是既有邏輯，無需變動 ---
+// --- 頁面邏輯 ---
 const quantity = ref(1);
 
 const increaseQuantity = () => {
@@ -91,31 +85,29 @@ const decreaseQuantity = () => {
 };
 
 const totalPrice = computed(() => {
-   // 加上可選串聯 (?.) 避免 eventDetails 為 null 時報錯
    if (eventDetails.value?.price) {
       return eventDetails.value.price * quantity.value;
    }
    return 0;
 });
 
+// --- 導航函式 ---
 function handleViewDetails(eventId) {
-   console.log(`查看 ID 為 ${eventId} 的活動詳情。`);
    router.push({ name: 'event-detail', params: { id: eventId } });
-   // 強制重新載入頁面，因為 Vue Router 對於相同路由但不同參數的導航預設不會重新觸發 onMounted
-   window.location.reload();
 }
 
+// 【已修正】修正 eventId 變數來源
 function goToPayment() {
    router.push({
       path: '/EventPayment',
       query: {
-         eventId: eventId,
+         eventId: route.params.id, // 從 route.params 獲取當前頁面的 ID
          quantity: quantity.value
       }
    });
 }
-
 </script>
+
 <template>
    <div class=" bg-[#282828] text-gray-200 font-sans">
       <Theheader />

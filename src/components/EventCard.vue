@@ -1,6 +1,7 @@
 <script setup>
 import { defineProps, ref, computed } from 'vue';
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import axios from 'axios';
 
 import bigStarIcon from '@/assets/icon/bigstar.svg';
@@ -22,14 +23,11 @@ eventImage: { type: String, default: "" }
 
 
 // --- 收藏狀態 ---
-const isFavorited = ref(false);
+const isFavorited = ref(props.isFavorited);
 const isProcessingFavorite = ref(false);
 const favoriteStarSrc = computed(() => {
   return isFavorited.value ? bigStarActiveIcon : bigStarIcon;
 });
-function toggleFavorite() {
-  isFavorited.value = !isFavorited.value;
-}
 
 // --- 計算圖片來源 ---
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -48,6 +46,45 @@ const imageSource = computed(() => {
   return `${BASE_URL}/images/events/${firstImage}`;
 });
 
+
+const authStore = useAuthStore(); 
+
+async function toggleFavorite() {
+  // 1. 檢查是否登入
+  if (!authStore.isLoggedIn) {
+    alert('請先登入才能收藏活動！');
+    // 可選：跳轉到登入頁面
+    // router.push('/login'); 
+    return;
+  }
+
+  if (isProcessingFavorite.value) return; // 防止重複點擊
+  isProcessingFavorite.value = true;
+
+  try {
+    // 2. 呼叫後端 API
+    const apiUrl = 'http://localhost:8888/ChopHub-API/api/events/eventToggleFavorite.php';
+    await axios.post(apiUrl, {
+      activityId: props.id,
+      isFavorited: !isFavorited.value
+      }, {
+      withCredentials: true
+    });
+
+    isFavorited.value = !isFavorited.value;
+    
+    if (isFavorited.value) {
+      router.push({ path: '/my-events', query: { tab: 'favorites' } });
+    }
+
+  } catch (err) {
+    console.error('更新收藏狀態失敗:', err);
+    alert('操作失敗，請稍後再試。');
+  } finally {
+    isProcessingFavorite.value = false;
+  }
+}
+
 // --- 點擊跳轉詳情頁 ---
 const router = useRouter();
 function goToDetail() {
@@ -57,7 +94,7 @@ function goToDetail() {
 </script>
 
 <template>
-  <div class="flex flex-col w-full max-w-[350px] bg-[#FEFEFE] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2 shadow-[15px_15px_13px_rgba(255,255,255,0.5)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] md:transition-shadow">
+  <div class="flex flex-col w-full max-w-[350px] bg-[#FEFEFE] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2 shadow-[8px_8px_10px_rgba(255,255,255,0.5)] hover:shadow-[8px_8px_24px_rgba(255,255,255,0.4)] md:transition-shadow">
     
     <div class="relative">
       <img :src="imageSource" alt="Event Image" class="w-full h-[215px] object-cover" />

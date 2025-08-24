@@ -4,22 +4,32 @@ import Thefooter from '@/components/Thefooter.vue';
 import MyEventItem from '@/components/MyEventItem.vue';
 import { getPublicImg } from '@/utils/getPublicImg'
 import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import axios from 'axios';
+import { useAuthStore } from '@/stores/auth'
 
-// --- STATE MANAGEMENT ---
+
+const authStore = useAuthStore(); 
+
+async function toggleFavorite() {
+  if (!authStore.isLoggedIn) {
+    alert('請先登入才能收藏活動！');
+    // 可選：跳轉到登入頁面
+    // router.push('/login'); 
+    return;
+  }};
 
 axios.defaults.withCredentials = true;
 
-// 1. 優化 Tabs 的定義，使其更具擴展性
 const tabs = ref([
   { key: 'upcoming', name: '即將到來' },
   { key: 'history', name: '歷史活動' },
   { key: 'cancelled', name: '已取消' },
   { key: 'favorites', name: '我的收藏' }
 ]);
+const route = useRoute();
 
-const activeTab = ref('upcoming');
-
+const activeTab = ref(route.query.tab || 'upcoming');
 
 const allActivities = ref([]);
 const isLoading = ref(true);
@@ -30,10 +40,8 @@ async function fetchActivities() {
   isLoading.value = true;
   error.value = null;
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/myEvents.php');
-    
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/events/myEvents.php');
     allActivities.value = response.data.data || [];
-
   } catch (err) {
     console.error('Failed to fetch activities:', err);
     error.value = '無法載入活動資料，請稍後再試。';
@@ -46,15 +54,13 @@ onMounted(() => {
   fetchActivities();
 });
 
-// --- COMPUTED PROPERTIES ---
-
-// 根據 activeTab 動態過濾活動列表
 const filteredActivities = computed(() => {
+  // 'upcoming', 'past', 'cancelled'
   switch (activeTab.value) {
     case 'upcoming':
       return allActivities.value.filter(act => act.status === 'upcoming');
     case 'history':
-      return allActivities.value.filter(act => act.status === 'past' || act.status === 'reviewed');
+      return allActivities.value.filter(act => act.status === 'past');
     case 'cancelled':
       return allActivities.value.filter(act => act.status === 'cancelled');
     case 'favorites':
@@ -64,55 +70,48 @@ const filteredActivities = computed(() => {
   }
 });
 
-// 6. 修改 handleCancelActivity，使其呼叫 API
+// --- 事件處理函式 ---
 async function handleCancelActivity(activityId) {
   try {
-    await axios.post(`http://localhost:8888/ChopHub-API/api/cancel-activity.php`, 
-    { activityId: activityId }
-  );
-
-    // API 成功後，更新前端的狀態以立即反映變化
-    const activityToCancel = allActivities.value.find(act => act.id === activityId);
-    if (activityToCancel) {
-      activityToCancel.status = 'cancelled';
+     const response = await axios.post(`http://localhost:8888/ChopHub-API/api/events/cancelEvent.php`, { id: activityId });
+    if (response.data && response.data.success) { 
+        const activityToCancel = allActivities.value.find(act => act.id === activityId);
+        if (activityToCancel) {
+          activityToCancel.status = 'cancelled';
+        }
+    } else {
+        alert('取消失敗：' + (response.data.message || '未知錯誤'));
     }
-    
-
   } catch (err) {
     console.error('Failed to cancel activity:', err);
     alert('取消活動失敗，請稍後再試。');
   }
 }
 
-//收藏功能也需要呼叫 API
 async function handleToggleFavorite(activityId) {
   const activity = allActivities.value.find(act => act.id === activityId);
   if (!activity) return;
 
   const newFavoriteState = !activity.isFavorited;
 
-function handleWriteReview(activityId) {
-  console.log(`準備為活動 ID: ${activityId} 撰寫評論`);
-
-  // 1. 跳轉到一個新的評論頁面
-  //    router.push(`/activity/${activityId}/review`);
-}
-
   try {
-    const apiUrl = 'http://localhost:8888/ChopHub-API/api/eventToggleFavorite.php';
-
+    const apiUrl = 'http://localhost:8888/ChopHub-API/api/events/eventToggleFavorite.php';
     await axios.post(apiUrl, {
       activityId: activityId,
       isFavorited: newFavoriteState
-    }
-  );
-
+    });
     activity.isFavorited = newFavoriteState;
-    
   } catch (err) {
     console.error('Failed to toggle favorite:', err);
     alert('更新收藏狀態失敗！');
   }
+}
+
+// 修正：將 handleWriteReview 移到這裡，成為一個獨立的函式
+function handleWriteReview(activityId) {
+  console.log(`準備為活動 ID: ${activityId} 撰寫評論`);
+  // 在這裡加入跳轉到評論頁面的邏輯，例如使用 Vue Router
+  // router.push(`/activity/${activityId}/review`);
 }
 </script>
 
@@ -138,7 +137,6 @@ function handleWriteReview(activityId) {
         <!-- 載入中提示 -->
         <div v-if="isLoading" class="text-center text-gray-400 py-12">
           <p class="text-xl">活動載入中...</p>
-          <!-- 你可以在這裡放一個 loading spinner 動畫 -->
         </div>
 
         <!-- 錯誤訊息提示 -->

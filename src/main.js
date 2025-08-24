@@ -5,8 +5,8 @@ import { createPinia } from 'pinia' // 1. 引入 createPinia
 import './assets/tailwind.css';
 import router from './router'
 import Particles from "@tsparticles/vue3";
-import { loadSlim } from "@tsparticles/slim"; // if you are going to use `loadSlim`, install the "@tsparticles/slim" package too.
-
+import { loadSlim } from "@tsparticles/slim"; // if you are going to use `loadSlim`, install the "@tsparticles/
+// slim" package too.
 
 const app = createApp(App)
 const pinia = createPinia() // 2. 建立 Pinia 实例

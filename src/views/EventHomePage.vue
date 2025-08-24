@@ -19,8 +19,7 @@ async function fetchAllEvents() {
    loading.value = true;
    error.value = null; 
    try {
-      const apiUrl = import.meta.env.VITE_API_BASE + '/api/getAllEvents.php';
-      // const apiUrl = import.meta.env.VITE_API_BASE + '/api/getAllEvents.php';
+      const apiUrl = import.meta.env.VITE_API_BASE + '/api/events/getAllEvents.php';
       // console.log("正在請求 API:", apiUrl);
 
       const response = await axios.get(apiUrl);

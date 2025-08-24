@@ -5,7 +5,7 @@ import { defineProps, defineEmits } from 'vue';
 import filledStarIcon from '@/assets/icon/starevaluate1.svg';
 import emptyStarIcon from '@/assets/icon/starevaluate2.svg';
 
-defineProps({
+const props = defineProps({
     event: {
         type: Object,
         required: true,
@@ -14,10 +14,11 @@ defineProps({
 
 const emit = defineEmits(['view-details']);
 
-// 建立一個函式，當按鈕被點擊時，它會發出事件並將 event 的 id 一併傳出去
-function handleDetailsClick() {
-    emit('view-details', event.id);
+function goToDetail() {
+    emit('view-details', props.event.id); 
 }
+
+
 </script>
 
 <template>
@@ -55,10 +56,9 @@ function handleDetailsClick() {
 
             <div class="flex-grow"></div>
 
-            <button @click="handleDetailsClick" class="mt-4 w-full bg-[#F2994A] text-white font-semibold rounded-lg text-lg h-14 flex items-center justify-center 
-            transition-colors duration-200 ease-in-out
-            hover:bg-orange-500 
-            focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-75">
+            <button @click="goToDetail" class="w-full bg-[#F2994A] text-white font-semibold rounded-lg text-lg h-[56px] flex items-center justify-center 
+        focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none 
+        hover:outline-none hover:ring-0 hover:border-transparent hover:shadow-none">
                 了解詳情
             </button>
         </div>

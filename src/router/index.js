@@ -43,7 +43,9 @@ const routes = [
     { path: '/post/:id', component: PostDetail },
     { path: '/weaponslist/weapondetail/:weapon_id', component:WeaponDetail},
     { path: '/ArtisanShowcase/:userId', name: 'ArtisanShowcase', component: ArtisanShowcase }, // 公開的刀匠展示頁
-    { path: '/event/:id', name: 'EventDetail', component: () => import('@/views/EventDetail.vue') },
+    { path: '/event/:id', name: 'EventDetail',
+      name: 'event-detail',
+      component: () => import('@/views/EventDetail.vue') },
     
     // --- 需要登入才能訪問的頁面 ---
     { path: '/EventPayment', component: EventPayment, meta: { requiresAuth: true } },
@@ -59,6 +61,7 @@ const routes = [
     { path: '/EventDetailRegistered', component: () => import('@/views/EventDetailRegistered.vue'), meta: { requiresAuth: true } },    
     { path: '/PostActivity', component: PostActivity, meta: { requiresAuth: true } },
     { path: '/TicketDetailPage/:id', name: 'TicketDetail', component: TicketDetailPage, meta: { requiresAuth: true } },
+    { path: '/my-events', name: 'My-Events', component: MyEvents, meta: { requiresAuth: true } },
 
     // --- 需要特定角色 (刀匠) 才能訪問的頁面 ---
     { 
