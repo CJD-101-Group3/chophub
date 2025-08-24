@@ -74,7 +74,7 @@ async function fetchPostStats() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_post_stats.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_user_post_stats.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -98,7 +98,7 @@ async function fetchMyPosts() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_posts.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_user_posts.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -121,7 +121,7 @@ async function fetchMyReplies() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_post_comments.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_user_post_comments.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -144,7 +144,7 @@ async function fetchMyCollectedPosts() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_favorites_posts.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_user_favorites_posts.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -167,7 +167,7 @@ async function fetchMyReports() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_user_reports.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_user_reports.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -190,7 +190,7 @@ async function fetchReportedRecords() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/get_reports_on_user.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/get_reports_on_user.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -219,7 +219,7 @@ onMounted(async () => {
   // 取得使用者頭像
   try {
     const userId = authStore.userId; // 改這裡
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/userProfile.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/userProfile.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -764,7 +764,7 @@ function formatDate(dateString) {
         },
       }"
     />
-    </div>
+    </div>  
   <div class="flex flex-col min-h-screen ">
     <Theheader />
 
@@ -854,7 +854,7 @@ function formatDate(dateString) {
                 <tbody>
                   <tr v-for="post in myPosts" :key="post.id" class="subtle-float-on-hover">
                     <td class="py-3 px-3 truncate">
-                      <a :href="post.link" class="text-gray-800 hover:text-gray-800">{{ post.title }}</a>
+                      <a :href="'/post/' + post.id" class="text-gray-800 hover:text-gray-800">{{ post.title }}</a>
                     </td>
                     <td class="px-3">{{ post.status }}</td>
                     <td class="px-3 text-right">{{ formatDate(post.date) }}</td>
@@ -894,14 +894,14 @@ function formatDate(dateString) {
                   <tr v-for="reply in myReplies" :key="reply.postId" class="subtle-float-on-hover">
                     <td class="py-3 px-3">{{ formatDate(reply.date) }}</td>
                     <td class="px-3 truncate">
-                       <a :href="'/posts/' + reply.postId" class="text-gray-800 hover:text-gray-800">{{ reply.postTitle }}</a>
+                       <a :href="'/post/' + reply.postId" class="text-gray-800 hover:text-gray-800">{{ reply.postTitle }}</a>
                     </td>
                     <td class="px-3 truncate">{{ reply.content }}</td>
                   </tr>
                 </tbody>
               </table>
               <div class="space-y-4 lg:hidden">
-                <a v-for="reply in myReplies" :key="reply.postId" :href="'/posts/' + reply.postId" class="block bg-white p-4 rounded-md subtle-float-on-hover">
+                <a v-for="reply in myReplies" :key="reply.postId" :href="'/post/' + reply.postId" class="block bg-white p-4 rounded-md subtle-float-on-hover">
                   <div class="flex justify-between items-center mb-2"><span class="font-semibold truncate">{{ reply.postTitle }}</span><span class="text-sm text-gray-500 flex-shrink-0 ml-2">{{ formatDate(reply.date) }}</span></div>
                   <p class="text-sm text-gray-700 truncate">{{ reply.content }}</p>
                 </a>
@@ -932,7 +932,7 @@ function formatDate(dateString) {
                 <tbody>
                   <tr v-for="post in myCollectedPosts" :key="post.postId" class="subtle-float-on-hover">
                     <td class="py-3 px-3 truncate">
-                      <a :href="'/posts/' + post.postId" class="text-gray-800 hover:text-gray-800">
+                      <a :href="'/post/' + post.postId" class="text-gray-800 hover:text-gray-800">
                         <span v-if="post.category" class="text-gray-500">{{ post.category }}</span> {{ post.title }}
                       </a>
                     </td>
@@ -941,7 +941,7 @@ function formatDate(dateString) {
                 </tbody>
               </table>
               <div class="space-y-4 lg:hidden">
-                <a v-for="post in myCollectedPosts" :key="post.postId" :href="'/posts/' + post.postId" class="block bg-white p-4 rounded-md subtle-float-on-hover">
+                <a v-for="post in myCollectedPosts" :key="post.postId" :href="'/post/' + post.postId" class="block bg-white p-4 rounded-md subtle-float-on-hover">
                   <p class="font-semibold truncate">
                     <span v-if="post.category" class="text-gray-500">{{ post.category }}</span> {{ post.title }}
                   </p>

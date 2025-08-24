@@ -6,11 +6,14 @@ import { getPublicImg } from '@/utils/getPublicImg';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 import SocialIcon from '../components/SocialIcon.vue'; 
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
+const route = useRoute();
 
 // --- API 相關狀態 ---
 const loading = ref(true);
 const error = ref(null);
-const route = useRoute();
 
 // --- 刀匠的所有展示資料都集中管理 ---
 const artisanProfile = ref({
@@ -37,7 +40,8 @@ const artisanProfile = ref({
   }
 });
 
-const userId = ref(route.params.userId || 1);
+// 這樣 userId 會優先用路由參數，沒有就用自己的 id
+const userId = ref(route.params.userId || authStore.userId);
 
 // --- GET 請求 ---
 onMounted(async () => {
@@ -52,11 +56,11 @@ onMounted(async () => {
       postsRes,
       weaponsRes
     ] = await Promise.all([
-      axios.get(`http://localhost:8888/ChopHub-API/api/userProfile.php?user_id=${userId.value}`),
-      axios.get(`http://localhost:8888/ChopHub-API/api/artisanProfile.php?user_id=${userId.value}`),
-      axios.get(`http://localhost:8888/ChopHub-API/api/get_user_achievements.php?user_id=${userId.value}`),
-      axios.get(`http://localhost:8888/ChopHub-API/api/get_user_posts.php?user_id=${userId.value}`),
-      axios.get(`http://localhost:8888/ChopHub-API/api/get_user_favorite_weapons.php?user_id=${userId.value}`)
+      axios.get(`http://localhost:8888/ChopHub-API/api/user/userProfile.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/user/artisanProfile.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/user/get_user_achievements.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/user/get_user_posts.php?user_id=${userId.value}`),
+      axios.get(`http://localhost:8888/ChopHub-API/api/user/get_user_favorite_weapons.php?user_id=${userId.value}`)
     ]);
 
     // 1. 處理一般使用者資料 (已修改)
@@ -65,6 +69,9 @@ onMounted(async () => {
       artisanProfile.value.name = userData.display_name;
       artisanProfile.value.joinDate = userData.created_at ? userData.created_at.split(' ')[0].replace(/-/g, '/') : '';
       artisanProfile.value.location = userData.location;
+      artisanProfile.value.avatarUrl = userData.avatar_url
+        ? `http://localhost:8888/ChopHub-API/${userData.avatar_url}`
+        : getPublicImg('users/userp.png');
       
       // ******** 將隱私設定存入 ref ********
       artisanProfile.value.privacySettings.is_collections_public = !!parseInt(userData.is_collections_public);
@@ -656,7 +663,12 @@ onMounted(async () => {
 
         <!-- 頂部個人資訊 -->
         <section class="text-center space-y-4 lg:flex lg:gap-8 lg:text-left lg:items-center">
-          <img :src="artisanProfile.avatarUrl" alt="Artisan Avatar" class="w-full max-w-sm mx-auto rounded-lg shadow-[0_0_30px_rgba(255,255,255,0.4)] lg:w-60 lg:h-60 lg:mx-0 lg:flex-shrink-0 object-cover">
+          <img 
+            :src="artisanProfile.avatarUrl" 
+            alt="Artisan Avatar" 
+            class="w-full max-w-sm mx-auto rounded-lg shadow-[0_0_30px_rgba(255,255,255,0.4)] lg:w-60 lg:h-60 lg:mx-0 lg:flex-shrink-0 object-cover"
+            @error="event.target.src = getPublicImg('users/userp.png')"
+          >
           <div class="space-y-3">
             <h1 class="text-4xl lg:text-5xl font-bold text-white">{{ artisanProfile.name }}</h1>
             <div v-if="artisanProfile.mainBadge.name && artisanProfile.privacySettings.is_achievements_public" class="flex items-center justify-center lg:justify-start gap-2 text-xl font-semibold text-white">
@@ -702,7 +714,7 @@ onMounted(async () => {
         <section v-if="artisanProfile.privacySettings.is_collections_public" class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選作品</h2>
           <div class="flex space-x-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-5 lg:gap-6 lg:space-x-0 lg:pb-0">
-            <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="'/weapon/' + work.id" class="flex-shrink-0 group w-56 lg:w-full">
+            <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="'/Weaponslist/weapondetail/' + work.id" class="flex-shrink-0 group w-56 lg:w-full">
               <div class="bg-black p-2 rounded-lg shadow-md overflow-hidden">
                 <img :src="work.imageUrl" :alt="'作品 ' + work.id" class="w-full h-48 lg:h-40 object-contain">
               </div>
@@ -718,7 +730,7 @@ onMounted(async () => {
             <thead><tr class="border-b-2"><th class="py-2 font-semibold">文章標題</th><th class="py-2 font-semibold text-right">發表日期</th></tr></thead>
             <tbody>
               <tr v-for="post in artisanProfile.featuredPosts" :key="post.id" class="border-b last:border-b-0">
-                <td class="py-4"><a :href="post.link" class="text-gray-800 hover:text-[#F2994A] transition-colors"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</a></td>
+                <td class="py-4"><a :href="`/post/${post.id}`" class="text-gray-800 hover:text-[#F2994A] transition-colors"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</a></td>
                 <td class="py-4 text-right text-gray-500">{{ post.date }}</td>
               </tr>
             </tbody>

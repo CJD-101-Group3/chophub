@@ -1,6 +1,9 @@
 <template>
     <div
-        class="hidden md:block absolute w-[20vw] bottom-0 left-1/2 translate-x-[-90%] z-30 group cursor-pointer"
+        class="absolute 
+        w-[60vw] bottom-[-2%] translate-x-[-17%]
+        md:w-[20vw] md:bottom-0 md:left-1/2 md:translate-x-[-90%]
+        z-30 group cursor-pointer"
         :class="jumped"
         @click="toggleJump">
         <img

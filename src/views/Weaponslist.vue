@@ -599,7 +599,7 @@
   
 
       <div class="ml-auto   lg:mr-[120px]  xl:mr-[200px] hidden md:block">
-       <DropDownFilter title="排序類型" :items="typeItems" v-model="selectedType" />
+       <!-- <DropDownFilter title="排序類型" :items="typeItems" v-model="selectedType" /> -->
 
        </div>
 
@@ -641,6 +641,7 @@
             
             <li class="border-b border-black/20 last:border-b-0">
               <button
+              @click="selectCategory('')"
                 class="text-black w-full text-left px-4 py-3 rounded-md hover:bg-[#F2994A] hover:text-[#1a1f23] transition duration-300 font-medium"
               >
                 全部
@@ -648,6 +649,7 @@
             </li>
             <li class="border-b border-black/20 last:border-b-0">
               <button
+              @click="selectCategory('劍')"
                 class="text-black w-full text-left px-4 py-3 rounded-md hover:bg-[#F2994A] hover:text-[#1a1f23] transition duration-300 font-medium"
               >
                 劍類
@@ -655,6 +657,7 @@
             </li>
             <li class="border-b border-black/20 last:border-b-0">
               <button
+              @click="selectCategory('斧')"
                 class="text-black w-full text-left px-4 py-3 rounded-md hover:bg-[#F2994A] hover:text-[#1a1f23] transition duration-300 font-medium"
               >
                 斧頭類
@@ -662,25 +665,14 @@
             </li>
             <li class="border-b border-black/20 last:border-b-0">
               <button
+              @click="selectCategory('匕首')"
                 class="text-black w-full text-left px-4 py-3 rounded-md hover:bg-[#F2994A] hover:text-[#1a1f23] transition duration-300 font-medium"
               >
-                長柄武器
+                匕首
               </button>
             </li>
-            <li class="border-b border-black/20 last:border-b-0">
-              <button
-                class="text-black w-full text-left px-4 py-3 rounded-md hover:bg-[#F2994A] hover:text-[#1a1f23] transition duration-300 font-medium"
-              >
-                弓箭類
-              </button>
-            </li>
-            <li>
-              <button
-                class="text-black w-full text-left px-4 py-3 rounded-md hover:bg-[#F2994A] hover:text-[#1a1f23] transition duration-300 font-medium"
-              >
-                盾牌
-              </button>
-            </li>
+            
+            
           </ul>
         </aside>
 
@@ -692,13 +684,13 @@
 <div v-else>
   <div v-if="weapon.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
    <WeaponCard
-            v-for="w in filteredWeapons"
-            :key="w.weapon_id"
-            :weapon_id="w.weapon_id"
-            :postImages="w.weapon_url"
-            :userName="w.user_id"
-            :postTitle="w.title"
-            :description="w.description"
+             v-for="w in filteredWeapons"
+                :key="w.weapon_id"
+                :weapon_id="w.weapon_id"
+                :postImages="w.weapon_url"
+                :userName="w.user_id"
+                :postTitle="w.title"
+                :description="w.description"
           />
   </div>
   <div v-else>找不到符合篩選條件的活動。</div>
@@ -740,10 +732,12 @@ import axios from 'axios';
 const loading = ref(false)
 const weapon = ref([])
 const error = ref(null)
+const catrgoryKeyword = ref('') // 劍, 斧, 匕首
+const selectCategory = (cat) => {
+  catrgoryKeyword.value = cat
+}
 
 const searchQuery = ref(""); // 搜尋字
-
-
 
 async function fetchAllWeapon() {
   loading.value = true
@@ -772,19 +766,33 @@ onMounted(() => {
 });
 //API串接
 
+const filterCategory = computed(() => {
+  let result = [...weapon.value];
+
+  // 搜尋篩選
+  if (catrgoryKeyword.value) {
+    result = result.filter(w =>
+      w.title.toLowerCase().includes(catrgoryKeyword.value.toLowerCase())
+    );
+  }
+
+  return result;
+
+})
+
 // 計算屬性：依 title 過濾
 const filteredWeapons = computed(() => {
-  if (!searchQuery.value) return weapon.value;
-  return weapon.value.filter(w =>
-    w.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+  let result = [...filterCategory.value];
+
+  // 搜尋篩選
+  if (searchQuery.value) {
+    result = result.filter(w =>
+      w.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+  }
+
+  return result;
 });
-
-const doSearch = () => {
-  // 不用再呼叫 API，只是做個 log 或觸發 UI
-  console.log("搜尋字：", searchQuery.value);
-};
-
 
 
 const particlesLoaded = async (container) => {
@@ -815,9 +823,6 @@ const imgs = [
 
   // 可依需求多加
 ];
-
-
-const filteredWeapon = ref([])
 
 // ✅ 正確的 posts 陣列合併方式
 const posts = ref(

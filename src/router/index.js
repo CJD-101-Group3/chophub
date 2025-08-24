@@ -1,7 +1,9 @@
+// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '../stores/auth' // 1. 引入 Pinia Auth Store
+import axios from 'axios' // ⬅️ 新增
+import { useAuthStore } from '@/stores/auth'
 
-// --- 引入您的所有頁面元件 ---
+// --- 頁面元件 ---
 import Home from '@/views/Home.vue'
 import About from '@/views/AboutUs.vue'
 import Post from '@/views/Post.vue'
@@ -29,6 +31,7 @@ import PageNotFound from '@/views/PageNotFound.vue'
 import WeaponDetail from '@/views/WeaponDetail.vue'
 import TicketDetailPage from '@/views/TicketDetailPage.vue'
 
+<<<<<<< HEAD
 const routes = [
     // --- 公開頁面 (不需要登入) ---
     { path: '/', name: 'Home', component: Home },
@@ -62,51 +65,128 @@ const routes = [
     { path: '/PostActivity', component: PostActivity, meta: { requiresAuth: true } },
     { path: '/TicketDetailPage/:id', name: 'TicketDetail', component: TicketDetailPage, meta: { requiresAuth: true } },
     { path: '/my-events', name: 'My-Events', component: MyEvents, meta: { requiresAuth: true } },
+=======
+// ✅ 統一 API base（可用 .env 設定 VITE_API_BASE，否則用本機預設）
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8888/ChopHub-API'
+>>>>>>> c4eb42fb621e707e84d2dbf9769cab62130cbcc2
 
-    // --- 需要特定角色 (刀匠) 才能訪問的頁面 ---
-    { 
-      path: '/EditArtisanProfile', 
-      component: EditArtisanProfile,
-      meta: { requiresAuth: true, requiredRole: '刀匠' } // 假設登入後 role 欄位的值是 'artisan'
-    },
-    
-    // --- 404 頁面，必須放在最後 ---
-    { path: '/:pathMatch(.*)*', name: 'PageNotFound', component: PageNotFound },
+const routes = [
+  // --- 公開頁面 ---
+  { path: '/', name: 'Home', component: Home },
+  { path: '/About', component: About },
+  { path: '/post', component: Post },
+  { path: '/Weaponslist', component: Weaponslist },
+  { path: '/Login', name: 'Login', component: Login, meta: { guestOnly: true } },
+  { path: '/Register', name: 'Register', component: Register, meta: { guestOnly: true } },
+  { path: '/events', component: events },
+  { path: '/EventHomePage', component: EventHomePage },
+  { path: '/EventReviewsOverview', component: EventReviewsOverview },
+  { path: '/post/:id', component: PostDetail },
+  { path: '/weaponslist/weapondetail/:weapon_id', component: WeaponDetail },
+
+  // ⭐ 只允許「刀匠」ID 才能進入（人人都能看，但若手動輸入非刀匠 ID，就導回首頁）
+  {
+    path: '/ArtisanShowcase/:userId',
+    name: 'ArtisanShowcase',
+    component: ArtisanShowcase,
+    beforeEnter: async (to, from, next) => {
+      const { userId } = to.params
+      if (!userId || isNaN(Number(userId))) {
+        return next({ name: 'Home', replace: true })
+      }
+      try {
+        // 1) 優先打輕量檢查 API：/api/is_artisan.php?user_id=xxx
+        const res = await axios.get(`${API_BASE}/api/is_artisan.php`, { params: { user_id: userId } })
+        if (res?.data?.is_artisan) {
+          return next()
+        }
+        // 非刀匠
+        return next({ name: 'Home', replace: true })
+      } catch (err) {
+        const status = err?.response?.status
+        if (status === 404 || status === 403) {
+          // 明確不是刀匠 / 禁止
+          return next({ name: 'Home', replace: true })
+        }
+        // 2) 後備方案：若還沒有 is_artisan.php，就探一次 artisanProfile.php
+        try {
+          const r = await axios.get(`${API_BASE}/api/user/artisanProfile.php`, { params: { user_id: userId } })
+          const ok = r?.data?.status === 'success' && r?.data?.data
+          return ok ? next() : next({ name: 'Home', replace: true })
+        } catch {
+          return next({ name: 'Home', replace: true })
+        }
+      }
+    }
+  },
+
+  { path: '/event/:id', name: 'EventDetail', component: () => import('@/views/EventDetail.vue') },
+
+  // --- 需要登入 ---
+  { path: '/EventPayment', component: EventPayment, meta: { requiresAuth: true } },
+  { path: '/PaymentSuccess', component: PaymentSuccess, meta: { requiresAuth: true } },
+  { path: '/EventReview', component: EventReview, meta: { requiresAuth: true } },
+  { path: '/UserProfile', component: UserProfile, meta: { requiresAuth: true } },
+  { path: '/ApplicationGuide', component: ApplicationGuide, meta: { requiresAuth: true } },
+  { path: '/OtherSettings', component: OtherSettings, meta: { requiresAuth: true } },
+  { path: '/EditProfile', component: EditProfile, meta: { requiresAuth: true } },
+  { path: '/UserCollections', component: UserCollections, meta: { requiresAuth: true } },
+  { path: '/MyActivities', component: MyActivities, meta: { requiresAuth: true } },
+  { path: '/MyEvents', component: MyEvents, meta: { requiresAuth: true } },
+  { path: '/EventDetailRegistered', component: () => import('@/views/EventDetailRegistered.vue'), meta: { requiresAuth: true } },
+  { path: '/PostActivity', component: PostActivity, meta: { requiresAuth: true } },
+  { path: '/TicketDetailPage/:id', name: 'TicketDetail', component: TicketDetailPage, meta: { requiresAuth: true } },
+
+  // --- 需要特定角色 ---
+  {
+    path: '/EditArtisanProfile',
+    component: EditArtisanProfile,
+    meta: { requiresAuth: true, requiredRole: '刀匠' }
+  },
+
+  // --- 404 ---
+  { path: '/:pathMatch(.*)*', name: 'PageNotFound', component: PageNotFound }
 ]
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.VITE_BASE),
-    routes
+  history: createWebHistory(import.meta.env.VITE_BASE),
+  routes,
+  scrollBehavior() {
+    return { top: 0 }
+  }
 })
 
-// --- 3. 建立全域前置路由守衛 ---
+/**
+ * 全域前置守衛
+ * 1) 需要登入的頁面：未登入 => 轉到 Login，並帶 redirect 回跳
+ * 2) 已登入者不可再進入（Login / Register）
+ * 3) 需要特定角色：角色不符 => 轉 Home（或 403 頁）
+ */
 router.beforeEach((to, from, next) => {
-  // 在守衛函式內部，我們才能安全地實例化 Pinia store
-  const authStore = useAuthStore();
-  
-  const requiresAuth = to.meta.requiresAuth;
-  const requiredRole = to.meta.requiredRole;
+  const auth = useAuthStore()
 
-  // 檢查1: 目標頁面是否需要登入
-  if (requiresAuth && !authStore.isLoggedIn) {
-    // 如果需要登入，但 Pinia store 顯示使用者未登入
-    console.log('路由守衛：此頁面需要登入，但使用者未登入。重新導向至 /Login');
-    // 將使用者重新導向到登入頁面
-    next({ name: 'Login' });
-  }
-  // 檢查2: 目標頁面是否需要特定角色
-  else if (requiredRole && authStore.userRole !== requiredRole) {
-    // 如果需要特定角色，但 Pinia store 中使用者的角色不符
-    console.log(`路由守衛：此頁面需要 '${requiredRole}' 角色，但使用者角色是 '${authStore.userRole}'。重新導向至首頁`);
-    // 將使用者重新導向到首頁 (或是一個 403 Forbidden 錯誤頁面)
-    next({ name: 'Home' });
-  }
-  // 如果以上檢查都通過
-  else {
-    // 放行，讓使用者正常進入目標頁面
-    next();
-  }
-});
+  const isLoggedIn = !!auth.isLoggedIn
+  const userRole = auth.userRole || ''
 
+  // 1) 需要登入
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    return next({ name: 'Login', query: { redirect: to.fullPath } })
+  }
 
-export default router;
+  // 2) 已登入者不可進入（登入/註冊）
+  if (to.meta.guestOnly && isLoggedIn) {
+    return next({ name: 'Home' })
+  }
+
+  // 3) 需要特定角色
+  if (to.meta.requiredRole) {
+    const roles = Array.isArray(to.meta.requiredRole) ? to.meta.requiredRole : [to.meta.requiredRole]
+    if (!roles.includes(userRole)) {
+      return next({ name: 'Home' })
+    }
+  }
+
+  return next()
+})
+
+export default router

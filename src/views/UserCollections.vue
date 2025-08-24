@@ -49,7 +49,7 @@ async function fetchFavoriteWeapons() {
   const userId = authStore.userId;
 
   try {
-    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/get_user_favorite_weapons.php?user_id=${userId}`);
+    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/user/get_user_favorite_weapons.php?user_id=${userId}`);
     if (response.data.status === 'success') {
       collectedWeapons.value = response.data.data;
     } else {
@@ -70,7 +70,7 @@ async function fetchUserAchievements() {
   const userId = authStore.userId;
 
   try {
-    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/get_user_achievements.php?user_id=${userId}`);
+    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/user/get_user_achievements.php?user_id=${userId}`);
     if (response.data.status === 'success') {
       collectedBadges.value = response.data.data;
     } else {
@@ -92,7 +92,7 @@ onMounted(async () => {
   // 取得使用者頭像
   try {
     const userId = authStore.userId;
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/userProfile.php', {
+    const response = await axios.get('http://localhost:8888/ChopHub-API/api/user/userProfile.php', {
       params: { user_id: userId }
     });
     if (response.data.status === 'success') {
@@ -714,7 +714,7 @@ const toggleEquip = (badgeId) => {
             <div v-else-if="collectedWeapons.length === 0" class="text-center text-gray-500">尚未收藏任何武器。</div>
 
             <div v-else class="flex space-x-6 overflow-x-auto pb-4">
-              <a v-for="weapon in collectedWeapons" :key="weapon.id" :href="'/weapon/' + weapon.id" class="flex-shrink-0 group">
+              <a v-for="weapon in collectedWeapons" :key="weapon.id" :href="'/weaponslist/weapondetail/' + weapon.id" class="flex-shrink-0 group">
                 <div class="w-48 h-48 lg:w-56 lg:h-56 bg-white p-2 rounded-lg shadow-md overflow-hidden transform transition-transform duration-300 group-hover:scale-105">
                   <img :src="weapon.imageUrl" :alt="weapon.name" class="w-full h-full object-contain">
                 </div>
@@ -737,23 +737,23 @@ const toggleEquip = (badgeId) => {
                     <img :src="badge.imageUrl" :alt="badge.name" class="w-full h-full object-contain">
                   </div>
                   <span class="font-semibold text-gray-800">{{ badge.name }}</span>
-                  <button
+                  <!-- <button
                     @click="toggleEquip(badge.id)"
                     class="w-32 text-white font-bold py-2 px-4 rounded-[8px] transition-colors duration-200"
                     :class="badge.isEquipped ? 'bg-[#D15B5B] hover:bg-[#b94a4a]' : 'bg-gray-400 hover:bg-gray-500'"
                   >
                     {{ badge.isEquipped ? '配戴中' : '配戴' }}
-                  </button>
+                  </button> -->
                 </div>
               </div>
               <!-- 儲存按鈕 -->
               <div class="mt-6 text-center">
-                <button
+                <!-- <button
                   class="w-full lg:w-auto bg-[#F2994A] text-white font-bold py-3 px-16 rounded-[8px] transition-colors duration-300 border-2 border-transparent
                          hover:bg-white hover:text-black hover:border-[#F2994A]"
                 >
                   儲存
-                </button>
+                </button> -->
               </div>
             </div>
 

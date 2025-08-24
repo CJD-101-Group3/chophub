@@ -9,29 +9,41 @@ import smallStarIcon from '@/assets/icon/smallstar.svg';
 import smallStarActiveIcon from '@/assets/icon/smallstar_h.svg';
 
 const props = defineProps({
+  // 貼文自身的 ID
   id: { type: Number, required: true },
+  // 貼文圖片 URL
   postImage: { type: String, default: '' },
+  // 發文者的名稱 (用於顯示)
   userName: { type: String, default: '使用者名稱' },
+  // 貼文標題
   postTitle: { type: String, default: '手裡劍' },
+  // 是否為熱門貼文
   isHot: { type: Boolean, default: false },
+  // 貼文描述
   description: { type: String, default: '...' },
+  // 按讚數
   likes: { type: Number, default: 0 },
+  // 收藏數
   stars: { type: Number, default: 0 },
+  // 【最重要的 Prop】發文作者的 ID (用於建立連結)
+  authorId: { type: Number, required: true },
 });
 
 const isLiked = ref(false);
 const isStarred = ref(false);
 const localLikes = ref(props.likes);
 const localStars = ref(props.stars);
-const currentUserId = 1;
+const currentUserId = 1; // 假設這是當前登入者的 ID
 
 const smallLikeSrc = computed(() => isLiked.value ? smallLikeActiveIcon : smallLikeIcon);
 const smallStarSrc = computed(() => isStarred.value ? smallStarActiveIcon : smallStarIcon);
 
+// --- 以下的 methods 維持不變 ---
+
 const fetchLikeStatus = async () => {
   if (!currentUserId) return;
   try {
-    const apiUrl = `http://localhost:8888/ChopHub-API/api/getPostLikeStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
+    const apiUrl = `http://localhost:8888/ChopHub-API/api/posts/getPostLikeStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       isLiked.value = response.data.data.isLiked;
@@ -44,7 +56,7 @@ const fetchLikeStatus = async () => {
 async function toggleLike() {
   if (!currentUserId) return alert('請先登入！');
   try {
-    const apiUrl = 'http://localhost:8888/ChopHub-API/api/toggleLike.php';
+    const apiUrl = 'http://localhost:8888/ChopHub-API/api/posts/toggleLike.php';
     const response = await axios.post(apiUrl, {
       post_id: props.id,
       user_id: currentUserId,
@@ -66,12 +78,13 @@ async function toggleLike() {
 const fetchFavoriteStatus = async () => {
   if (!currentUserId) return;
   try {
-    const apiUrl = `http://localhost:8888/ChopHub-API/api/getPostFavoriteStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
+    const apiUrl = `http://localhost:8888/ChopHub-API/api/posts/getPostFavoriteStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       isStarred.value = response.data.data.isFavorited;
     }
-  } catch (error) {
+  } catch (error)
+ {
     console.error(`查詢貼文 ${props.id} 收藏狀態失敗:`, error);
   }
 };
@@ -79,7 +92,7 @@ const fetchFavoriteStatus = async () => {
 async function toggleStar() {
   if (!currentUserId) return alert('請先登入！');
   try {
-    const apiUrl = 'http://localhost:8888/ChopHub-API/api/toggleFavorite.php';
+    const apiUrl = 'http://localhost:8888/ChopHub-API/api/posts/toggleFavorite.php';
     const response = await axios.post(apiUrl, {
       post_id: props.id,
       user_id: currentUserId,
@@ -109,7 +122,6 @@ onMounted(() => {
     :to="`/post/${id}`"
     class="flex flex-col w-full bg-[#FEFEFE] rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2 h-full"
   >
-    <!-- 【關鍵修改】直接放置 img，並修改圓角 class -->
     <img v-if="postImage" :src="postImage" alt="Post Image" class="w-full h-48 object-cover rounded-t-2xl" />
     <div v-else class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400 rounded-t-2xl">
       暫無圖片
@@ -117,7 +129,12 @@ onMounted(() => {
 
     <div class="flex flex-col flex-grow p-5">
       <div class="flex items-center justify-between mb-4">
-        <router-link to="/ArtisanShowcase" class="flex items-center gap-x-2.5 group" @click.stop>
+        <!-- 【關鍵修改】router-link 的 :to 綁定使用了 authorId prop -->
+        <router-link 
+          :to="`/ArtisanShowcase/${authorId}`" 
+          class="flex items-center gap-x-2.5 group" 
+          @click.stop
+        >
           <img :src="smallUserIcon" alt="User" class="w-8 h-8 rounded-full" />
           <span class="text-[#F2994C] text-lg font-normal leading-tight tracking-wide group-hover:underline">{{ userName }}</span>
         </router-link>

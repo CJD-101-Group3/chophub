@@ -9,13 +9,12 @@ import Pagination from '@/components/Pagination.vue';
 import searchIcon from '@/assets/icon/search.svg';
 
 // --- 響應式狀態 ---
-const posts = ref([]); // API 回傳的貼文
-const isLoading = ref(true); // 增加一個載入狀態
+const posts = ref([]);
+const isLoading = ref(true);
 const isModalOpen = ref(false);
 const isDropdownOpen = ref(false);
-const searchTerm = ref(''); // 搜尋關鍵字
+const searchTerm = ref('');
 
-// 排序選項改為物件，方便將中文對應到 API 參數
 const selectedSort = ref({ text: '最新發布', value: 'latest' });
 const sortOptions = ref([
   { text: '最熱門', value: 'popular' },
@@ -24,7 +23,6 @@ const sortOptions = ref([
   { text: '最多留言', value: 'most_commented' }
 ]);
 
-// --- 分頁狀態 (暫時未使用，但保留) ---
 const currentPage = ref(1);
 const totalPages = ref(1);
 
@@ -32,17 +30,15 @@ const totalPages = ref(1);
 const fetchPosts = async () => {
   isLoading.value = true;
   try {
-    // 將搜尋和排序參數附加到 URL 上
     const params = new URLSearchParams({
       search: searchTerm.value,
       sort: selectedSort.value.value
     }).toString();
     
-    const apiUrl = `http://localhost:8888/ChopHub-API/api/getPosts.php?${params}`;
+    const apiUrl = `http://localhost:8888/ChopHub-API/api/posts/getPosts.php?${params}`;
     const response = await axios.get(apiUrl);
 
     if (response.data && response.data.status === 'success') {
-      // 資料映射邏輯
       posts.value = response.data.data.map(post => ({
         id: parseInt(post.post_id, 10),
         postImage: post.image_url,
@@ -52,6 +48,7 @@ const fetchPosts = async () => {
         likes: parseInt(post.likes_count, 10) || 0,
         stars: parseInt(post.favorites_count, 10) || 0,
         isHot: (parseInt(post.likes_count, 10) || 0) > 150,
+        authorId: parseInt(post.user_id, 10) 
       }));
     } else {
       console.error('API 回傳錯誤:', response.data.message);
@@ -76,13 +73,20 @@ function performSearch() {
   fetchPosts();
 }
 
+// 【新增】處理成功發文的函式
+function handlePostSuccess() {
+  isModalOpen.value = false; // 首先關閉彈窗
+  // 由於預設排序是 'latest'，重新獲取資料就會把最新的一筆放在最前面
+  fetchPosts(); 
+}
+
 // 使用 watch 來實現 "輸入時延遲搜尋"
 let debounceTimer;
 watch(searchTerm, () => {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
     fetchPosts();
-  }, 500); // 使用者停止輸入 500 毫秒後，自動觸發搜尋
+  }, 500);
 });
 
 // 元件掛載時，立即獲取一次資料
@@ -149,7 +153,11 @@ onMounted(() => {
 
     <TheFooter />
 
-    <!-- 彈窗組件 -->
-    <CreatePostModal v-if="isModalOpen" @close="isModalOpen = false" />
+    <!-- 【關鍵修改】彈窗組件監聽 post-success 事件 -->
+    <CreatePostModal 
+      v-if="isModalOpen" 
+      @close="isModalOpen = false" 
+      @post-success="handlePostSuccess" 
+    />
   </div>
 </template>

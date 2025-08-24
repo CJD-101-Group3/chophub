@@ -1,12 +1,19 @@
 <template>
     <div
-        class="hidden md:block absolute w-[20vw] bottom-[68%] left-[30%] z-30 cursor-pointer"
+        class="absolute 
+        w-[50vw] h-[35vh] left-[-10%] bottom-[65%] 
+        md:w-[20vw] md:bottom-[65%] md:left-[28%] 
+        z-30 cursor-pointer"
         :class="{ 'animate-sway-once': isShaking }"
         @click="handleClick">
         <!-- 夜間光暈 -->
         <div
             v-if="!isDay"
-            class="absolute top-full left-1/2 translate-x-[-50%] w-[40vw] h-[8vw] bg-yellow-200/20 rounded-full blur-2xl z-[-1] pointer-events-none"></div>
+             class="absolute left-1/2 -translate-x-1/2 -bottom-[1.2vw]
+                  w-[40vw] h-[8vw] md:w-[20vw] md:h-[4vw]
+                  rounded-full pointer-events-none z-0
+                  opacity-50 blur-lg
+                  bg-[radial-gradient(ellipse_at_center,rgba(255,255,150,0.22)_0%,rgba(255,255,150,0.1)_45%,transparent_75%)]"></div>
 
         <!-- 吊燈 -->
         <img
