@@ -12,6 +12,7 @@ import Taru from '@/components/Home/Taru.vue'
 import BG_img from '../components/Home/BG_img.vue'
 import Anvil from '../components/Home/Anvil.vue'
 import { ref } from 'vue'
+import Thefooter from '../components/Thefooter.vue'
 
 const isDay = ref(true)
 
@@ -21,9 +22,9 @@ const toggleWindow = () => {
 </script>
 
 <template>
-    <Theheader />
+    <Theheader/>
     <div class="w-full bg-black flex justify-center">
-        <div class="relative w-full max-w-[1920px] md:aspect-[16/7]">
+        <div class="relative w-full max-w-[1920px] min-h-screen ">
             <!-- 背景圖 -->
             <BG_img/>
 
@@ -49,4 +50,5 @@ const toggleWindow = () => {
             <Lamp :isDay="isDay" @toggle="toggleWindow" />
         </div>
     </div>
+    <Thefooter/>
 </template>
