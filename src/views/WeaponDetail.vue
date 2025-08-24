@@ -228,14 +228,14 @@ onBeforeUnmount(() => {
         <div class="flex flex-shrink-0">
           <button 
             @click="activeTab = 'posts'"
-            class="flex-1 py-3 px-4 text-base font-bold transition-colors duration-300"
+            class="flex-1 py-3 px-4 text-base font-bold transition-colors duration-300 rounded-none rounded-tl-lg rounded-tr-lg"
             :class="activeTab === 'posts' ? 'bg-[#282828] text-white' : 'bg-[#1a1a1a] text-gray-400'">
             貼文內容
           </button>
           <button 
             @click="activeTab = 'features'"
-            class="flex-1 py-3 px-4 text-base font-bold transition-colors duration-300"
-            :class="activeTab === 'features' ? 'bg-[#F2994A] text-white' : 'bg-[#1a1a1a] text-white'">
+            class="flex-1 py-3 px-4 text-base font-bold transition-colors duration-300 rounded-none rounded-tl-lg rounded-tr-lg"
+            :class="activeTab === 'features' ? 'bg-black text-white' : 'bg-[#1a1a1a] text-white'">
             特點介紹
           </button>
         </div>
@@ -243,10 +243,10 @@ onBeforeUnmount(() => {
         <!-- 面板內容 (所有內容都放在這個滾動容器中) -->
         <div class="flex-1 overflow-y-auto">
           <!-- 特點介紹 -->
-          <div v-if="activeTab === 'features'" class="p-6 bg-[#F2994A]">
+          <div v-if="activeTab === 'features'" class="p-6 bg-black">
             <div class="flex flex-col gap-6">
-              <div v-for="n in 3" :key="n" class="flex items-start gap-4">
-                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white text-[#F2994A] text-xl font-bold flex items-center justify-center">{{ n }}</div>
+              <div v-for="n in 3" :key="n" class="flex items-start gap-4 ">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white text-black text-xl font-bold flex items-center justify-center">{{ n }}</div>
                 <div class="flex-grow bg-white rounded-xl p-5 text-gray-800 text-sm leading-relaxed">
                   這是第 {{ n }} 點特色介紹。蝴蝶刀的刀刃採用虛構材質「黑曜鋼」打造，經過高溫鍛造與精密拋光，呈現出深邃黑亮的金屬質感。
                 </div>
@@ -263,14 +263,14 @@ onBeforeUnmount(() => {
             </div>
 
             <div class="bg-white rounded-xl p-6 mb-8" v-if="weaponDetail">
-  <div class="flex justify-between items-center mb-4">
-    <h3 class="text-3xl font-bold text-[#F2994A]">{{ weaponDetail.title }}</h3>
-    <span class="text-3xl text-yellow-400">⭐</span>
-  </div>
-  <div class="space-y-4 text-gray-800 leading-relaxed">
-    <p>{{ weaponDetail.description }}</p>
-  </div>
-</div>
+                    <div class="flex justify-between items-center mb-4">
+                      <h3 class="text-3xl font-bold text-[#F2994A]">{{ weaponDetail.title }}</h3>
+                      <span class="text-3xl text-yellow-400"></span>
+                    </div>
+                    <div class="space-y-4 text-gray-800 leading-relaxed">
+                      <p>{{ weaponDetail.description }}</p>
+                    </div>
+            </div>
 
             <!-- 留言區 -->
 <div class="flex flex-col gap-4">
