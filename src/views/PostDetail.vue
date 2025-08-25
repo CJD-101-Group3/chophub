@@ -47,8 +47,13 @@ const API_BASE = import.meta.env.VITE_API_BASE.replace(/\/$/, ''); // 【優化�
 
 const fetchCurrentUser = async () => {
   try {
+<<<<<<< HEAD
     // 【修正】使用修正後的 API URL 組合方式
     const apiUrl = `${API_BASE}/posts/getPostUser.php?user_id=${currentUserId}`;
+=======
+    // --- 【重要修改點】 ---
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/getPostUser.php?user_id=${currentUserId}`;
+>>>>>>> 0e929268190f25bae68b0263d55e08ccfd3bf2a7
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       currentUser.value = response.data.data;
@@ -69,7 +74,12 @@ const fetchPostDetail = async () => {
   isLoading.value = true;
   error.value = null;
   try {
+<<<<<<< HEAD
     const apiUrl = `${API_BASE}/posts/getPostDetail.php?post_id=${postId}&user_id=${currentUserId}`;
+=======
+    // --- 【重要修改點】 ---
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/getPostDetail.php?post_id=${postId}&user_id=${currentUserId}`;
+>>>>>>> 0e929268190f25bae68b0263d55e08ccfd3bf2a7
     const response = await axios.get(apiUrl);
     
     if (response.data && response.data.status === 'success') {
@@ -97,7 +107,12 @@ const fetchPostDetail = async () => {
 async function postComment() {
   if (!isCommentSubmittable.value || !post.value) return;
   try {
+<<<<<<< HEAD
     const apiUrl = `${API_BASE}/posts/postComment.php`;
+=======
+    // --- 【重要修改點】 ---
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/postComment.php`;
+>>>>>>> 0e929268190f25bae68b0263d55e08ccfd3bf2a7
     const response = await axios.post(apiUrl, { 
       post_id: post.value.id, 
       user_id: currentUserId,
@@ -116,7 +131,12 @@ async function deletePost() {
   if (!isAuthor.value) return;
   if (window.confirm('您確定要刪除這篇貼文嗎？此操作無法復原。')) {
     try {
+<<<<<<< HEAD
       const apiUrl = `${API_BASE}/posts/deletePost.php`;
+=======
+      // --- 【重要修改點】 ---
+      const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/deletePost.php`;
+>>>>>>> 0e929268190f25bae68b0263d55e08ccfd3bf2a7
       const response = await axios.post(apiUrl, {
         post_id: post.value.id,
         user_id: currentUser.value.id // 【修正】讀取 id 時使用 .value
@@ -138,12 +158,23 @@ async function deletePost() {
 
 // --- 其他函式 (修正所有 API URL) ---
 async function handleShare() { try { await navigator.clipboard.writeText(window.location.href); shareFeedback.value = '<已複製連結>'; setTimeout(() => { shareFeedback.value = ''; }, 800); } catch (err) { alert('複製連結失敗，請手動複製網址。'); } }
+<<<<<<< HEAD
 async function toggleLike() { if (!post.value) return; post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; try { await axios.post(`${API_BASE}/posts/toggleLike.php`, { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; } }
 async function toggleSave() { if (!post.value) return; post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; try { await axios.post(`${API_BASE}/posts/toggleFavorite.php`, { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; } }
 async function toggleCommentLike(comment) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; try { await axios.post(`${API_BASE}/posts/toggleCommentLike.php`, { comment_id: comment.id, user_id: currentUserId }); } catch (err) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; } }
 function openReportModal() { showOptionsMenu.value = false; showReportModal.value = true; }
 function closeReportModal() { showReportModal.value = false; reportReason.value = ''; }
 function submitReport() { if (!reportReason.value.trim()) { alert('請輸入檢舉事由。'); return; } try { axios.post(`${API_BASE}/posts/submitReport.php`, { post_id: post.value.id, user_id: currentUserId, reason: reportReason.value }); alert('檢舉已成功送出，感謝您的回報。'); closeReportModal(); } catch (err) { alert('提交失敗，請稍後再試。'); } }
+=======
+// --- 【重要修改點】(以下多行) ---
+async function toggleLike() { if (!post.value) return; post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; try { await axios.post(`${import.meta.env.VITE_API_BASE}/posts/toggleLike.php`, { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; } }
+async function toggleSave() { if (!post.value) return; post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; try { await axios.post(`${import.meta.env.VITE_API_BASE}/posts/toggleFavorite.php`, { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; } }
+async function toggleCommentLike(comment) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; try { await axios.post(`${import.meta.env.VITE_API_BASE}/posts/toggleCommentLike.php`, { comment_id: comment.id, user_id: currentUserId }); } catch (err) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; } }
+function openReportModal() { showOptionsMenu.value = false; showReportModal.value = true; }
+function closeReportModal() { showReportModal.value = false; reportReason.value = ''; }
+function submitReport() { if (!reportReason.value.trim()) { alert('請輸入檢舉事由。'); return; } try { axios.post(`${import.meta.env.VITE_API_BASE}/posts/submitReport.php`, { post_id: post.value.id, user_id: currentUserId, reason: reportReason.value }); alert('檢舉已成功送出，感謝您的回報。'); closeReportModal(); } catch (err) { alert('提交失敗，請稍後再試。'); } }
+// --- 修改結束 ---
+>>>>>>> 0e929268190f25bae68b0263d55e08ccfd3bf2a7
 const inverseScale = ref(1);
 const modalStyle = computed(() => ({ transform: `scale(${inverseScale.value})`}));
 function detectZoom() { const zoomLevel = window.devicePixelRatio || 1; inverseScale.value = 1 / zoomLevel; }

@@ -56,19 +56,11 @@ onMounted(async () => {
       postsRes,
       weaponsRes
     ] = await Promise.all([
-<<<<<<< HEAD
-      axios.get(`${import.meta.env.VITE_API_BASE}user/userProfile.php?user_id=${userId.value}`),
-      axios.get(`${import.meta.env.VITE_API_BASE}user/artisanProfile.php?user_id=${userId.value}`),
-      axios.get(`${import.meta.env.VITE_API_BASE}user/get_user_achievements.php?user_id=${userId.value}`),
-      axios.get(`${import.meta.env.VITE_API_BASE}user/get_user_posts.php?user_id=${userId.value}`),
-      axios.get(`${import.meta.env.VITE_API_BASE}user/get_user_favorite_weapons.php?user_id=${userId.value}`)
-=======
-      axios.get(import.meta.env.VITE_API_BASE + `user/userProfile.php?user_id=${userId.value}`),
-      axios.get(import.meta.env.VITE_API_BASE + `user/artisanProfile.php?user_id=${userId.value}`),
-      axios.get(import.meta.env.VITE_API_BASE + `user/get_user_achievements.php?user_id=${userId.value}`),
-      axios.get(import.meta.env.VITE_API_BASE + `user/get_user_posts.php?user_id=${userId.value}`),
-      axios.get(import.meta.env.VITE_API_BASE + `user/get_user_favorite_weapons.php?user_id=${userId.value}`)
->>>>>>> 7fbf986b3909fe73efafd038c0a6d124ef261980
+      axios.get(import.meta.env.VITE_API_BASE + `/user/userProfile.php?user_id=${userId.value}`),
+      axios.get(import.meta.env.VITE_API_BASE + `/user/artisanProfile.php?user_id=${userId.value}`),
+      axios.get(import.meta.env.VITE_API_BASE + `/user/get_user_achievements.php?user_id=${userId.value}`),
+      axios.get(import.meta.env.VITE_API_BASE + `/user/get_user_posts.php?user_id=${userId.value}`),
+      axios.get(import.meta.env.VITE_API_BASE + `/user/get_user_favorite_weapons.php?user_id=${userId.value}`)
     ]);
 
     // 1. 處理一般使用者資料 (已修改)
@@ -78,11 +70,7 @@ onMounted(async () => {
       artisanProfile.value.joinDate = userData.created_at ? userData.created_at.split(' ')[0].replace(/-/g, '/') : '';
       artisanProfile.value.location = userData.location;
       artisanProfile.value.avatarUrl = userData.avatar_url
-<<<<<<< HEAD
-        ? `${import.meta.env.VITE_FILE_URL}${userData.avatar_url}`
-=======
         ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
->>>>>>> 7fbf986b3909fe73efafd038c0a6d124ef261980
         : getPublicImg('users/userp.png');
       
       // ******** 將隱私設定存入 ref ********

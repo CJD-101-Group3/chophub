@@ -53,7 +53,7 @@ async function handleSubmit() {
   try {
     // --- 【重要修改點】 ---
     // 將寫死的 localhost 路徑，改成讀取 .env 檔案中的環境變數
-    const apiUrl = `${import.meta.env.VITE_API_BASE}posts/createPost.php`;
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/createPost.php`;
     // --- 修改結束 ---
     
     const response = await axios.post(apiUrl, formData, {

@@ -1,7 +1,7 @@
 // src/api/user.js
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8888/ChopHub-API/api/';
+const API_BASE_URL = 'https://tibamef2e.com/cjd101/g3/api';
 
 /**
  * 获指定 ID 的完整使用者资料
