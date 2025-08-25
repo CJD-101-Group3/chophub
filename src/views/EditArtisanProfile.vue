@@ -925,9 +925,9 @@ const removeSocialLink = (index) => {
                         class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:bg-white hover:text-black hover:border hover:border-[#F2994A]">
                   編輯
                 </button>
-                <button class="flex-1 bg-white hover:bg-gray-100 text-red-600 border border-red-600 font-bold py-2 px-4 rounded-[8px] transition-colors">
+                <!-- <button class="flex-1 bg-white hover:bg-gray-100 text-red-600 border border-red-600 font-bold py-2 px-4 rounded-[8px] transition-colors">
                   刪除帳號
-                </button>
+                </button> -->
               </template>
             </div>
           </div>

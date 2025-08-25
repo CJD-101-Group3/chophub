@@ -885,11 +885,11 @@ function handleCancel (formType) {
                 >
                   編輯
                 </button>
-                <button
+                <!-- <button
                   class="flex-1 bg-white hover:bg-gray-100 text-red-600 border border-red-600 font-bold py-2 px-4 rounded-[8px] transition-colors"
                 >
                   刪除帳號
-                </button>
+                </button> -->
               </template>
             </div>
           </div>

@@ -117,10 +117,10 @@ const defaultAvatar = '/src/assets/users/userp.png';
                 to="/UserProfile"
                 class="group flex items-center space-x-3 hover:text-white transition duration-300"
                 @click="handleClose">
-                <img 
+                <!-- <img 
                     :src="authStore.currentUser?.avatar_url || defaultAvatar" 
                     alt="Avatar" 
-                    class="w-12 h-12 rounded-full object-cover" />
+                    class="w-12 h-12 rounded-full object-cover" /> -->
                 <span class="font-bold text-2xl">{{ authStore.currentUser?.username }}</span>
             </RouterLink>
             <button

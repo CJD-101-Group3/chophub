@@ -27,7 +27,7 @@ export async function login(credentials) {
  */
 export async function signup(credentials) {
   try {
-    const response = await api.post(`${API_BASE_URL}/signup.php`, credentials);
+    const response = await api.post(`${API_BASE_URL}/user_signup.php`, credentials);
     return response.data;
   } catch (e) {
     const errorMessage = e.response?.data?.message || e.message || '註冊時發生未知錯誤';
