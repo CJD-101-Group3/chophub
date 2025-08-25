@@ -744,7 +744,7 @@ async function fetchAllWeapon() {
   error.value = null
 
   try {
-    const response = await axios.get(`${import.meta.env.VITE_API_BASE}weapon/weaponList.php`)
+    const response = await axios.get(`${import.meta.env.VITE_API_BASE}/weapon/weaponList.php`)
     // console.log('this is RESPONSE', response)
 
     const data = response.data?.data || null
