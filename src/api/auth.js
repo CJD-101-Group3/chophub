@@ -33,6 +33,11 @@ export async function signup(credentials) {
   }
 }
 
+export async function logout() {
+  const res = await axios.post(`${API_BASE}/logout.php`, {}, { withCredentials: true })
+  return res.data
+}
+
 /**
  * 呼叫 me.php 來獲取當前登入的使用者資訊
  * @returns {Promise<object>} - 後端回傳的 user 物件
