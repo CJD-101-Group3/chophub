@@ -9,23 +9,14 @@ import smallStarIcon from '@/assets/icon/smallstar.svg';
 import smallStarActiveIcon from '@/assets/icon/smallstar_h.svg';
 
 const props = defineProps({
-  // 貼文自身的 ID
   id: { type: Number, required: true },
-  // 貼文圖片 URL
   postImage: { type: String, default: '' },
-  // 發文者的名稱 (用於顯示)
   userName: { type: String, default: '使用者名稱' },
-  // 貼文標題
   postTitle: { type: String, default: '手裡劍' },
-  // 是否為熱門貼文
   isHot: { type: Boolean, default: false },
-  // 貼文描述
   description: { type: String, default: '...' },
-  // 按讚數
   likes: { type: Number, default: 0 },
-  // 收藏數
   stars: { type: Number, default: 0 },
-  // 【最重要的 Prop】發文作者的 ID (用於建立連結)
   authorId: { type: Number, required: true },
 });
 
@@ -38,12 +29,11 @@ const currentUserId = 1; // 假設這是當前登入者的 ID
 const smallLikeSrc = computed(() => isLiked.value ? smallLikeActiveIcon : smallLikeIcon);
 const smallStarSrc = computed(() => isStarred.value ? smallStarActiveIcon : smallStarIcon);
 
-// --- 以下的 methods 維持不變 ---
-
 const fetchLikeStatus = async () => {
   if (!currentUserId) return;
   try {
-    const apiUrl = `http://localhost:8888/ChopHub-API/api/posts/getPostLikeStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
+    // --- 【重要修改點】 ---
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/getPostLikeStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       isLiked.value = response.data.data.isLiked;
@@ -56,7 +46,8 @@ const fetchLikeStatus = async () => {
 async function toggleLike() {
   if (!currentUserId) return alert('請先登入！');
   try {
-    const apiUrl = 'http://localhost:8888/ChopHub-API/api/posts/toggleLike.php';
+    // --- 【重要修改點】 ---
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/toggleLike.php`;
     const response = await axios.post(apiUrl, {
       post_id: props.id,
       user_id: currentUserId,
@@ -78,13 +69,13 @@ async function toggleLike() {
 const fetchFavoriteStatus = async () => {
   if (!currentUserId) return;
   try {
-    const apiUrl = `http://localhost:8888/ChopHub-API/api/posts/getPostFavoriteStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
+    // --- 【重要修改點】 ---
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/getPostFavoriteStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       isStarred.value = response.data.data.isFavorited;
     }
-  } catch (error)
- {
+  } catch (error) {
     console.error(`查詢貼文 ${props.id} 收藏狀態失敗:`, error);
   }
 };
@@ -92,7 +83,8 @@ const fetchFavoriteStatus = async () => {
 async function toggleStar() {
   if (!currentUserId) return alert('請先登入！');
   try {
-    const apiUrl = 'http://localhost:8888/ChopHub-API/api/posts/toggleFavorite.php';
+    // --- 【重要修改點】 ---
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/toggleFavorite.php`;
     const response = await axios.post(apiUrl, {
       post_id: props.id,
       user_id: currentUserId,
