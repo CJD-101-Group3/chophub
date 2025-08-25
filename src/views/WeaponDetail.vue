@@ -121,7 +121,7 @@ function loadModel(weaponId) {
 async function loadWeaponDetail(weaponId) {
   if (!weaponId) return;
   try {
-    const res = await axios.get(`${import.meta.env.VITE_API_BASE}api/weapon/getWeapon.php?weapon_id=${weaponId}`);
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE}weapon/getWeapon.php?weapon_id=${weaponId}`);
     if (res.data.status === 'success') {
       weaponDetail.value = res.data.data;
     } else {
