@@ -50,7 +50,7 @@ async function fetchPrivacySettings() {
   loading.value = true;
   error.value = null;
   try {
-    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/user/userProfile.php?user_id=${userId}`);
+    const response = await axios.get(import.meta.env.VITE_API_BASE + `user/userProfile.php?user_id=${userId}`);
     if (response.data.status === 'success') {
       const settings = response.data.data;
       privacySettings.is_collections_public = !!parseInt(settings.is_collections_public);
@@ -72,11 +72,11 @@ onMounted(async () => {
 
   // 取得使用者頭像
   try {
-    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/user/userProfile.php?user_id=${userId}`);
+    const response = await axios.get(import.meta.env.VITE_API_BASE + `user/userProfile.php?user_id=${userId}`);
     if (response.data.status === 'success') {
       const userData = response.data.data;
       memberInfo.value.avatarUrl = userData.avatar_url
-        ? `http://localhost:8888/ChopHub-API/${userData.avatar_url}`
+        ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
         : getPublicImg('users/userp.png');
       memberInfo.value.name = userData.display_name;
     }
@@ -96,7 +96,7 @@ async function handleSave() {
       is_location_public: privacySettings.is_location_public ? 1 : 0,
     };
     const response = await axios.patch(
-      `http://localhost:8888/ChopHub-API/api/user/userProfile.php?user_id=${userId}`,
+      import.meta.env.VITE_API_BASE + `user/userProfile.php?user_id=${userId}`,
       payload
     );
     if (response.data.status === 'success') {

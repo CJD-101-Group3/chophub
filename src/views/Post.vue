@@ -35,13 +35,18 @@ const fetchPosts = async () => {
       sort: selectedSort.value.value
     }).toString();
     
-    const apiUrl = `http://localhost:8888/ChopHub-API/api/posts/getPosts.php?${params}`;
+    // --- 【重要修改點】 ---
+    // 將寫死的 localhost 路徑，改成讀取 .env 檔案中的環境變數
+    // 這樣在開發和部署時，Vite 會自動使用正確的 API 網址
+    const apiUrl = `${import.meta.env.VITE_API_BASE}posts/getPosts.php?${params}`;
+    // --- 修改結束 ---
+    
     const response = await axios.get(apiUrl);
 
     if (response.data && response.data.status === 'success') {
       posts.value = response.data.data.map(post => ({
         id: parseInt(post.post_id, 10),
-        postImage: post.image_url,
+        postImage: post.image_url, // 注意：這裡的路徑也需要在後端改成線上網址
         userName: post.username,
         postTitle: post.title,
         description: post.content,
@@ -73,14 +78,11 @@ function performSearch() {
   fetchPosts();
 }
 
-// 【新增】處理成功發文的函式
 function handlePostSuccess() {
-  isModalOpen.value = false; // 首先關閉彈窗
-  // 由於預設排序是 'latest'，重新獲取資料就會把最新的一筆放在最前面
+  isModalOpen.value = false;
   fetchPosts(); 
 }
 
-// 使用 watch 來實現 "輸入時延遲搜尋"
 let debounceTimer;
 watch(searchTerm, () => {
   clearTimeout(debounceTimer);
@@ -89,7 +91,6 @@ watch(searchTerm, () => {
   }, 500);
 });
 
-// 元件掛載時，立即獲取一次資料
 onMounted(() => {
   fetchPosts();
 });

@@ -40,7 +40,7 @@ async function fetchActivities() {
   isLoading.value = true;
   error.value = null;
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/events/myEvents.php');
+    const response = await axios.get(import.meta.env.VITE_API_BASE + `events/myEvents.php`);
     allActivities.value = response.data.data || [];
   } catch (err) {
     console.error('Failed to fetch activities:', err);
@@ -73,7 +73,7 @@ const filteredActivities = computed(() => {
 // --- 事件處理函式 ---
 async function handleCancelActivity(activityId) {
   try {
-     const response = await axios.post(`http://localhost:8888/ChopHub-API/api/events/cancelEvent.php`, { id: activityId });
+     const response = await axios.post(import.meta.env.VITE_API_BASE + `events/cancelEvent.php`, { id: activityId });
     if (response.data && response.data.success) { 
         const activityToCancel = allActivities.value.find(act => act.id === activityId);
         if (activityToCancel) {
@@ -95,7 +95,7 @@ async function handleToggleFavorite(activityId) {
   const newFavoriteState = !activity.isFavorited;
 
   try {
-    const apiUrl = 'http://localhost:8888/ChopHub-API/api/events/eventToggleFavorite.php';
+    const apiUrl = import.meta.env.VITE_API_BASE + `events/eventToggleFavorite.php`;
     await axios.post(apiUrl, {
       activityId: activityId,
       isFavorited: newFavoriteState

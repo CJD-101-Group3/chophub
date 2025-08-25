@@ -12,8 +12,9 @@ const particlesLoaded = async (container) => {
 }
 
 // API Base（尾端不要 /）
-const API_BASE =
-  (import.meta.env.VITE_API_BASE ? import.meta.env.VITE_API_BASE.replace(/\/$/, '') : 'http://localhost:8888/ChopHub-API')
+const API_BASE = (import.meta.env.VITE_API_BASE ? import.meta.env.VITE_API_BASE.replace(/\/$/, '') : 'https://tibamef2e.com/cjd101/g3/api');
+
+const baseURL = `${API_BASE}/user/`; // 因為 API_BASE 已經包含 /api
 
 // 表單欄位
 const account = ref('')
@@ -22,7 +23,7 @@ const password = ref('')
 const confirmPassword = ref('')
 const loading = ref(false)
 
-const baseUrl = import.meta.env.BASE_URL || '/'
+// const baseUrl = import.meta.env.BASE_URL || '/'
 
 const router = useRouter() // 新增這行
 
