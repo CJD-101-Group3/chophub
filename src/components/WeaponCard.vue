@@ -1,7 +1,7 @@
  <script setup>
 // --- Script 區塊維持不變 ---
 import { defineProps, ref, computed } from 'vue';
-import smallUserIcon from '@/assets/icon/smalluser.svg';
+import smallUserIcon from '@/assets/icon/avataaars.svg';
 import smallStarIcon from '@/assets/icon/smallstar.svg';
 import smallStarActiveIcon from '@/assets/icon/smallstar_h.svg';
 
