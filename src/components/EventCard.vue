@@ -63,7 +63,7 @@ async function toggleFavorite() {
 
   try {
     // 2. 呼叫後端 API
-    const apiUrl = import.meta.env.VITE_API_BASE + `events/eventToggleFavorite.php`;
+    const apiUrl = import.meta.env.VITE_API_BASE + `/events/eventToggleFavorite.php`;
     await axios.post(apiUrl, {
       activityId: props.id,
       isFavorited: !isFavorited.value

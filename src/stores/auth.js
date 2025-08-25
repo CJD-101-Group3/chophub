@@ -1,6 +1,6 @@
 // src/stores/auth.js
 import { defineStore } from 'pinia'
-import { login, signup, getMe } from '@/api/auth.js'
+import { login, signup, getMe, logout } from '@/api/auth.js'; // 1. 引入 logout
 
 const USER_KEY = 'user'
 
@@ -67,12 +67,19 @@ export const useAuthStore = defineStore('auth', {
       return res?.message ?? 'OK'
     },
 
-    logoutAction() {
+    async logoutAction() {
       this.user = null
       safeWriteUser(null)
+      const res = await logout()  // 呼叫後端登出 API
+      
+      // console.log('User logged out');
       // 與路由的 path 大小寫一致：/Login
-      const base = import.meta.env.BASE_URL || '/'
-      window.location.href = `${base}Login`
+      const base = import.meta.env.VITE_API_BASE || '/'
+      // console.log(base);
+      // console.log(import.meta.env.VITE_LOCAL_FRONT + 'Login')
+      window.location.href = `${import.meta.env.VITE_LOCAL_FRONT}Login`
+
+      return res;
     },
 
     // App 啟動時可呼叫，用於恢復登入狀態（若你用 Cookie / Session）

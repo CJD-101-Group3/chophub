@@ -33,7 +33,7 @@ const fetchLikeStatus = async () => {
   if (!currentUserId) return;
   try {
     // --- 【重要修改點】 ---
-    const apiUrl = `${import.meta.env.VITE_API_BASE}posts/getPostLikeStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/getPostLikeStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       isLiked.value = response.data.data.isLiked;
@@ -47,7 +47,7 @@ async function toggleLike() {
   if (!currentUserId) return alert('請先登入！');
   try {
     // --- 【重要修改點】 ---
-    const apiUrl = `${import.meta.env.VITE_API_BASE}posts/toggleLike.php`;
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/toggleLike.php`;
     const response = await axios.post(apiUrl, {
       post_id: props.id,
       user_id: currentUserId,
@@ -70,7 +70,7 @@ const fetchFavoriteStatus = async () => {
   if (!currentUserId) return;
   try {
     // --- 【重要修改點】 ---
-    const apiUrl = `${import.meta.env.VITE_API_BASE}posts/getPostFavoriteStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/getPostFavoriteStatus.php?post_id=${props.id}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       isStarred.value = response.data.data.isFavorited;
@@ -84,7 +84,7 @@ async function toggleStar() {
   if (!currentUserId) return alert('請先登入！');
   try {
     // --- 【重要修改點】 ---
-    const apiUrl = `${import.meta.env.VITE_API_BASE}posts/toggleFavorite.php`;
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/toggleFavorite.php`;
     const response = await axios.post(apiUrl, {
       post_id: props.id,
       user_id: currentUserId,
