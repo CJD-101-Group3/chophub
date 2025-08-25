@@ -65,7 +65,7 @@ onMounted(async () => {
 
     // 1. 處理一般使用者資料 (已修改)
     if (userRes.data.status === 'success') {
-      const userData = userRes.data.data;
+      const userData = userRes.data.data; 
       artisanProfile.value.name = userData.display_name;
       artisanProfile.value.joinDate = userData.created_at ? userData.created_at.split(' ')[0].replace(/-/g, '/') : '';
       artisanProfile.value.location = userData.location;
