@@ -25,6 +25,7 @@ const handleLogout = () => {
     // 直接呼叫 store 中的 logoutAction
     // 它會負責清除前後端狀態並跳轉頁面
     authStore.logoutAction();
+    console.log("hihi")
     handleClose(); // 關閉手機版側邊欄
 };
 
