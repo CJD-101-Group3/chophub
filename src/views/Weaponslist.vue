@@ -688,7 +688,7 @@
                 :key="w.weapon_id"
                 :weapon_id="w.weapon_id"
                 :postImages="w.weapon_url"
-                :userName="w.user_id"
+                :userName="w.user_name"
                 :postTitle="w.title"
                 :description="w.description"
           />
