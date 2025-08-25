@@ -73,7 +73,7 @@ async function onFileChange (e) {
     fd.append('user_id', String(userId))  // ★ 關鍵：開發階段直傳 user_id
 
     const { data } = await axios.post(
-      'http://localhost:8888/ChopHub-API/api/user/userAvatar.php',
+      import.meta.env.VITE_API_BASE + '/api/user/userAvatar.php',
       fd
     )
 
@@ -131,7 +131,7 @@ async function fetchUserProfile () {
   error.value = null
   try {
     const resp = await axios.get(
-      `http://localhost:8888/ChopHub-API/api/user/userProfile.php?user_id=${userId}`
+      import.meta.env.VITE_API_BASE + `/api/user/userProfile.php?user_id=${userId}`
     )
     if (resp.data.status === 'success') {
       const userData = resp.data.data
@@ -142,7 +142,7 @@ async function fetchUserProfile () {
 
       // avatarUrl 轉成完整網址顯示
       profileForm.avatarUrl = userData.avatar_url
-        ? `http://localhost:8888/ChopHub-API/${userData.avatar_url}`
+        ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
         : getPublicImg('users/userp.png')
 
       memberInfo.value.avatarUrl = profileForm.avatarUrl
@@ -169,7 +169,7 @@ onMounted(fetchUserProfile)
 // --- 更新使用者資料 ---
 async function handleSave (formType) {
   saving.value = true
-  const apiUrl = `http://localhost:8888/ChopHub-API/api/user/userProfile.php?user_id=${userId}`
+  const apiUrl = import.meta.env.VITE_API_BASE + `/api/user/userProfile.php?user_id=${userId}`
   let payload = {}
 
   if (formType === 'account') {
