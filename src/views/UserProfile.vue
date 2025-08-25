@@ -46,7 +46,7 @@ onMounted(async () => {
 
   try {
     // **核心：讓此頁面自己呼叫 userProfile.php API**
-    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/user/userProfile.php?user_id=${currentUserId}`);
+    const response = await axios.get(import.meta.env.VITE_API_BASE + `/api/user/userProfile.php?user_id=${currentUserId}`);
     
     if (response.data.status === 'success') {
       const userData = response.data.data;
@@ -55,7 +55,7 @@ onMounted(async () => {
       memberInfo.value = {
         name: userData.display_name,
         avatarUrl: userData.avatar_url
-          ? `http://localhost:8888/ChopHub-API/${userData.avatar_url}`
+          ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
           : '/src/assets/users/userp.png',
         nickname: userData.display_name,
         realName: userData.real_name || '未設定',

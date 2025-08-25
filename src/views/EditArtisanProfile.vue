@@ -77,7 +77,7 @@ async function onFileChange (e) {
     fd.append('user_id', String(userId))  // ★ 關鍵：開發用直傳 user_id
 
     const { data } = await axios.post(
-      'http://localhost:8888/ChopHub-API/api/user/userAvatar.php',
+      import.meta.env.VITE_API_BASE + `/api/user/userAvatar.php`,
       fd // 讓 axios 自行帶 multipart 邊界
     )
 
@@ -145,13 +145,13 @@ const displayAvatar = computed(() => {
 // --- GET 請求 ---
 async function fetchUserProfile () {
   const resp = await axios.get(
-    `http://localhost:8888/ChopHub-API/api/user/userProfile.php?user_id=${userId}`
+    import.meta.env.VITE_API_BASE + `/api/user/userProfile.php?user_id=${userId}`
   )
   if (resp.data.status === 'success') {
     const userData = resp.data.data
     Object.assign(profileForm, userData)
     profileForm.avatarUrl = userData.avatar_url
-      ? `http://localhost:8888/ChopHub-API/${userData.avatar_url}`
+      ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
       : getPublicImg('users/userp.png')
     memberInfo.value.name = userData.display_name
     memberInfo.value.avatarUrl = profileForm.avatarUrl
@@ -167,7 +167,7 @@ async function fetchUserProfile () {
 
 async function fetchArtisanProfile () {
   const resp = await axios.get(
-    `http://localhost:8888/ChopHub-API/api/user/artisanProfile.php?user_id=${userId}`
+    import.meta.env.VITE_API_BASE + `/api/user/artisanProfile.php?user_id=${userId}`
   )
   if (resp.data.status === 'success') {
     const artisanData = resp.data.data
@@ -208,7 +208,7 @@ async function handleSave (formType) {
   let payload = {}
 
   if (formType === 'account' || formType === 'profile') {
-    apiUrl = `http://localhost:8888/ChopHub-API/api/user/userProfile.php?user_id=${userId}`
+    apiUrl = import.meta.env.VITE_API_BASE + `/api/user/userProfile.php?user_id=${userId}`
     if (formType === 'account') {
       payload = { backup_email: profileForm.backup_email }
       if (profileForm.password && profileForm.password.trim() !== '') {
@@ -223,7 +223,7 @@ async function handleSave (formType) {
       }
     }
   } else if (formType === 'artisan') {
-    apiUrl = `http://localhost:8888/ChopHub-API/api/user/artisanProfile.php?user_id=${userId}`
+    apiUrl = import.meta.env.VITE_API_BASE + `/api/user/artisanProfile.php?user_id=${userId}`
     const socialLinksPayload = profileForm.socialLinks.map(link => ({
       platform: link.platform,
       url: link.handle
