@@ -1,8 +1,6 @@
  <script setup>
 // --- Script 區塊維持不變 ---
 import { defineProps, ref, computed } from 'vue';
-import fireIcon from '@/assets/icon/fire.svg';
-import moreIcon from '@/assets/icon/more.svg';
 import smallUserIcon from '@/assets/icon/smalluser.svg';
 import smallStarIcon from '@/assets/icon/smallstar.svg';
 import smallStarActiveIcon from '@/assets/icon/smallstar_h.svg';
@@ -48,13 +46,9 @@ function toggleStar() {
             {{ userName }}
           </span>
         </router-link>
-        <button class="text-gray-400 focus:outline-none focus:ring-0">
-          <img :src="moreIcon" alt="More options" class="w-6 h-6" />
-        </button>
       </div>
       <div class="flex items-center gap-x-2 mb-2.5">
         <h2 class="text-[#F2994A] text-[25.2px] font-medium leading-[35.28px] tracking-[1.12px]">{{ postTitle }}</h2>
-        <img v-if="isHot" :src="fireIcon" alt="Hot Post" class="w-5 h-5" />
       </div>
       <p class="text-[#4F4F4F] text-sm font-normal leading-relaxed mb-5">
         {{ description }}

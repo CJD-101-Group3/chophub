@@ -632,7 +632,7 @@
 
         <!-- 左側分類選單 -->
         <aside
-          class="hidden md:block backdrop-blur-md p-6 rounded-xl text-white max-w-[280px] bg-[#FFFFFF] h-[600px]"
+          class="hidden md:block backdrop-blur-md p-6 rounded-xl text-white max-w-[280px] bg-[#FFFFFF] h-[500px]"
 >
           <h2 class="text-xl font-semibold mb-6 tracking-wide text-black">
             分類
@@ -744,7 +744,7 @@ async function fetchAllWeapon() {
   error.value = null
 
   try {
-    const response = await axios.get('http://localhost:8888/ChopHub-API/api/weapon/weaponList.php')
+    const response = await axios.get(`${import.meta.env.VITE_API_BASE}weapon/weaponList.php`)
     // console.log('this is RESPONSE', response)
 
     const data = response.data?.data || null
