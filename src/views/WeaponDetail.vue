@@ -8,6 +8,7 @@ import { getPublicImg } from '@/utils/getPublicImg';
 import Theheader from "../components/Theheader.vue";
 import Thefooter from "../components/Thefooter.vue";
 import axios from 'axios';
+import smallUserIcon from '@/assets/icon/avataaars.svg';
 
 // --- 路由與狀態 ---
 const route = useRoute();
@@ -257,9 +258,10 @@ onBeforeUnmount(() => {
           <!-- 貼文內容 -->
           <div v-if="activeTab === 'posts'" class="p-6 bg-[#282828] text-gray-200">
             <div class="flex items-center gap-3 mb-6 text-white">
-              <span>創作者：</span>
-              <div class="w-10 h-10 rounded-full bg-[#F2994A]"></div>
-              <span>使用者</span>
+              <div class="w-10 h-10 rounded-full">
+                 <img :src="smallUserIcon" alt="User" class="w-10 h-10" />
+              </div>
+              <span  class="text-[#F2994A]">官方發布者</span>
             </div>
 
             <div class="bg-white rounded-xl p-6 mb-8" v-if="weaponDetail">
@@ -273,32 +275,32 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- 留言區 -->
-<div class="flex flex-col gap-4">
-  <!-- 載入狀態 -->
-  <div v-if="loading" class="text-center py-4 text-gray-400">
-    載入留言中...
-  </div>
+                    <div class="flex flex-col gap-4">
+                      <!-- 載入狀態 -->
+                      <div v-if="loading" class="text-center py-4 text-gray-400">
+                        載入留言中...
+                      </div>
 
-  <!-- 空狀態 -->
-  <div v-else-if="weapons_comment.length === 0" class="text-center py-8 text-gray-400">
-    還沒有留言，成為第一個留言的人吧！
-  </div>
+                      <!-- 空狀態 -->
+                      <div v-else-if="weapons_comment.length === 0" class="text-center py-8 text-gray-400">
+                        還沒有留言，成為第一個留言的人吧！
+                      </div>
 
-  <!-- 留言列表 -->
-  <div v-else v-for="comment in weapons_comment" :key="comment.id" class="flex items-start gap-3">
-    <!-- 頭像 -->
-    <div class="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-sm mt-1 bg-[#F2994A] flex items-center justify-center">
-      <img 
-        v-if="comment.author.avatar" 
-        :src="comment.author.avatar" 
-        :alt="comment.author.name"
-        class="w-full h-full object-cover"
-        @error="$event.target.style.display = 'none'"
-      />
-      <span v-if="!comment.author.avatar" class="text-white text-sm font-bold">
-        {{ comment.author.name ? comment.author.name.charAt(0).toUpperCase() : '?' }}
-      </span>
-    </div>
+                      <!-- 留言列表 -->
+                      <div v-else v-for="comment in weapons_comment" :key="comment.id" class="flex items-start gap-3">
+                        <!-- 頭像 -->
+                        <div class="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-sm mt-1 bg-[#F2994A] flex items-center justify-center">
+                          <img 
+                            v-if="comment.author.avatar" 
+                            :src="comment.author.avatar" 
+                            :alt="comment.author.name"
+                            class="w-full h-full object-cover"
+                            @error="$event.target.style.display = 'none'"
+                          />
+                          <span v-if="!comment.author.avatar" class="text-white text-sm font-bold">
+                            {{ comment.author.name ? comment.author.name.charAt(0).toUpperCase() : '?' }}
+                          </span>
+                        </div>
 
                         <!-- 留言內容 -->
                         <div class="flex-grow flex flex-col bg-white rounded-xl p-4">
