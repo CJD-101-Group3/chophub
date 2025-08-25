@@ -1,34 +1,35 @@
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useUserStore } from '@/stores/user' // 1. 引入您的 user store
-import { useRouter } from 'vue-router' // ← 一定要有這行
-import logo from '@/assets/icon/LOGO.png'
-import Basebutton from './Basebutton.vue'
-import userIcon from '@/assets/icon/user.svg' // 將 user icon 重新命名，避免與 store 實例衝突
-import message from '@/assets/icon/message.svg'
-import weapon from '@/assets/icon/sword.svg'
-import calendar from '@/assets/icon/calendar.svg'
-import aboutus from '@/assets/icon/aboutus.svg'
-import cross from '@/assets/icon/cross.svg'
-const isOpen = ref(false)
-const userStore = useUserStore() // 2. 建立 user store 的實例
-const router = useRouter() // ← 一定要有這行
-const isLoggedIn = ref('LoggedIn')
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth'; // 1. **修改**: 引入正確的 auth store
+import logo from '@/assets/icon/LOGO.png';
+import Basebutton from './Basebutton.vue';
+import userIcon from '@/assets/icon/user.svg';
+import message from '@/assets/icon/message.svg';
+import weapon from '@/assets/icon/sword.svg';
+import calendar from '@/assets/icon/calendar.svg';
+import aboutus from '@/assets/icon/aboutus.svg';
+import cross from '@/assets/icon/cross.svg';
 
-
+const isOpen = ref(false);
+const authStore = useAuthStore(); // 2. **修改**: 建立 auth store 的實例
+const router = useRouter();
 
 // 關閉動畫
 const handleClose = () => {
-    isOpen.value = false
-}
+    isOpen.value = false;
+};
 
-// **【新功能】** 登出函式
+// 3. **修改**: 登出函式
 const handleLogout = () => {
-    userStore.logout()
-    // **【修改處】** 改用命名路由進行跳轉，更可靠！
-    router.push({ name: 'Home' })
-    handleClose()
-}
+    // 直接呼叫 store 中的 logoutAction
+    // 它會負責清除前後端狀態並跳轉頁面
+    authStore.logoutAction();
+    handleClose(); // 關閉手機版側邊欄
+};
+
+// 預設頭像路徑
+const defaultAvatar = '/src/assets/users/userp.png';
 </script>
 
 <template>
@@ -50,10 +51,10 @@ const handleLogout = () => {
             <RouterLink to="/EventHomePage" class="h5 hover:text-orange-400 transition">活動專區</RouterLink>
             <RouterLink to="/About" class="h5 hover:text-orange-400 transition">關於我們</RouterLink>
 
-            <!-- **【修改處】** 登入狀態判斷 -->
+            <!-- 登入狀態判斷 -->
             <div class="flex items-center space-x-2">
-                <!-- 如果未登入，顯示登入/註冊按鈕 -->
-                <template v-if="!userStore.isLoggedIn">
+                <!-- 如果未登入 -->
+                <template v-if="!authStore.isLoggedIn">
                     <RouterLink to="/Register">
                         <Basebutton>SignIn</Basebutton>
                     </RouterLink>
@@ -62,18 +63,19 @@ const handleLogout = () => {
                     </RouterLink>
                 </template>
 
-                <!-- 如果已登入，顯示使用者頭像和名稱 -->
+                <!-- 如果已登入 -->
                 <template v-else>
                     <RouterLink
                         to="/UserProfile"
                         class="flex items-center gap-3 text-white hover:text-orange-400 p-2 rounded-full transition-colors">
-                        <img
-                            src="/users/userp.png"
+                        <!-- 4. **修改**: 動態綁定頭像 -->
+                        <!-- <img
+                            :src="authStore.currentUser?.avatar_url || defaultAvatar"
                             alt="User Avatar"
-                            class="w-10 h-10 rounded-full object-cover border-2 border-orange-400" />
-                        <span class="font-semibold text-xl transition-colors">{{ userStore.userInfo.name }}</span>
+                            class="w-10 h-10 rounded-full object-cover border-2 border-orange-400" /> -->
+                        <!-- 5. **修改**: 動態綁定使用者名稱 -->
+                        <span class="font-semibold text-xl transition-colors">{{ authStore.currentUser?.username }}</span>
                     </RouterLink>
-                    <!-- 您也可以在這裡放一個登出按鈕，如果設計需要的話 -->
                     <button @click="handleLogout" class="font-medium ml-4 p-2 rounded-[8px] hover:bg-orange-400">
                         登出
                     </button>
@@ -97,10 +99,10 @@ const handleLogout = () => {
             </button>
         </div>
 
-        <!-- **【修改處】** 手機版的登入狀態判斷 -->
+        <!-- 手機版的登入狀態判斷 -->
         <!-- 如果未登入 -->
         <RouterLink
-            v-if="!userStore.isLoggedIn"
+            v-if="!authStore.isLoggedIn"
             to="/Login"
             class="group flex items-center space-x-3 pb-3 border-b border-black hover:text-white transition duration-300"
             @click="handleClose">
@@ -114,8 +116,11 @@ const handleLogout = () => {
                 to="/UserProfile"
                 class="group flex items-center space-x-3 hover:text-white transition duration-300"
                 @click="handleClose">
-                <img src="/users/userp.png" alt="Avatar" class="w-12 h-12 rounded-full object-cover" />
-                <span class="font-bold text-2xl">{{ userStore.userInfo.name }}</span>
+                <img 
+                    :src="authStore.currentUser?.avatar_url || defaultAvatar" 
+                    alt="Avatar" 
+                    class="w-12 h-12 rounded-full object-cover" />
+                <span class="font-bold text-2xl">{{ authStore.currentUser?.username }}</span>
             </RouterLink>
             <button
                 @click="handleLogout"
@@ -125,44 +130,20 @@ const handleLogout = () => {
         </div>
 
         <!-- 導覽項目 -->
-        <RouterLink
-            to="/post"
-            class="group flex items-center space-x-3 hover:text-white transition duration-300"
-            @click="handleClose">
-            <img
-                :src="message"
-                alt="message"
-                class="w-6 h-6 group-hover:brightness-0 group-hover:invert duration-300" />
+        <RouterLink to="/post" class="group flex items-center space-x-3 hover:text-white transition duration-300" @click="handleClose">
+            <img :src="message" alt="message" class="w-6 h-6 group-hover:brightness-0 group-hover:invert duration-300" />
             <span class="font-bold">貼文區</span>
         </RouterLink>
-
-        <RouterLink
-            to="/Weaponslist"
-            class="group flex items-center space-x-3 hover:text-white transition duration-300"
-            @click="handleClose">
+        <RouterLink to="/Weaponslist" class="group flex items-center space-x-3 hover:text-white transition duration-300" @click="handleClose">
             <img :src="weapon" alt="weapon" class="w-6 h-6 group-hover:brightness-0 group-hover:invert duration-300" />
             <span class="font-bold">武器展示區</span>
         </RouterLink>
-
-        <RouterLink
-            to="/EventHomePage"
-            class="group flex items-center space-x-3 hover:text-white transition duration-300"
-            @click="handleClose">
-            <img
-                :src="calendar"
-                alt="calendar"
-                class="w-6 h-6 group-hover:brightness-0 group-hover:invert duration-300" />
+        <RouterLink to="/EventHomePage" class="group flex items-center space-x-3 hover:text-white transition duration-300" @click="handleClose">
+            <img :src="calendar" alt="calendar" class="w-6 h-6 group-hover:brightness-0 group-hover:invert duration-300" />
             <span class="font-bold">活動專區</span>
         </RouterLink>
-
-        <RouterLink
-            to="/About"
-            class="group flex items-center space-x-3 hover:text-white transition duration-300"
-            @click="handleClose">
-            <img
-                :src="aboutus"
-                alt="aboutus"
-                class="w-6 h-6 group-hover:brightness-0 group-hover:invert duration-300" />
+        <RouterLink to="/About" class="group flex items-center space-x-3 hover:text-white transition duration-300" @click="handleClose">
+            <img :src="aboutus" alt="aboutus" class="w-6 h-6 group-hover:brightness-0 group-hover:invert duration-300" />
             <span class="font-bold">關於我們</span>
         </RouterLink>
     </aside>

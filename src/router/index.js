@@ -4,7 +4,7 @@ import axios from 'axios' // ⬅️ 新增
 import { useAuthStore } from '@/stores/auth'
 
   // ✅ 統一 API base（可用 .env 設定 VITE_API_BASE，否則用本機預設）
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8888/ChopHub-API'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8888/ChopHub-API/'
 
 // --- 頁面元件 ---
 import Home from '@/views/Home.vue'
