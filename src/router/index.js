@@ -72,7 +72,9 @@ const routes = [
         const status = err?.response?.status
         if (status === 404 || status === 403) {
           // 明確不是刀匠 / 禁止
+          console.log('Not an artisan (by is_artisan.php)')
           return next({ name: 'Home', replace: true })
+          
         }
         // 2) 後備方案：若還沒有 is_artisan.php，就探一次 artisanProfile.php
         try {
@@ -147,6 +149,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiredRole) {
     const roles = Array.isArray(to.meta.requiredRole) ? to.meta.requiredRole : [to.meta.requiredRole]
     if (!roles.includes(userRole)) {
+      // alert("Please Login before entering this page. redirecting to Home page.")
       return next({ name: 'Home' })
     }
   }

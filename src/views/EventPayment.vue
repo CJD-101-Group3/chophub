@@ -59,7 +59,7 @@ onMounted(async () => {
     error.value = null
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE}api/getEventById.php?id=${eventId.value}`)
+        const response = await fetch(`${import.meta.env.VITE_API_BASE}events/getEventById.php?id=${eventId.value}`)
         const text = await response.text()
 
         let data

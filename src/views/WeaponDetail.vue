@@ -121,7 +121,7 @@ function loadModel(weaponId) {
 async function loadWeaponDetail(weaponId) {
   if (!weaponId) return;
   try {
-    const res = await axios.get(`http://localhost:8888/ChopHub-API/api/weapon/getWeapon.php?weapon_id=${weaponId}`);
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE}api/weapon/getWeapon.php?weapon_id=${weaponId}`);
     if (res.data.status === 'success') {
       weaponDetail.value = res.data.data;
     } else {
@@ -137,7 +137,7 @@ async function loadComments(weaponId) {
   loading.value = true;
   weapons_comment.value = [];
   try {
-    const res = await axios.get(`http://localhost:8888/ChopHub-API/api/weapon/getComments.php?weapon_id=${weaponId}`);
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE}api/weapon/getComments.php?weapon_id=${weaponId}`);
     if (res.data.status === 'success') weapons_comment.value = res.data.data;
   } catch (err) {
     console.error(err);
@@ -151,7 +151,7 @@ async function addComment() {
   loading.value = true;
   const weaponId = route.params.weapon_id;
   try {
-    await axios.post('http://localhost:8888/ChopHub-API/api/weapon/weaponsComment.php', {
+    await axios.post(`${import.meta.env.VITE_API_BASE}api/weapon/weaponsComment.php`, {
       user_id: currentUserId,
       weapon_id: weaponId,
       comment_content: newCommentText.value.trim()
@@ -309,10 +309,9 @@ onBeforeUnmount(() => {
                             {{ comment.content }}
                           </p>
                           <div class="flex justify-between items-center text-xs text-gray-500">
-                            <span>{{ formatTimeAgo(comment.time) }} 讚 檢舉</span>
+                            <span>{{ formatTimeAgo(comment.time) }}</span>
                             <div class="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition-colors">
-                              <span>{{ comment.likes }}</span>
-                              <span>{{ comment.isLikedByUser ? '👍' : '👍' }}</span>
+                              <span>{{ comment.isLikedByUser ? '' : '' }}</span>
                             </div>
                           </div>
                         </div>
