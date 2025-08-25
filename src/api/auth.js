@@ -1,6 +1,7 @@
 import api from './axios.js'; 
 
-const API_BASE_URL = 'https://tibamef2e.com/cjd101/g3/api';
+// const API_BASE_URL = 'https://tibamef2e.com/cjd101/g3/api';
+const API_BASE_URL = 'http://localhost:8888/chophub-API/api/'; // 本機測試用
 
 /**
  * 呼叫後端登入 API
