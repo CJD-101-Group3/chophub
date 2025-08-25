@@ -1,12 +1,7 @@
 // src/api/auth.js
 import api from './axios.js'; // 假設您已經在這個檔案中設定了 withCredentials
 
-<<<<<<< HEAD
-// 您的後端 API 基礎路徑
-const API_BASE_URL = 'http://localhost:8888/ChOPHub-API/api';
-=======
 const API_BASE_URL = 'https://tibamef2e.com/cjd101/g3/api/';
->>>>>>> 7fbf986b3909fe73efafd038c0a6d124ef261980
 
 /**
  * 呼叫後端登入 API
