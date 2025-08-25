@@ -25,37 +25,24 @@ const comments = ref([]);
 const isLoading = ref(true);
 const error = ref(null);
 
-// 當前登入者設定為 rubyforge (ID: 1)
-const currentUser = ref({
-  id: 1, 
-  name: '載入中...',
-  avatar: defaultAvatar
-});
+const currentUser = ref({ id: 1, name: '載入中...', avatar: defaultAvatar });
 const currentUserId = currentUser.value.id;
-
-// 分享提示
 const shareFeedback = ref('');
-
-// 新留言 & 檢舉狀態
 const newCommentText = ref('');
 const showReportModal = ref(false);
 const reportReason = ref('');
-
-// 控制選項菜單的顯示狀態
 const showOptionsMenu = ref(false);
 
 // --- Computed 屬性 ---
 const isCommentSubmittable = computed(() => newCommentText.value.trim() !== '');
-
-// 判斷當前登入者是否為貼文作者
-const isAuthor = computed(() => {
-  return post.value && currentUser.value && post.value.author.id === currentUser.value.id;
-});
+const isAuthor = computed(() => post.value && currentUser.value && post.value.author.id === currentUser.value.id);
 
 // --- API 呼叫 ---
 const fetchCurrentUser = async () => {
   try {
-    const response = await axios.get(`http://localhost:8888/ChopHub-API/api/posts/getPostUser.php?user_id=${currentUserId}`);
+    // --- 【重要修改點】 ---
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/getPostUser.php?user_id=${currentUserId}`;
+    const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       currentUser.value = response.data.data;
     }
@@ -71,7 +58,8 @@ const fetchPostDetail = async () => {
   isLoading.value = true;
   error.value = null;
   try {
-    const apiUrl = `http://localhost:8888/ChopHub-API/api/posts/getPostDetail.php?post_id=${postId}&user_id=${currentUserId}`;
+    // --- 【重要修改點】 ---
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/getPostDetail.php?post_id=${postId}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       response.data.data.post.author.badges = [badge1, badge2, badge3];
@@ -93,7 +81,8 @@ const fetchPostDetail = async () => {
 async function postComment() {
   if (!isCommentSubmittable.value || !post.value) return;
   try {
-    const apiUrl = 'http://localhost:8888/ChopHub-API/api/posts/postComment.php';
+    // --- 【重要修改點】 ---
+    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/postComment.php`;
     const response = await axios.post(apiUrl, { 
       post_id: post.value.id, 
       user_id: currentUserId,
@@ -112,7 +101,8 @@ async function deletePost() {
   if (!isAuthor.value) return;
   if (window.confirm('您確定要刪除這篇貼文嗎？此操作無法復原。')) {
     try {
-      const apiUrl = 'http://localhost:8888/ChopHub-API/api/posts/deletePost.php';
+      // --- 【重要修改點】 ---
+      const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/deletePost.php`;
       const response = await axios.post(apiUrl, {
         post_id: post.value.id,
         user_id: currentUser.value.id
@@ -134,12 +124,14 @@ async function deletePost() {
 
 // --- 其他函式 ---
 async function handleShare() { try { await navigator.clipboard.writeText(window.location.href); shareFeedback.value = '<已複製連結>'; setTimeout(() => { shareFeedback.value = ''; }, 800); } catch (err) { alert('複製連結失敗，請手動複製網址。'); } }
-async function toggleLike() { if (!post.value) return; post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; try { await axios.post('http://localhost:8888/ChopHub-API/api/posts/toggleLike.php', { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; } }
-async function toggleSave() { if (!post.value) return; post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; try { await axios.post('http://localhost:8888/ChopHub-API/api/posts/toggleFavorite.php', { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; } }
-async function toggleCommentLike(comment) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; try { await axios.post('http://localhost:8888/ChopHub-API/api/posts/toggleCommentLike.php', { comment_id: comment.id, user_id: currentUserId }); } catch (err) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; } }
+// --- 【重要修改點】(以下多行) ---
+async function toggleLike() { if (!post.value) return; post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; try { await axios.post(`${import.meta.env.VITE_API_BASE}/posts/toggleLike.php`, { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; } }
+async function toggleSave() { if (!post.value) return; post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; try { await axios.post(`${import.meta.env.VITE_API_BASE}/posts/toggleFavorite.php`, { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; } }
+async function toggleCommentLike(comment) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; try { await axios.post(`${import.meta.env.VITE_API_BASE}/posts/toggleCommentLike.php`, { comment_id: comment.id, user_id: currentUserId }); } catch (err) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; } }
 function openReportModal() { showOptionsMenu.value = false; showReportModal.value = true; }
 function closeReportModal() { showReportModal.value = false; reportReason.value = ''; }
-function submitReport() { if (!reportReason.value.trim()) { alert('請輸入檢舉事由。'); return; } try { axios.post('http://localhost:8888/ChopHub-API/api/posts/submitReport.php', { post_id: post.value.id, user_id: currentUserId, reason: reportReason.value }); alert('檢舉已成功送出，感謝您的回報。'); closeReportModal(); } catch (err) { alert('提交失敗，請稍後再試。'); } }
+function submitReport() { if (!reportReason.value.trim()) { alert('請輸入檢舉事由。'); return; } try { axios.post(`${import.meta.env.VITE_API_BASE}/posts/submitReport.php`, { post_id: post.value.id, user_id: currentUserId, reason: reportReason.value }); alert('檢舉已成功送出，感謝您的回報。'); closeReportModal(); } catch (err) { alert('提交失敗，請稍後再試。'); } }
+// --- 修改結束 ---
 const inverseScale = ref(1);
 const modalStyle = computed(() => ({ transform: `scale(${inverseScale.value})`}));
 function detectZoom() { const zoomLevel = window.devicePixelRatio || 1; inverseScale.value = 1 / zoomLevel; }
