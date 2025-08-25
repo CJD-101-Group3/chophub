@@ -38,7 +38,7 @@ const fetchPosts = async () => {
     // --- 【重要修改點】 ---
     // 將寫死的 localhost 路徑，改成讀取 .env 檔案中的環境變數
     // 這樣在開發和部署時，Vite 會自動使用正確的 API 網址
-    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/getPosts.php?${params}`;
+    const apiUrl = `${import.meta.env.VITE_API_BASE}posts/getPosts.php?${params}`;
     // --- 修改結束 ---
     
     const response = await axios.get(apiUrl);

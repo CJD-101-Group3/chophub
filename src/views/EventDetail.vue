@@ -25,7 +25,7 @@ async function fetchEventDetails(id) {
    loading.value = true;
    error.value = null;
    try {
-      const apiUrl = import.meta.env.VITE_API_BASE + `/api/events/getEventById.php?id=${id}`;
+      const apiUrl = import.meta.env.VITE_API_BASE + `events/getEventById.php?id=${id}`;
       const response = await axios.get(apiUrl);
       eventDetails.value = response.data.data || response.data;
    } catch (err) {
@@ -41,7 +41,7 @@ async function fetchSuggestedEvents(idToExclude) {
    suggestedEventsError.value = null;
    try {
       // 【已修正】使用傳入的 idToExclude 變數
-      const apiUrl = import.meta.env.VITE_API_BASE + `/api/events/getSuggestedEvents.php?limit=3&excludeId=${idToExclude}`;
+      const apiUrl = import.meta.env.VITE_API_BASE + `events/getSuggestedEvents.php?limit=3&excludeId=${idToExclude}`;
       const response = await axios.get(apiUrl);
       suggestedEvents.value = response.data.data || response.data;
    } catch (err) {
