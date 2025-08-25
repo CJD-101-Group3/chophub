@@ -2,6 +2,7 @@
 import { defineStore } from 'pinia'
 import { login, signup, getMe, logout } from '@/api/auth.js'; // 1. 引入 logout
 
+
 const USER_KEY = 'user'
 
 // 讓使用者物件穩定：補上缺少的欄位（特別是 role）

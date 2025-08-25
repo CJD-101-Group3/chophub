@@ -1,4 +1,5 @@
 import api from './axios.js'; 
+import axios from 'axios';
 
 // const API_BASE_URL = 'https://tibamef2e.com/cjd101/g3/api';
 const API_BASE_URL = 'http://localhost:8888/chophub-API/api/'; // 本機測試用
@@ -11,7 +12,7 @@ const API_BASE_URL = 'http://localhost:8888/chophub-API/api/'; // 本機測試�
 export async function login(credentials) {
   try {
     // 【關鍵修改 #3】將所有的 axios.post/get 改為 api.post/get
-    const response = await api.post(`${API_BASE_URL}/login.php`, credentials);
+    const response = await api.post(`${API_BASE_URL}/user_login.php`, credentials);
     return response.data;
   } catch (e) {
     const errorMessage = e.response?.data?.error || e.message || '登入時發生未知錯誤';
@@ -35,7 +36,7 @@ export async function signup(credentials) {
 }
 
 export async function logout() {
-  const res = await axios.post(`${API_BASE}/logout.php`, {}, { withCredentials: true })
+  const res = await axios.post(`${API_BASE_URL}/user_logout.php`, {}, { withCredentials: true })
   return res.data
 }
 
@@ -45,7 +46,7 @@ export async function logout() {
  */
 export async function getMe() {
   try {
-    const response = await api.get(`${API_BASE_URL}/me.php`);
+    const response = await api.get(`${API_BASE_URL}/user_me.php`);
     return response.data.user; 
   } catch (e) {
     const errorMessage = e.response?.data?.message || '憑證無效或已過期';
