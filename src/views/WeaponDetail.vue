@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch,computed  } from 'vue';
 import { useRoute } from 'vue-router';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -32,6 +32,12 @@ function getWeaponModel(weapon_id) {
     default: return getPublicImg('models/model2.glb') // 預設
   }
 }
+
+const features = computed(() => {
+  if (!weaponDetail.value) return []
+  return [weaponDetail.value.port, weaponDetail.value.port2, weaponDetail.value.port3]
+    .filter(Boolean) // 過濾掉 null / undefined / 空字串
+})
 
 // 初始化 Three.js
 function initThree() {
@@ -243,17 +249,25 @@ onBeforeUnmount(() => {
 
         <!-- 面板內容 (所有內容都放在這個滾動容器中) -->
         <div class="flex-1 overflow-y-auto">
-          <!-- 特點介紹 -->
-          <div v-if="activeTab === 'features'" class="p-6 bg-black">
-            <div class="flex flex-col gap-6">
-              <div v-for="n in 3" :key="n" class="flex items-start gap-4 ">
-                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white text-black text-xl font-bold flex items-center justify-center">{{ n }}</div>
-                <div class="flex-grow bg-white rounded-xl p-5 text-gray-800 text-sm leading-relaxed">
-                  這是第 {{ n }} 點特色介紹。蝴蝶刀的刀刃採用虛構材質「黑曜鋼」打造，經過高溫鍛造與精密拋光，呈現出深邃黑亮的金屬質感。
-                </div>
-              </div>
-            </div>
-          </div>
+          <div class="flex-1 overflow-y-auto">
+  <!-- 特點介紹 -->
+  <div v-if="activeTab === 'features'" class="p-6 bg-black">
+    <div class="flex flex-col gap-6">
+      <div
+        v-for="(feature, index) in features"
+        :key="index"
+        class="flex items-start gap-4"
+      >
+        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white text-black text-xl font-bold flex items-center justify-center">
+          {{ index + 1 }}
+        </div>
+        <div class="flex-grow bg-white rounded-xl p-5 text-gray-800 text-sm leading-relaxed">
+          {{ feature }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
           
           <!-- 貼文內容 -->
           <div v-if="activeTab === 'posts'" class="p-6 bg-[#282828] text-gray-200">
