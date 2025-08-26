@@ -6,15 +6,12 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import Linepay_icon from '@/assets/icon/LINE-Pay.png'
 
-// ---- 價格與表單 ----
-const quantity = ref(1)
-
-const nameRef = ref('')
-const emailRef = ref('')
-const phoneRef = ref('')
-const messageRef = ref('')
-
-const route = useRoute()
+/* ---------------- 小工具 ---------------- */
+const joinUrl = (base, path) => {
+    const b = String(base || '').replace(/\/+$/, '')
+    const p = String(path || '').replace(/^\/+/, '')
+    return `${b}/${p}`
+}
 
 // 小工具：把 query/param 轉數字（支援陣列/不存在）
 const toNum = (v, fallback = 0) => {
@@ -23,31 +20,33 @@ const toNum = (v, fallback = 0) => {
     return Number.isFinite(n) ? n : fallback
 }
 
-// 先看 params.id，沒有就看 query.eventId
+/* ---------------- 路由 & 狀態 ---------------- */
+const route = useRoute()
+
+const quantity = ref(1)
+const nameRef = ref('')
+const emailRef = ref('')
+const phoneRef = ref('')
+const messageRef = ref('')
+
 const eventId = computed(() => toNum(route.params.id ?? route.query.eventId, 0))
 
-// 若網址有 ?quantity=...，同步到本地的 quantity（只在初始化時執行一次）
+// 初始化把 ?quantity=... 同步到本地
 onMounted(() => {
     const q = toNum(route.query.quantity, quantity.value || 1)
     quantity.value = Math.min(99, Math.max(1, q))
 })
 
-// 抓活動資料
+/* ---------------- 活動資料載入 ---------------- */
 const eventData = ref(null)
 const loading = ref(false)
 const error = ref(null)
 
-// 動態獲取活動圖片和價格
 const eventImage = computed(() => eventData.value?.imageUrl || getPublicImg('events/Khukuri.png'))
 const price = computed(() => eventData.value?.price || 500)
-
-//返回上一頁
-const backToEventPath = computed(() => {
-    return eventId.value ? `/event/${eventId.value}` : '/EventHomePage'
-})
-
-// 顯示用總金額
 const totalAmount = computed(() => (price.value * quantity.value).toLocaleString('en-US'))
+
+const backToEventPath = computed(() => (eventId.value ? `/event/${eventId.value}` : '/EventHomePage'))
 
 onMounted(async () => {
     if (!eventId.value) {
@@ -59,7 +58,8 @@ onMounted(async () => {
     error.value = null
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE}/events/getEventById.php?id=${eventId.value}`)
+        const url = joinUrl(import.meta.env.VITE_API_BASE, `/events/getEventById.php?id=${eventId.value}`)
+        const response = await fetch(url)
         const text = await response.text()
 
         let data
@@ -71,7 +71,6 @@ onMounted(async () => {
             return
         }
 
-        // 根據你的 PHP API，success 狀態是 "success"
         if (data?.status === 'success' && data.data) {
             eventData.value = data.data
         } else {
@@ -86,44 +85,32 @@ onMounted(async () => {
     }
 })
 
-// 可選：數量調整
+/* ---------------- 數量控制 ---------------- */
 function increment() {
-    console.log('Before increment:', quantity.value)
-    if (quantity.value < 99) {
-        quantity.value++
-    }
-    console.log('After increment:', quantity.value)
+    if (quantity.value < 99) quantity.value++
 }
 function decrement() {
-    console.log('Before decrement:', quantity.value)
-    if (quantity.value > 1) {
-        quantity.value--
-    }
-    console.log('After decrement:', quantity.value)
+    if (quantity.value > 1) quantity.value--
 }
 function handleQuantityInput(e) {
     let v = parseInt(e.target.value, 10)
-    if (isNaN(v) || v < 1) {
-        v = 1
-    } else if (v > 99) {
-        v = 99
-    }
+    if (isNaN(v) || v < 1) v = 1
+    else if (v > 99) v = 99
     quantity.value = v
 }
 
-// ---- 送出付款 ----
+/* ---------------- 送出付款 ---------------- */
 async function handlePay() {
+    // 簡單表單檢查
+    if (!eventId.value) return alert('找不到活動 ID')
     if (!nameRef.value || !emailRef.value || !phoneRef.value) {
         alert('請填寫姓名、Email、電話')
         return
     }
-    if (!eventId.value) {
-        alert('找不到活動 ID')
-        return
-    }
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE}/linepay/checkout_payment.php`, {
+        const api = joinUrl(import.meta.env.VITE_API_BASE, '/linepay/checkout_payment.php')
+        const response = await fetch(api, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -153,9 +140,11 @@ async function handlePay() {
             return
         }
 
-        const url = data?.response?.info?.paymentUrl?.web
-        if (url) {
-            window.location.href = url
+        // 取 LINE Pay 付款網址（web/app 任何一個能用就跳）
+        const payUrl = data?.response?.info?.paymentUrl?.web || data?.response?.info?.paymentUrl?.app
+
+        if (payUrl) {
+            window.location.href = payUrl
         } else {
             alert('未取得付款網址')
         }
