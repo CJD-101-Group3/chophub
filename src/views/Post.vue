@@ -48,6 +48,7 @@ const fetchPosts = async () => {
         id: parseInt(post.post_id, 10),
         postImage: post.image_url, // 注意：這裡的路徑也需要在後端改成線上網址
         userName: post.username,
+        authorAvatar: post.avatar_url, //新增//
         postTitle: post.title,
         description: post.content,
         likes: parseInt(post.likes_count, 10) || 0,
