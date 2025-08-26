@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 
-// --- 靜態資源 ---
+// --- Static Assets ---
 import smallLikeIcon from '@/assets/icon/smalllike.svg';
 import smallLikeActiveIcon from '@/assets/icon/smalllike_h.svg';
 import smallStarIcon from '@/assets/icon/smallstar.svg';
@@ -15,11 +15,11 @@ import badge2 from '@/assets/icon/badge2.png';
 import badge3 from '@/assets/icon/badge3.png';
 import defaultAvatar from '@/assets/icon/smalluser.svg';
 
-// --- 路由 ---
+// --- Router ---
 const route = useRoute();
 const router = useRouter();
 
-// --- 響應式狀態 (API驅動) ---
+// --- Reactive State ---
 const post = ref(null);
 const comments = ref([]);
 const isLoading = ref(true);
@@ -27,62 +27,99 @@ const error = ref(null);
 
 const currentUser = ref({ id: 1, name: '載入中...', avatar: defaultAvatar });
 const currentUserId = currentUser.value.id;
+
 const shareFeedback = ref('');
 const newCommentText = ref('');
 const showReportModal = ref(false);
 const reportReason = ref('');
 const showOptionsMenu = ref(false);
 
-// --- Computed 屬性 ---
+// --- Computed Properties ---
 const isCommentSubmittable = computed(() => newCommentText.value.trim() !== '');
-const isAuthor = computed(() => post.value && currentUser.value && post.value.author.id === currentUser.value.id);
+const isAuthor = computed(() => {
+  return post.value && currentUser.value && post.value.author.id === currentUser.value.id;
+});
 
-// --- API 呼叫 ---
+// --- API & Image Handling ---
+const API_BASE = import.meta.env.VITE_API_BASE;
+
+// [CRUCIAL] This is the base URL for your images.
+// It combines your API base with the specific 'uploads' folder.
+const IMAGE_BASE_URL = `${API_BASE}/uploads/`;
+
+/**
+ * [CRUCIAL] Helper function to construct the full image URL.
+ * This logic mirrors your PHP code.
+ * @param {string} path - The image filename or full URL from the API.
+ * @returns {string|null} - The full, correct URL for the image or null if path is invalid.
+ */
+const getFullImageUrl = (path) => {
+  // If the path is null, empty, or just whitespace, return null to use the default avatar.
+  if (!path || !path.trim()) {
+    return null;
+  }
+  
+  // If the path is already a full URL, return it directly.
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
+  
+  // Otherwise, construct the full URL.
+  // Example: 'user-avatar.png' becomes 'http://localhost:8888/chophub-API/uploads/user-avatar.png'
+  return `${IMAGE_BASE_URL}${path}`;
+};
+
 const fetchCurrentUser = async () => {
   try {
-    // --- 【重要修改點】 ---
-    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/getPostUser.php?user_id=${currentUserId}`;
+    const apiUrl = `${API_BASE}/posts/getPostUser.php?user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
     if (response.data && response.data.status === 'success') {
       currentUser.value = response.data.data;
     }
   } catch (err) {
-    console.error('獲取當前使用者資訊失敗:', err);
+    console.error('Failed to fetch current user:', err);
     currentUser.value.name = '訪客';
   }
 };
 
 const fetchPostDetail = async () => {
   const postId = route.params.id;
-  if (!postId) { error.value = "無效的貼文 ID。"; isLoading.value = false; return; }
+  if (!postId) {
+    error.value = "Invalid post ID.";
+    isLoading.value = false;
+    return;
+  }
   isLoading.value = true;
   error.value = null;
   try {
-    // --- 【重要修改點】 ---
-    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/getPostDetail.php?post_id=${postId}&user_id=${currentUserId}`;
+    const apiUrl = `${API_BASE}/posts/getPostDetail.php?post_id=${postId}&user_id=${currentUserId}`;
     const response = await axios.get(apiUrl);
+    
     if (response.data && response.data.status === 'success') {
-      response.data.data.post.author.badges = [badge1, badge2, badge3];
-      response.data.data.post.saves = response.data.data.post.stars;
-      post.value = response.data.data.post;
-      comments.value = response.data.data.comments;
+      const postData = response.data.data.post;
+      const commentsData = response.data.data.comments;
+      
+      postData.author.badges = [badge1, badge2, badge3];
+      postData.saves = postData.stars;
+      
+      post.value = postData;
+      comments.value = commentsData;
     } else {
-      throw new Error(response.data.message || '無法載入貼文。');
+      throw new Error(response.data.message || 'Could not load post.');
     }
   } catch (err) {
-    console.error('獲取貼文詳情失敗:', err);
-    error.value = err.response?.data?.message || err.message || '發生未知錯誤。';
+    console.error('Failed to fetch post details:', err);
+    error.value = err.response?.data?.message || err.message || 'An unknown error occurred.';
   } finally {
     isLoading.value = false;
   }
 };
 
-// --- 互動函式 ---
+// --- Interaction Functions ---
 async function postComment() {
   if (!isCommentSubmittable.value || !post.value) return;
   try {
-    // --- 【重要修改點】 ---
-    const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/postComment.php`;
+    const apiUrl = `${API_BASE}/posts/postComment.php`;
     const response = await axios.post(apiUrl, { 
       post_id: post.value.id, 
       user_id: currentUserId,
@@ -92,51 +129,48 @@ async function postComment() {
       comments.value.unshift(response.data.data);
       newCommentText.value = '';
     } else {
-      throw new Error(response.data.message || '無法新增留言。');
+      throw new Error(response.data.message || 'Could not add comment.');
     }
-  } catch (err) { console.error("新增留言失敗:", err); alert('無法新增留言，請稍後再試。'); }
+  } catch (err) { console.error("Failed to add comment:", err); alert('Could not add comment, please try again later.'); }
 }
 
 async function deletePost() {
   if (!isAuthor.value) return;
-  if (window.confirm('您確定要刪除這篇貼文嗎？此操作無法復原。')) {
+  if (window.confirm('Are you sure you want to delete this post? This cannot be undone.')) {
     try {
-      // --- 【重要修改點】 ---
-      const apiUrl = `${import.meta.env.VITE_API_BASE}/posts/deletePost.php`;
+      const apiUrl = `${API_BASE}/posts/deletePost.php`;
       const response = await axios.post(apiUrl, {
         post_id: post.value.id,
         user_id: currentUser.value.id
       });
       if (response.data && response.data.status === 'success') {
-        alert('貼文已成功刪除！');
+        alert('Post deleted successfully!');
         router.back();
       } else {
-        throw new Error(response.data.message || '刪除失敗。');
+        throw new Error(response.data.message || 'Deletion failed.');
       }
     } catch (err) {
-      console.error("刪除貼文失敗:", err);
-      alert(err.response?.data?.message || '刪除貼文時發生錯誤，請稍後再試。');
+      console.error("Failed to delete post:", err);
+      alert(err.response?.data?.message || 'An error occurred while deleting the post, please try again later.');
     } finally {
       showOptionsMenu.value = false;
     }
   }
 }
 
-// --- 其他函式 ---
-async function handleShare() { try { await navigator.clipboard.writeText(window.location.href); shareFeedback.value = '<已複製連結>'; setTimeout(() => { shareFeedback.value = ''; }, 800); } catch (err) { alert('複製連結失敗，請手動複製網址。'); } }
-// --- 【重要修改點】(以下多行) ---
-async function toggleLike() { if (!post.value) return; post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; try { await axios.post(`${import.meta.env.VITE_API_BASE}/posts/toggleLike.php`, { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; } }
-async function toggleSave() { if (!post.value) return; post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; try { await axios.post(`${import.meta.env.VITE_API_BASE}/posts/toggleFavorite.php`, { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; } }
-async function toggleCommentLike(comment) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; try { await axios.post(`${import.meta.env.VITE_API_BASE}/posts/toggleCommentLike.php`, { comment_id: comment.id, user_id: currentUserId }); } catch (err) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; } }
+// --- Other Functions ---
+async function handleShare() { try { await navigator.clipboard.writeText(window.location.href); shareFeedback.value = '<Link Copied>'; setTimeout(() => { shareFeedback.value = ''; }, 800); } catch (err) { alert('Failed to copy link.'); } }
+async function toggleLike() { if (!post.value) return; post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; try { await axios.post(`${API_BASE}/posts/toggleLike.php`, { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isLikedByUser = !post.value.isLikedByUser; post.value.likes += post.value.isLikedByUser ? 1 : -1; } }
+async function toggleSave() { if (!post.value) return; post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; try { await axios.post(`${API_BASE}/posts/toggleFavorite.php`, { post_id: post.value.id, user_id: currentUserId }); } catch (err) { post.value.isFavoritedByUser = !post.value.isFavoritedByUser; post.value.saves += post.value.isFavoritedByUser ? 1 : -1; } }
+async function toggleCommentLike(comment) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; try { await axios.post(`${API_BASE}/posts/toggleCommentLike.php`, { comment_id: comment.id, user_id: currentUserId }); } catch (err) { comment.isLikedByUser = !comment.isLikedByUser; comment.likes += comment.isLikedByUser ? 1 : -1; } }
 function openReportModal() { showOptionsMenu.value = false; showReportModal.value = true; }
 function closeReportModal() { showReportModal.value = false; reportReason.value = ''; }
-function submitReport() { if (!reportReason.value.trim()) { alert('請輸入檢舉事由。'); return; } try { axios.post(`${import.meta.env.VITE_API_BASE}/posts/submitReport.php`, { post_id: post.value.id, user_id: currentUserId, reason: reportReason.value }); alert('檢舉已成功送出，感謝您的回報。'); closeReportModal(); } catch (err) { alert('提交失敗，請稍後再試。'); } }
-// --- 修改結束 ---
+function submitReport() { if (!reportReason.value.trim()) { alert('Please enter a reason for the report.'); return; } try { axios.post(`${API_BASE}/posts/submitReport.php`, { post_id: post.value.id, user_id: currentUserId, reason: reportReason.value }); alert('Report submitted successfully. Thank you.'); closeReportModal(); } catch (err) { alert('Submission failed, please try again later.'); } }
 const inverseScale = ref(1);
 const modalStyle = computed(() => ({ transform: `scale(${inverseScale.value})`}));
 function detectZoom() { const zoomLevel = window.devicePixelRatio || 1; inverseScale.value = 1 / zoomLevel; }
 
-// --- 生命週期鉤子 ---
+// --- Lifecycle Hooks ---
 onMounted(() => {
   fetchPostDetail();
   fetchCurrentUser();
@@ -156,13 +190,16 @@ onUnmounted(() => {
 
     <div v-if="post && !isLoading" class="w-full h-full lg:h-[90vh] lg:w-full lg:max-w-[1600px] flex flex-col lg:flex-row shadow-2xl lg:rounded-2xl overflow-hidden">
       <div class="hidden lg:flex lg:w-7/12 bg-black items-center justify-center">
-        <img :src="post.imageUrl" alt="Post Image" class="max-h-full max-w-full object-contain">
+        <!-- [MODIFIED] Using getFullImageUrl for the post image -->
+        <img :src="getFullImageUrl(post.imageUrl)" alt="Post Image" class="max-h-full max-w-full object-contain">
       </div>
       
       <div class="w-full h-full lg:w-5/12 flex flex-col bg-white dark:bg-zinc-900 relative">
         <header class="p-4 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-700 lg:hidden">
             <div class="flex items-center gap-3">
-                <img :src="post.author.avatar" alt="Author Avatar" class="w-8 h-8 rounded-full object-cover">
+                <!-- [MODIFIED] Using getFullImageUrl for the author avatar -->
+                <img :src="getFullImageUrl(post.author.avatar) || defaultAvatar" alt="Author Avatar" class="w-8 h-8 rounded-full object-cover">
+                <div>{{ post.author }}</div>
                 <div class="flex items-center gap-1.5">
                     <span class="font-bold text-zinc-800 dark:text-zinc-100">{{ post.author.name }}</span>
                     <img v-for="(badge, index) in post.author.badges" :key="index" :src="badge" alt="Badge" class="w-5 h-5 object-contain">
@@ -171,7 +208,6 @@ onUnmounted(() => {
             <div class="flex items-center">
               <div v-if="isAuthor" class="relative">
                 <button @click="showOptionsMenu = !showOptionsMenu" class="p-1 text-zinc-600 dark:text-zinc-300">
-                  <!-- 【已修改】手機版的 SVG 圖示，由垂直改為水平 -->
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                   </svg>
@@ -195,7 +231,8 @@ onUnmounted(() => {
             <div class="p-4 lg:p-6">
                 <div class="hidden lg:flex items-center justify-between gap-3 mb-4">
                     <div class="flex items-center gap-3">
-                      <img :src="post.author.avatar" alt="Author Avatar" class="w-10 h-10 rounded-full object-cover">
+                      <!-- [MODIFIED] Using getFullImageUrl for the author avatar -->
+                      <img :src="getFullImageUrl(post.author.avatar) || defaultAvatar" alt="Author Avatar" class="w-10 h-10 rounded-full object-cover">
                       <div class="flex items-center gap-1.5">
                           <span class="font-bold text-zinc-800 dark:text-zinc-100">{{ post.author.name }}</span>
                           <img v-for="(badge, index) in post.author.badges" :key="index" :src="badge" alt="Badge" class="w-5 h-5 object-contain">
@@ -203,14 +240,14 @@ onUnmounted(() => {
                     </div>
                     <div v-if="isAuthor" class="relative">
                       <button @click="showOptionsMenu = !showOptionsMenu" class="p-2 rounded-full text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
-                        <!-- 【已修改】電腦版的 SVG 圖示，由垂直改為水平 -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                         </svg>
                       </button>
                     </div>
                 </div>
-                <div class="aspect-w-4 aspect-h-3 bg-zinc-800 rounded-lg overflow-hidden mb-4 lg:hidden"><img :src="post.imageUrl" alt="Post Image" class="w-full h-full object-cover"></div>
+                <!-- [MODIFIED] Using getFullImageUrl for the mobile post image -->
+                <div class="aspect-w-4 aspect-h-3 bg-zinc-800 rounded-lg overflow-hidden mb-4 lg:hidden"><img :src="getFullImageUrl(post.imageUrl)" alt="Post Image" class="w-full h-full object-cover"></div>
                 <div class="text-zinc-700 dark:text-zinc-300">
                     <h2 class="font-bold text-lg text-zinc-800 dark:text-zinc-100">{{ post.title }}</h2>
                     <p class="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{{ post.content }}</p>
@@ -240,10 +277,12 @@ onUnmounted(() => {
             <div class="p-4 lg:p-6">
                 <h3 class="font-bold text-lg text-zinc-800 dark:text-zinc-100 mb-4">留言</h3>
                 <div v-for="comment in comments" :key="comment.id" class="flex gap-3 mb-6">
-                    <img :src="comment.author.avatar" alt="User Avatar" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                    <!-- [MODIFIED] Using getFullImageUrl for comment author avatar -->
+                    <img :src="getFullImageUrl(comment.author.avatar) || defaultAvatar" alt="User Avatar" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-grow">
                         <p class="text-sm"><span class="font-semibold text-zinc-800 dark:text-zinc-100">{{ comment.author.name }}</span><span class="ml-2 text-zinc-700 dark:text-zinc-300">{{ comment.content }}</span></p>
-                        <img v-if="comment.imageUrl" :src="comment.imageUrl" class="mt-2 rounded-lg max-w-xs object-cover" alt="Comment image">
+                        <!-- [MODIFIED] Using getFullImageUrl for image inside a comment -->
+                        <img v-if="comment.imageUrl" :src="getFullImageUrl(comment.imageUrl)" class="mt-2 rounded-lg max-w-xs object-cover" alt="Comment image">
                         <div class="flex items-center text-xs text-zinc-500 dark:text-zinc-400 mt-2 gap-4">
                             <span>{{ comment.time }}</span>
                             <button @click="toggleCommentLike(comment)" class="flex items-center gap-1 font-semibold transition-colors" :class="comment.isLikedByUser ? 'text-[#9FB0F2]' : 'hover:text-zinc-900 dark:hover:text-zinc-100'"><img :src="comment.isLikedByUser ? smallLikeActiveIcon : smallLikeIcon" class="h-4 w-4" alt="Like" /><span>{{ comment.likes > 0 ? comment.likes : '讚' }}</span></button>
@@ -254,7 +293,8 @@ onUnmounted(() => {
         </div>
         <div class="p-4 border-t border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
             <div class="flex items-center gap-3">
-                <img :src="currentUser.avatar" alt="User Avatar" class="w-10 h-10 rounded-full object-cover">
+                <!-- [MODIFIED] Using getFullImageUrl for current user avatar -->
+                <img :src="getFullImageUrl(currentUser.avatar) || defaultAvatar" alt="User Avatar" class="w-10 h-10 rounded-full object-cover">
                 <div class="flex-grow flex items-center border border-zinc-300 dark:border-zinc-600 rounded-full px-2 py-1">
                     <input v-model="newCommentText" @keyup.enter="postComment" type="text" placeholder="新增留言..." class="flex-grow bg-transparent focus:outline-none text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 px-2" />
                     <button @click="postComment" :disabled="!isCommentSubmittable" class="p-2 rounded-full transition-colors" :class="{ 'text-zinc-500 hover:text-blue-500': isCommentSubmittable, 'text-zinc-400 opacity-50 cursor-not-allowed': !isCommentSubmittable }"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/><path d="M0 0h24v24H0z" fill="none"/></svg></button>

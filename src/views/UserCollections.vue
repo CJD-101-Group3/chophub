@@ -98,7 +98,7 @@ onMounted(async () => {
     if (response.data.status === 'success') {
       const userData = response.data.data;
       memberInfo.value.avatarUrl = userData.avatar_url
-        ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
+        ? import.meta.env.VITE_API_BASE + `/${userData.avatar_url}`
         : getPublicImg('users/userp.png');
       memberInfo.value.name = userData.display_name;
     }

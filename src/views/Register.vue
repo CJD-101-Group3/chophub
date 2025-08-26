@@ -56,7 +56,7 @@ async function handleSubmit() {
       password: password.value
     }
 
-    const { data } = await axios.post(`${API_BASE}/api/signup.php`, payload, {
+    const { data } = await axios.post(`${API_BASE}/user_signup.php`, payload, {
       headers: { 'Content-Type': 'application/json' }
     })
 

@@ -25,6 +25,7 @@ const handleLogout = () => {
     // 直接呼叫 store 中的 logoutAction
     // 它會負責清除前後端狀態並跳轉頁面
     authStore.logoutAction();
+    console.log("hihi")
     handleClose(); // 關閉手機版側邊欄
 };
 
@@ -116,10 +117,10 @@ const defaultAvatar = '/src/assets/users/userp.png';
                 to="/UserProfile"
                 class="group flex items-center space-x-3 hover:text-white transition duration-300"
                 @click="handleClose">
-                <img 
+                <!-- <img 
                     :src="authStore.currentUser?.avatar_url || defaultAvatar" 
                     alt="Avatar" 
-                    class="w-12 h-12 rounded-full object-cover" />
+                    class="w-12 h-12 rounded-full object-cover" /> -->
                 <span class="font-bold text-2xl">{{ authStore.currentUser?.username }}</span>
             </RouterLink>
             <button

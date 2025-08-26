@@ -190,9 +190,9 @@ async function fetchReportedRecords() {
   const userId = authStore.userId; // 改這裡
 
   try {
-    const response = await axios.get(import.meta.env.VITE_API_BASE + '/user/get_repimport.meta.env.VITE_API_BASE + `/api/user/orts_on_user.php', {
-      params: { user_id: userId }
-    });
+  const response = await axios.get(import.meta.env.VITE_API_BASE + '/user/get_reports_on_user.php', {
+    params: { user_id: userId }
+  });
     if (response.data.status === 'success') {
       reportedRecords.value = response.data.data;
     } else {
@@ -225,7 +225,7 @@ onMounted(async () => {
     if (response.data.status === 'success') {
       const userData = response.data.data;
       memberInfo.value.avatarUrl = userData.avatar_url
-        ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
+        ? import.meta.env.VITE_API_BASE + `/${userData.avatar_url}`
         : getPublicImg('users/userp.png');
       memberInfo.value.name = userData.display_name;
     }

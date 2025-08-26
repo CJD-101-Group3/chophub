@@ -77,7 +77,8 @@ async function onFileChange (e) {
     fd.append('user_id', String(userId))  // ★ 關鍵：開發用直傳 user_id
 
     const { data } = await axios.post(
-      import.meta.env.VITE_API_BASE + `/user/userAvatar.php`
+      import.meta.env.VITE_API_BASE + `/user/userAvatar.php`,
+      fd // 傳遞 FormData
     )
 
     if (data.status === 'success') {
@@ -150,7 +151,7 @@ async function fetchUserProfile () {
     const userData = resp.data.data
     Object.assign(profileForm, userData)
     profileForm.avatarUrl = userData.avatar_url
-      ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
+      ? import.meta.env.VITE_API_BASE + `/${userData.avatar_url}`
       : getPublicImg('users/userp.png')
     memberInfo.value.name = userData.display_name
     memberInfo.value.avatarUrl = profileForm.avatarUrl
@@ -284,7 +285,7 @@ const removeSocialLink = (index) => {
 </script>
 
 <template>
-              <div class="absolute inset-0 -z-10">
+    <div class="absolute inset-0 -z-10">
       <vue-particles
       id="tsparticles"
       @particles-loaded="particlesLoaded"
@@ -925,9 +926,9 @@ const removeSocialLink = (index) => {
                         class="flex-1 bg-[#F2994A] text-white font-bold py-2 px-4 rounded-[8px] transition-colors hover:bg-white hover:text-black hover:border hover:border-[#F2994A]">
                   編輯
                 </button>
-                <button class="flex-1 bg-white hover:bg-gray-100 text-red-600 border border-red-600 font-bold py-2 px-4 rounded-[8px] transition-colors">
+                <!-- <button class="flex-1 bg-white hover:bg-gray-100 text-red-600 border border-red-600 font-bold py-2 px-4 rounded-[8px] transition-colors">
                   刪除帳號
-                </button>
+                </button> -->
               </template>
             </div>
           </div>

@@ -142,7 +142,7 @@ async function fetchUserProfile () {
 
       // avatarUrl 轉成完整網址顯示
       profileForm.avatarUrl = userData.avatar_url
-        ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
+        ? import.meta.env.VITE_API_BASE + `/${userData.avatar_url}`
         : getPublicImg('users/userp.png')
 
       memberInfo.value.avatarUrl = profileForm.avatarUrl
@@ -885,11 +885,11 @@ function handleCancel (formType) {
                 >
                   編輯
                 </button>
-                <button
+                <!-- <button
                   class="flex-1 bg-white hover:bg-gray-100 text-red-600 border border-red-600 font-bold py-2 px-4 rounded-[8px] transition-colors"
                 >
                   刪除帳號
-                </button>
+                </button> -->
               </template>
             </div>
           </div>

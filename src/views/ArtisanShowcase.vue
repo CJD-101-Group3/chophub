@@ -70,7 +70,7 @@ onMounted(async () => {
       artisanProfile.value.joinDate = userData.created_at ? userData.created_at.split(' ')[0].replace(/-/g, '/') : '';
       artisanProfile.value.location = userData.location;
       artisanProfile.value.avatarUrl = userData.avatar_url
-        ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
+        ? import.meta.env.VITE_API_BASE + `/${userData.avatar_url}`
         : getPublicImg('users/userp.png');
       
       // ******** 將隱私設定存入 ref ********

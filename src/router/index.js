@@ -55,36 +55,13 @@ const routes = [
     path: '/ArtisanShowcase/:userId',
     name: 'ArtisanShowcase',
     component: ArtisanShowcase,
-    beforeEnter: async (to, from, next) => {
+    beforeEnter: (to, from, next) => {
       const { userId } = to.params
+      // 只檢查 userId 是否為數字
       if (!userId || isNaN(Number(userId))) {
         return next({ name: 'Home', replace: true })
       }
-      try {
-        // 1) 優先打輕量檢查 API：/api/is_artisan.php?user_id=xxx
-        const res = await axios.get(`${API_BASE}/api/is_artisan.php`, { params: { user_id: userId } })
-        if (res?.data?.is_artisan) {
-          return next()
-        }
-        // 非刀匠
-        return next({ name: 'Home', replace: true })
-      } catch (err) {
-        const status = err?.response?.status
-        if (status === 404 || status === 403) {
-          // 明確不是刀匠 / 禁止
-          console.log('Not an artisan (by is_artisan.php)')
-          return next({ name: 'Home', replace: true })
-          
-        }
-        // 2) 後備方案：若還沒有 is_artisan.php，就探一次 artisanProfile.php
-        try {
-          const r = await axios.get(`${API_BASE}/api/user/artisanProfile.php`, { params: { user_id: userId } })
-          const ok = r?.data?.status === 'success' && r?.data?.data
-          return ok ? next() : next({ name: 'Home', replace: true })
-        } catch {
-          return next({ name: 'Home', replace: true })
-        }
-      }
+      return next()
     }
   },
 
