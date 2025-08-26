@@ -77,7 +77,8 @@ async function onFileChange (e) {
     fd.append('user_id', String(userId))  // ★ 關鍵：開發用直傳 user_id
 
     const { data } = await axios.post(
-      import.meta.env.VITE_API_BASE + `/user/userAvatar.php`
+      import.meta.env.VITE_API_BASE + `/user/userAvatar.php`,
+      fd // 傳遞 FormData
     )
 
     if (data.status === 'success') {
@@ -284,7 +285,7 @@ const removeSocialLink = (index) => {
 </script>
 
 <template>
-              <div class="absolute inset-0 -z-10">
+    <div class="absolute inset-0 -z-10">
       <vue-particles
       id="tsparticles"
       @particles-loaded="particlesLoaded"
