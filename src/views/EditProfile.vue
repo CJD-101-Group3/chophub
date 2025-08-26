@@ -142,7 +142,7 @@ async function fetchUserProfile () {
 
       // avatarUrl 轉成完整網址顯示
       profileForm.avatarUrl = userData.avatar_url
-        ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
+        ? import.meta.env.VITE_API_BASE + `/${userData.avatar_url}`
         : getPublicImg('users/userp.png')
 
       memberInfo.value.avatarUrl = profileForm.avatarUrl

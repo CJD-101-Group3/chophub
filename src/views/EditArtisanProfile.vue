@@ -150,7 +150,7 @@ async function fetchUserProfile () {
     const userData = resp.data.data
     Object.assign(profileForm, userData)
     profileForm.avatarUrl = userData.avatar_url
-      ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
+      ? import.meta.env.VITE_API_BASE + `/${userData.avatar_url}`
       : getPublicImg('users/userp.png')
     memberInfo.value.name = userData.display_name
     memberInfo.value.avatarUrl = profileForm.avatarUrl

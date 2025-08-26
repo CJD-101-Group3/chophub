@@ -49,7 +49,7 @@ async function fetchFavoriteWeapons() {
   const userId = authStore.userId;
 
   try {
-    const response = await axios.get(import.meta.env.VITE_API_BASE + `/user/get_user_favorite_weapons.php?user_id=${userId}`);
+    const response = await axios.get(import.meta.env.VITE_API_BASE + `/api/user/get_user_favorite_weapons.php?user_id=${userId}`);
     if (response.data.status === 'success') {
       collectedWeapons.value = response.data.data;
     } else {
@@ -70,7 +70,7 @@ async function fetchUserAchievements() {
   const userId = authStore.userId;
 
   try {
-    const response = await axios.get(import.meta.env.VITE_API_BASE + `/user/get_user_achievements.php?user_id=${userId}`);
+    const response = await axios.get(import.meta.env.VITE_API_BASE + `/api/user/get_user_achievements.php?user_id=${userId}`);
     if (response.data.status === 'success') {
       collectedBadges.value = response.data.data;
     } else {
@@ -98,7 +98,7 @@ onMounted(async () => {
     if (response.data.status === 'success') {
       const userData = response.data.data;
       memberInfo.value.avatarUrl = userData.avatar_url
-        ? import.meta.env.VITE_API_BASE + `${userData.avatar_url}`
+        ? import.meta.env.VITE_API_BASE + `/${userData.avatar_url}`
         : getPublicImg('users/userp.png');
       memberInfo.value.name = userData.display_name;
     }
