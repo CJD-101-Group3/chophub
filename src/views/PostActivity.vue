@@ -854,7 +854,7 @@ function formatDate(dateString) {
                 <tbody>
                   <tr v-for="post in myPosts" :key="post.id" class="subtle-float-on-hover">
                     <td class="py-3 px-3 truncate">
-                      <a :href="'/post/' + post.id" class="text-gray-800 hover:text-gray-800">{{ post.title }}</a>
+                      <a :href="'/cjd101/g3/front/post/' + post.id" class="text-gray-800 hover:text-gray-800">{{ post.title }}</a>
                     </td>
                     <td class="px-3">{{ post.status }}</td>
                     <td class="px-3 text-right">{{ formatDate(post.date) }}</td>
@@ -894,14 +894,14 @@ function formatDate(dateString) {
                   <tr v-for="reply in myReplies" :key="reply.postId" class="subtle-float-on-hover">
                     <td class="py-3 px-3">{{ formatDate(reply.date) }}</td>
                     <td class="px-3 truncate">
-                       <a :href="'/post/' + reply.postId" class="text-gray-800 hover:text-gray-800">{{ reply.postTitle }}</a>
+                       <a :href="'/cjd101/g3/front/post/' + reply.postId" class="text-gray-800 hover:text-gray-800">{{ reply.postTitle }}</a>
                     </td>
                     <td class="px-3 truncate">{{ reply.content }}</td>
                   </tr>
                 </tbody>
               </table>
               <div class="space-y-4 lg:hidden">
-                <a v-for="reply in myReplies" :key="reply.postId" :href="'/post/' + reply.postId" class="block bg-white p-4 rounded-md subtle-float-on-hover">
+                <a v-for="reply in myReplies" :key="reply.postId" :href="'/cjd101/g3/front/post/' + reply.postId" class="block bg-white p-4 rounded-md subtle-float-on-hover">
                   <div class="flex justify-between items-center mb-2"><span class="font-semibold truncate">{{ reply.postTitle }}</span><span class="text-sm text-gray-500 flex-shrink-0 ml-2">{{ formatDate(reply.date) }}</span></div>
                   <p class="text-sm text-gray-700 truncate">{{ reply.content }}</p>
                 </a>
@@ -932,7 +932,7 @@ function formatDate(dateString) {
                 <tbody>
                   <tr v-for="post in myCollectedPosts" :key="post.postId" class="subtle-float-on-hover">
                     <td class="py-3 px-3 truncate">
-                      <a :href="'/post/' + post.postId" class="text-gray-800 hover:text-gray-800">
+                      <a :href="'/cjd101/g3/front/post/' + post.postId" class="text-gray-800 hover:text-gray-800">
                         <span v-if="post.category" class="text-gray-500">{{ post.category }}</span> {{ post.title }}
                       </a>
                     </td>
@@ -941,7 +941,7 @@ function formatDate(dateString) {
                 </tbody>
               </table>
               <div class="space-y-4 lg:hidden">
-                <a v-for="post in myCollectedPosts" :key="post.postId" :href="'/post/' + post.postId" class="block bg-white p-4 rounded-md subtle-float-on-hover">
+                <a v-for="post in myCollectedPosts" :key="post.postId" :href="'/cjd101/g3/front/post/' + post.postId" class="block bg-white p-4 rounded-md subtle-float-on-hover">
                   <p class="font-semibold truncate">
                     <span v-if="post.category" class="text-gray-500">{{ post.category }}</span> {{ post.title }}
                   </p>

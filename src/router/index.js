@@ -33,6 +33,7 @@ import PostDetail from '@/views/PostDetail.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import WeaponDetail from '@/views/WeaponDetail.vue'
 import TicketDetailPage from '@/views/TicketDetailPage.vue'
+import ForgotPassword from '@/views/ForgotPassword.vue' // 引入元件
 
 const routes = [
   // --- 公開頁面 ---
@@ -42,6 +43,7 @@ const routes = [
   { path: '/Weaponslist', component: Weaponslist },
   { path: '/Login', name: 'Login', component: Login, meta: { guestOnly: true } },
   { path: '/Register', name: 'Register', component: Register, meta: { guestOnly: true } },
+  { path: '/forgot-password', name: 'ForgotPassword', component: ForgotPassword },
   { path: '/events', component: events },
   { path: '/EventHomePage', component: EventHomePage },
   { path: '/EventReviewsOverview', component: EventReviewsOverview },

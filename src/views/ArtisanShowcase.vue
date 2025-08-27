@@ -11,6 +11,10 @@ import { useAuthStore } from '@/stores/auth';
 const authStore = useAuthStore();
 const route = useRoute();
 
+// 定義響應式變量
+const particlesLoaded = async (container) => {
+  console.log("Particles container loaded", container);
+};
 // --- API 相關狀態 ---
 const loading = ref(true);
 const error = ref(null);
@@ -730,7 +734,7 @@ onMounted(async () => {
             <thead><tr class="border-b-2"><th class="py-2 font-semibold">文章標題</th><th class="py-2 font-semibold text-right">發表日期</th></tr></thead>
             <tbody>
               <tr v-for="post in artisanProfile.featuredPosts" :key="post.id" class="border-b last:border-b-0">
-                <td class="py-4"><a :href="`/post/${post.id}`" class="text-gray-800 hover:text-[#F2994A] transition-colors"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</a></td>
+                <td class="py-4"><a :href="`/cjd101/g3/front/post/${post.id}`" class="text-gray-800 hover:text-[#F2994A] transition-colors"><span class="text-gray-500">{{ post.category }}</span> {{ post.title }}</a></td>
                 <td class="py-4 text-right text-gray-500">{{ post.date }}</td>
               </tr>
             </tbody>

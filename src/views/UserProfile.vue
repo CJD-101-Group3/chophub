@@ -8,6 +8,10 @@ import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 import Basebutton from '../components/Basebutton.vue';
 
+// 定義響應式變量
+const particlesLoaded = async (container) => {
+  console.log("Particles container loaded", container);
+};
 // --- 實例化 Store 和 Router ---
 const router = useRouter();
 const authStore = useAuthStore();
