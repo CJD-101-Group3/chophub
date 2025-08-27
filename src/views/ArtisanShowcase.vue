@@ -716,9 +716,9 @@ onMounted(async () => {
 
         <!-- 刀匠精選作品 (已加入 v-if) -->
         <section v-if="artisanProfile.privacySettings.is_collections_public" class="bg-white transition-shadow duration-300 rounded-lg p-6 lg:p-8" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選作品</h2>
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">刀匠精選收藏作品</h2>
           <div class="flex space-x-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-5 lg:gap-6 lg:space-x-0 lg:pb-0">
-            <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="'/Weaponslist/weapondetail/' + work.id" class="flex-shrink-0 group w-56 lg:w-full">
+            <a v-for="work in artisanProfile.featuredWorks" :key="work.id" :href="'/cjd101/g3/front/Weaponslist/weapondetail/' + work.id" class="flex-shrink-0 group w-56 lg:w-full">
               <div class="bg-black p-2 rounded-lg shadow-md overflow-hidden">
                 <img :src="work.imageUrl" :alt="'作品 ' + work.id" class="w-full h-48 lg:h-40 object-contain">
               </div>
