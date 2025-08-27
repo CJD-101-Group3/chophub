@@ -343,7 +343,7 @@ onBeforeUnmount(() => {
         <!-- 留言輸入框 -->
         <div class="flex-shrink-0 sticky bottom-0 p-4 bg-[#282828] border-t border-gray-700">
           <div class="flex items-center gap-3 bg-white rounded-full p-2">
-            <div class="w-9 h-9 rounded-full bg-gray-300 flex-shrink-0"></div>
+            
             <input 
               type="text" 
               v-model="newCommentText"

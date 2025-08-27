@@ -638,7 +638,9 @@ const baseUrl = import.meta.env.BASE_URL;
             </button>
           </div>
           <div class="text-center lg:text-left">
-            <a href="#" class="text-sm text-white hover:text-orange-500 transition-colors">忘記密碼？</a>
+            <router-link to="/forgot-password" class="text-sm text-white hover:text-orange-500 transition-colors">
+            忘記密碼？
+            </router-link>
           </div>
           <div v-if="error" class="p-3 text-sm text-center text-red-300 bg-red-800/60 rounded-md">
             {{ error }}

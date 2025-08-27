@@ -27,7 +27,10 @@ const memberInfo = ref({
   name: '露比匠',
   avatarUrl: getPublicImg('users/userp.png'),
 });
-
+// 定義響應式變量
+const particlesLoaded = async (container) => {
+  console.log("Particles container loaded", container);
+};
 // --- API 相關狀態 ---
 const loading = ref(true);
 const error = ref(null);

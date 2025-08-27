@@ -1,131 +1,46 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import { getPublicImg } from '@/utils/getPublicImg';
+import { ref } from 'vue';
 import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
-import { useAuthStore } from '@/stores/auth';
-const authStore = useAuthStore();
-// 定義響應式變量
+import Basebutton from '../components/Basebutton.vue';
+
+// --- 響應式變數 ---
 const particlesLoaded = async (container) => {
   console.log("Particles container loaded", container);
 };
 
-// --- 通用佈局相關的資料 ---
-const isDropdownOpen = ref(false);
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
-};
+const email = ref('');
+const error = ref(null);
 
-const activeTab = ref('收藏相關');
+// --- 處理表單提交的函式 ---
+function handleSubmit() {
+  // 1. 清除舊的錯誤訊息
+  error.value = null;
 
-const menuItems = ref([
-  { name: '會員資訊', href: '/UserProfile' },
-  { name: '貼文相關', href: '/PostActivity' },
-  { name: '收藏相關', href: '/UserCollections' },
-  { name: '其他設定', href: '/OtherSettings' },
-]);
-
-const memberInfo = ref({
-  name: '露比匠',
-  avatarUrl: getPublicImg('users/userp.png'),
-});
-
-// --- 「收藏的武器」區塊，準備接收 API 資料 ---
-const collectedWeapons = ref([]);
-const loadingWeapons = ref(false);
-const errorWeapons = ref(null);
-
-// --- 「收藏的徽章」區塊，準備接收 API 資料 ---
-const collectedBadges = ref([]);
-const loadingBadges = ref(false);
-const errorBadges = ref(null);
-
-
-// 呼叫「收藏的武器」API
-async function fetchFavoriteWeapons() {
-  loadingWeapons.value = true;
-  errorWeapons.value = null;
-  const userId = authStore.userId;
-
-  try {
-    const response = await axios.get(import.meta.env.VITE_API_BASE + `/user/get_user_favorite_weapons.php?user_id=${userId}`);
-    if (response.data.status === 'success') {
-      collectedWeapons.value = response.data.data;
-    } else {
-      throw new Error(response.data.message || '無法載入武器收藏');
-    }
-  } catch (err) {
-    console.error('請求「武器收藏」API 失敗:', err);
-    errorWeapons.value = '資料載入失敗，請稍後再試。';
-  } finally {
-    loadingWeapons.value = false;
+  // 2. 基礎驗證
+  if (!email.value) {
+    error.value = '電子信箱欄位不能為空。';
+    return;
   }
+  
+  // 3. 驗證格式 (包含英數和 @)
+  // 這是一個簡單的正規表示式，檢查是否包含 @，且 @ 前後都有字元
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(email.value)) {
+    error.value = '請輸入有效的電子信箱格式。';
+    return;
+  }
+
+  // 4. 如果所有驗證都通過，顯示成功訊息
+  // 在真實應用中，這裡會呼叫後端 API
+  console.log(`準備發送重設密碼郵件至: ${email.value}`);
+  alert('驗證信已送出，請至信箱查詢。');
+  
+  // (可選) 成功後清空輸入框
+  email.value = '';
 }
 
-// 呼叫「擁有的徽章」API
-async function fetchUserAchievements() {
-  loadingBadges.value = true;
-  errorBadges.value = null;
-  const userId = authStore.userId;
-
-  try {
-    const response = await axios.get(import.meta.env.VITE_API_BASE + `/user/get_user_achievements.php?user_id=${userId}`);
-    if (response.data.status === 'success') {
-      collectedBadges.value = response.data.data;
-    } else {
-      throw new Error(response.data.message || '無法載入徽章收藏');
-    }
-  } catch (err) {
-    console.error('請求「徽章收藏」API 失敗:', err);
-    errorBadges.value = '資料載入失敗，請稍後再試。';
-  } finally {
-    loadingBadges.value = false;
-  }
-}
-
-// 在元件掛載後同時執行兩個 API 請求
-onMounted(async () => {
-  fetchFavoriteWeapons();
-  fetchUserAchievements();
-
-  // 取得使用者頭像
-  try {
-    const userId = authStore.userId;
-    const response = await axios.get(import.meta.env.VITE_API_BASE + `/user/userProfile.php`, {
-      params: { user_id: userId }
-    });
-    if (response.data.status === 'success') {
-      const userData = response.data.data;
-      memberInfo.value.avatarUrl = userData.avatar_url
-        ? import.meta.env.VITE_API_BASE + `/${userData.avatar_url}`
-        : getPublicImg('users/userp.png');
-      memberInfo.value.name = userData.display_name;
-    }
-  } catch (err) {
-    console.error('載入使用者頭像失敗:', err);
-    memberInfo.value.avatarUrl = getPublicImg('users/userp.png');
-  }
-});
-
-
-// (前端操作) 切換徽章配戴狀態
-const toggleEquip = (badgeId) => {
-  const badgeToToggle = collectedBadges.value.find(b => b.id === badgeId);
-  if (!badgeToToggle) return;
-
-  if (badgeToToggle.isEquipped === false) {
-    const equippedCount = collectedBadges.value.filter(b => b.isEquipped).length;
-    if (equippedCount >= 3) {
-      alert('最多只能配戴三個徽章！');
-      return;
-    }
-  }
-  badgeToToggle.isEquipped = !badgeToToggle.isEquipped;
-  // 注意：這裡的改變只在前端。若要儲存，需在點擊「儲存」按鈕時，
-  // 將 collectedBadges 的狀態發送到後端 API 進行更新。
-};
-
+const baseUrl = import.meta.env.BASE_URL;
 </script>
 
 <template>
@@ -649,157 +564,47 @@ const toggleEquip = (badgeId) => {
         },
       }"
     />
-    </div>
-  <div class="flex flex-col min-h-screen ">
+    </div>  
+  <div class="flex flex-col min-h-screen">
     <Theheader />
+    <div class="flex-1 flex items-center justify-center">
+      <div class="w-11/12 max-w-xs p-4 text-center lg:max-w-sm lg:p-8">
+        
+        <div class="mx-auto mb-6">
+          <img src="/src/assets/icon/LOGO.png" alt="ChopHub Logo" class="w-[200px] h-[200px] mx-auto lg:w-[250px] lg:h-[250px]">
+        </div>
+        
+        <div class="text-center mb-6">
+          <h1 class="text-2xl font-bold text-white mb-2">忘記密碼？</h1>
+          <p class="text-gray-400">請輸入您註冊時使用的電子信箱，<br>我們將會寄送重設密碼的說明給您。</p>
+        </div>
 
-    <div class="flex-1 container mx-auto p-4 lg:flex lg:gap-8 lg:p-8">
-      <!-- 左側邊欄 (電腦版顯示) -->
-      <aside class="hidden lg:block lg:w-72 flex-shrink-0">
-        <div class="bg-white p-4 rounded-lg shadow-[0_8px_32px_0_rgba(255,255,255,0.4)] sticky top-24">
-          <div class="flex flex-col items-center text-center border-b pb-4 mb-4">
-            <img 
-              :src="memberInfo.avatarUrl" 
-              alt="Avatar" 
-              class="w-40 h-40 rounded-full object-cover mb-3"
-            />
-            <h2 class="text-xl font-bold text-gray-800">{{ memberInfo.name }}</h2>
-          </div>
-          <nav class="flex flex-col space-y-2">
-            <router-link
-              v-for="item in menuItems"
-              :key="item.name"
-              :to="item.href"
-              @click="activeTab = item.name"
-              class="px-4 py-3 text-center rounded-md font-semibold transition-colors duration-200"
-              :class="{
-                'bg-[#F2B94C] text-white hover:text-white': activeTab === item.name,
-                'text-gray-600 hover:bg-[#F2994A] hover:text-white': activeTab !== item.name
-              }"
+        <form @submit.prevent="handleSubmit" class="space-y-4">
+          <div>
+            <input 
+              v-model="email"
+              type="email" 
+              placeholder="輸入您的電子信箱" 
+              class="w-full px-4 py-3 bg-[#F8F9FA] border-2 border-[#F2994A] rounded-md transition-colors
+                     focus:outline-none focus:border-[#F2994A] focus:ring-1 focus:ring-[#F2994A]"
             >
-              {{ item.name }}
+          </div>
+          
+          <!-- 錯誤訊息提示區塊 -->
+          <div v-if="error" class="p-3 text-sm text-center text-red-300 bg-red-800/60 rounded-md">
+            {{ error }}
+          </div>
+
+          <Basebutton type="submit" variant="primary" class="w-full h-12">送出</Basebutton>
+          
+          <div class="text-center">
+            <router-link to="/login" class="text-sm text-orange-400 hover:underline hover:text-white transition-colors">
+              返回登入
             </router-link>
-          </nav>
-        </div>
-      </aside>
-
-      <!-- 右側主內容區 -->
-      <main class="flex-1">
-        
-        <!-- 手機版下拉式選單 -->
-        <div class="relative lg:hidden mb-6">
-          <button @click="toggleDropdown" class="w-full flex items-center justify-between p-3 bg-white border border-gray-300 rounded-md shadow-sm">
-            <div class="flex items-center">
-              <img :src="memberInfo.avatarUrl" alt="Avatar" class="w-8 h-8 rounded-full object-cover mr-3"/>
-              <span class="font-semibold">{{ memberInfo.name }}</span>
-            </div>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 transition-transform" :class="{'rotate-180': isDropdownOpen}"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
-          </button>
-          <transition name="fade">
-            <div v-if="isDropdownOpen" class="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg">
-              <router-link v-for="item in menuItems" :key="item.name" :to="item.href" class="block px-4 py-3 text-gray-700 hover:bg-[#F2994A] hover:text-white">{{ item.name }}</router-link>
-            </div>
-          </transition>
-        </div>
-        
-        <!-- 主內容 -->
-        <div class="space-y-8">
-
-          <!-- 我收藏的武器 -->
-          <div class="bg-white p-6 lg:p-8 rounded-lg max-w-4xl mx-auto min-h-[300px]" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">我收藏的武器</h2>
-            
-            <div v-if="loadingWeapons" class="text-center text-gray-500">載入中...</div>
-            <div v-else-if="errorWeapons" class="text-center text-red-500">{{ errorWeapons }}</div>
-            <div v-else-if="collectedWeapons.length === 0" class="text-center text-gray-500">尚未收藏任何武器。</div>
-
-            <div v-else class="flex space-x-6 overflow-x-auto pb-4">
-              <a v-for="weapon in collectedWeapons" :key="weapon.id" :href="'/cjd101/g3/front//weaponslist/weapondetail/' + weapon.id" class="flex-shrink-0 group">
-                <div class="w-48 h-48 lg:w-56 lg:h-56 bg-white p-2 rounded-lg shadow-md overflow-hidden transform transition-transform duration-300 group-hover:scale-105">
-                  <img :src="weapon.imageUrl" :alt="weapon.name" class="w-full h-full object-contain">
-                </div>
-              </a>
-            </div>
           </div>
-
-          <!-- 我收藏的徽章 -->
-          <div class="bg-white p-6 lg:p-8 rounded-lg max-w-4xl mx-auto min-h-[300px]" style="box-shadow: 0 15px 30px rgba(255, 255, 255, 0.4);">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">我收藏的徽章</h2>
-
-            <div v-if="loadingBadges" class="text-center text-gray-500">載入中...</div>
-            <div v-else-if="errorBadges" class="text-center text-red-500">{{ errorBadges }}</div>
-            <div v-else-if="collectedBadges.length === 0" class="text-center text-gray-500">尚未獲得任何徽章。</div>
-            
-            <div v-else>
-              <div class="flex space-x-6 overflow-x-auto pb-4">
-                <div v-for="badge in collectedBadges" :key="badge.id" class="flex flex-col items-center space-y-3 flex-shrink-0">
-                  <div class="w-40 h-40 lg:w-48 lg:h-48 bg-white p-2 rounded-lg shadow-md overflow-hidden">
-                    <img :src="badge.imageUrl" :alt="badge.name" class="w-full h-full object-contain">
-                  </div>
-                  <span class="font-semibold text-gray-800">{{ badge.name }}</span>
-                  <!-- <button
-                    @click="toggleEquip(badge.id)"
-                    class="w-32 text-white font-bold py-2 px-4 rounded-[8px] transition-colors duration-200"
-                    :class="badge.isEquipped ? 'bg-[#D15B5B] hover:bg-[#b94a4a]' : 'bg-gray-400 hover:bg-gray-500'"
-                  >
-                    {{ badge.isEquipped ? '配戴中' : '配戴' }}
-                  </button> -->
-                </div>
-              </div>
-              <!-- 儲存按鈕 -->
-              <div class="mt-6 text-center">
-                <!-- <button
-                  class="w-full lg:w-auto bg-[#F2994A] text-white font-bold py-3 px-16 rounded-[8px] transition-colors duration-300 border-2 border-transparent
-                         hover:bg-white hover:text-black hover:border-[#F2994A]"
-                >
-                  儲存
-                </button> -->
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-        
-      </main>
+        </form>
+      </div>
     </div>
-
     <Thefooter />
   </div>
 </template>
-
-<style scoped>
-/* 淡入淡出效果 (手機版下拉選單用) */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-/* 讓側邊欄在滾動時可以固定在頂部 */
-.sticky {
-  position: -webkit-sticky;
-  position: sticky;
-}
-
-/* 美化滾動條 (可選) */
-.overflow-x-auto::-webkit-scrollbar {
-  height: 8px;
-}
-.overflow-x-auto::-webkit-scrollbar-track {
-  background: #ffffff;
-  border-radius: 10px;
-}
-.overflow-x-auto::-webkit-scrollbar-thumb {
-  background-color: #F2994A;
-  border-radius: 10px;
-  border: 2px solid #F2994A;
-}
-.overflow-x-auto::-webkit-scrollbar-thumb:hover {
-  background-color: #F2994A;
-}
-</style>
