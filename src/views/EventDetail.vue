@@ -57,7 +57,6 @@ watch(
   (newId, oldId) => {
     if (newId && newId !== oldId) {
       fetchEventDetails(newId);
-      // 【已修正】呼叫時傳入新的 ID
       fetchSuggestedEvents(newId); 
       window.scrollTo(0, 0);
     }
@@ -67,7 +66,6 @@ watch(
 // --- 生命週期鉤子 ---
 onMounted(() => {
    fetchEventDetails(route.params.id);
-   // 【已修正】呼叫時傳入當前的 ID
    fetchSuggestedEvents(route.params.id);
 });
 

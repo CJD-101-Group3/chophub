@@ -33,7 +33,7 @@ const props = defineProps({
 })
 
 // --- 計算圖片來源---
-const VITE_API_BASE_URL = import.meta.env.VITE_FILE_URL;
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE;
 
 const imageSource = computed(() => {
     if (!props.image_path || props.image_path.length === 0) {
@@ -47,7 +47,7 @@ const imageSource = computed(() => {
     }
 
 
-    return `${VITE_API_BASE_URL}/${imagePath}`;
+    return `${import.meta.env.VITE_API_BASE}/${imagePath}`;
 });
 
 
@@ -100,7 +100,7 @@ function confirmCancellation() {
         <div class="border-t border-gray-200 p-4 flex justify-end items-center gap-4">
             <!-- 情況一：活動已結束，等待評論 -->
             <div v-if="status === 'past'" class="flex justify-end items-center gap-4">
-                <button @click="goToEventReview"
+                <button @click="goToEventReview(props.id)"
                     class="bg-[#F2994A] hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300">
                     填寫活動問卷
                 </button>

@@ -48,7 +48,7 @@ const routes = [
   { path: '/post/:id', component: PostDetail },
   { path: '/weaponslist/weapondetail/:weapon_id', component: WeaponDetail },
   
-  { path: '/event/:id', name: 'EventDetail', name: 'event-detail', component: () => import('@/views/EventDetail.vue') },
+  { path: '/event/:id', name: 'PublicEventDetail', name: 'event-detail', component: () => import('@/views/EventDetail.vue') },
 
   // ⭐ 只允許「刀匠」ID 才能進入（人人都能看，但若手動輸入非刀匠 ID，就導回首頁）
   {

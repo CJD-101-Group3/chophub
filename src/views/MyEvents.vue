@@ -4,20 +4,19 @@ import Thefooter from '@/components/Thefooter.vue';
 import MyEventItem from '@/components/MyEventItem.vue';
 import { getPublicImg } from '@/utils/getPublicImg'
 import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth'
 
-
-const authStore = useAuthStore(); 
+const authStore = useAuthStore();
+const router = useRouter();
 
 async function toggleFavorite() {
   if (!authStore.isLoggedIn) {
     alert('請先登入才能收藏活動！');
-    // 可選：跳轉到登入頁面
-    // router.push('/login'); 
     return;
-  }};
+  }
+};
 
 axios.defaults.withCredentials = true;
 
@@ -27,8 +26,8 @@ const tabs = ref([
   { key: 'cancelled', name: '已取消' },
   { key: 'favorites', name: '我的收藏' }
 ]);
-const route = useRoute();
 
+const route = useRoute();
 const activeTab = ref(route.query.tab || 'upcoming');
 
 const allActivities = ref([]);
@@ -41,7 +40,26 @@ async function fetchActivities() {
   error.value = null;
   try {
     const response = await axios.get(import.meta.env.VITE_API_BASE + `/events/myEvents.php`);
-    allActivities.value = response.data.data || [];
+
+    // ★ 把 isFavorited / isReviewed 轉成布林，並計算 hasRegistration
+    allActivities.value = (response.data?.data || []).map(activity => {
+      const isFavorited = !!activity.isFavorited;
+      const isReviewed = !!activity.isReviewed;
+
+      // 判斷是否有「報名紀錄」：有 quantity 或 payment_status（非 null/undefined）
+      // 補強：若狀態為 cancelled 也代表來源是報名紀錄
+      const hasRegistration =
+        (activity.quantity !== null && activity.quantity !== undefined) ||
+        (activity.payment_status !== null && activity.payment_status !== undefined) ||
+        activity.status === 'cancelled';
+
+      return {
+        ...activity,
+        isFavorited,
+        isReviewed,
+        hasRegistration
+      };
+    });
   } catch (err) {
     console.error('Failed to fetch activities:', err);
     error.value = '無法載入活動資料，請稍後再試。';
@@ -54,17 +72,29 @@ onMounted(() => {
   fetchActivities();
 });
 
+// ★ 專門用來判斷「只顯示有報名紀錄」
+const onlyRegistered = act => act.hasRegistration === true;
+
 const filteredActivities = computed(() => {
-  // 'upcoming', 'past', 'cancelled'
   switch (activeTab.value) {
     case 'upcoming':
-      return allActivities.value.filter(act => act.status === 'upcoming');
+      // 只顯示「有報名」且狀態為 upcoming
+      return allActivities.value.filter(act => onlyRegistered(act) && act.status === 'upcoming');
+
     case 'history':
-      return allActivities.value.filter(act => act.status === 'past');
+      // 只顯示「有報名」且狀態為 past 或 reviewed
+      return allActivities.value.filter(
+        act => onlyRegistered(act) && (act.status === 'past' || act.status === 'reviewed')
+      );
+
     case 'cancelled':
-      return allActivities.value.filter(act => act.status === 'cancelled');
+      // 只顯示「有報名」且狀態為 cancelled
+      return allActivities.value.filter(act => onlyRegistered(act) && act.status === 'cancelled');
+
     case 'favorites':
-      return allActivities.value.filter(act => act.isFavorited);
+      // 我的收藏：只看 isFavorited，不管是否報名
+      return allActivities.value.filter(act => act.isFavorited === true);
+
     default:
       return [];
   }
@@ -73,18 +103,21 @@ const filteredActivities = computed(() => {
 // --- 事件處理函式 ---
 async function handleCancelActivity(activityId) {
   try {
-     const response = await axios.post(import.meta.env.VITE_API_BASE + `/events/cancelEvent.php`, { id: activityId });
-    if (response.data && response.data.success) { 
-        const activityToCancel = allActivities.value.find(act => act.id === activityId);
-        if (activityToCancel) {
-          activityToCancel.status = 'cancelled';
-        }
+    const response = await axios.post(
+      import.meta.env.VITE_API_BASE + `/events/cancelEvent.php`,
+      { activityId }
+    );
+
+    if (response.data && response.data.success) {
+      alert('活動取消成功！');
+      await fetchActivities(); // 重新載入
+      activeTab.value = 'cancelled'; // 跳到已取消頁籤
     } else {
-        alert('取消失敗：' + (response.data.message || '未知錯誤'));
+      alert('取消失敗：' + (response.data?.message || '未知錯誤'));
     }
   } catch (err) {
     console.error('Failed to cancel activity:', err);
-    alert('取消活動失敗，請稍後再試。');
+    alert('取消活動失敗，請稍後再試。' + (err.response?.data?.message || err.message));
   }
 }
 
@@ -97,7 +130,7 @@ async function handleToggleFavorite(activityId) {
   try {
     const apiUrl = import.meta.env.VITE_API_BASE + `/events/eventToggleFavorite.php`;
     await axios.post(apiUrl, {
-      activityId: activityId,
+      activityId,
       isFavorited: newFavoriteState
     });
     activity.isFavorited = newFavoriteState;
@@ -106,14 +139,8 @@ async function handleToggleFavorite(activityId) {
     alert('更新收藏狀態失敗！');
   }
 }
-
-// 修正：將 handleWriteReview 移到這裡，成為一個獨立的函式
-function handleWriteReview(activityId) {
-  console.log(`準備為活動 ID: ${activityId} 撰寫評論`);
-  // 在這裡加入跳轉到評論頁面的邏輯，例如使用 Vue Router
-  // router.push(`/activity/${activityId}/review`);
-}
 </script>
+
 
 <template>
   <main class="bg-[#282828] pb-16 flex flex-col min-h-screen">
@@ -143,18 +170,21 @@ function handleWriteReview(activityId) {
         <div v-else-if="error" class="text-center text-red-500 py-12">
           <p class="text-xl">{{ error }}</p>
         </div>
-        
-        <!-- 現有內容，用 v-else 包起來 -->
+
         <div v-else>
-          <!-- 如果沒有任何活動，顯示提示訊息 -->
           <div v-if="filteredActivities.length === 0" class="text-center text-gray-400 py-12">
             <p class="text-xl">這個分類下沒有活動喔！</p>
           </div>
 
-        <!-- 3. Dynamic List Rendering based on the active tab -->
-        <MyEventItem v-else v-for="activity in filteredActivities" :key="activity.id" v-bind="activity"
-          @write-review="handleWriteReview" @cancel-activity="handleCancelActivity" />
-      </div>
+          <MyEventItem
+            v-else
+            v-for="activity in filteredActivities"
+            :key="activity.id"
+            v-bind="activity"
+            @cancel-activity="handleCancelActivity"
+            @toggle-favorite="handleToggleFavorite"
+          />
+        </div>
       </div>
     </div>
   </main>
