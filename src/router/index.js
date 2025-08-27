@@ -78,6 +78,7 @@ const routes = [
   { path: '/MyEvents', component: MyEvents, meta: { requiresAuth: true } },
   { path: '/EventDetailRegistered', component: () => import('@/views/EventDetailRegistered.vue'), meta: { requiresAuth: true } },
   { path: '/PostActivity', component: PostActivity, meta: { requiresAuth: true } },
+  { path: '/EventReview/:id', name: 'EventReview', component: EventReview, meta: { requiresAuth: true } },
   { path: '/TicketDetailPage/:id', name: 'TicketDetail', component: TicketDetailPage, meta: { requiresAuth: true } },
   { path: '/my-events', name: 'My-Events', component: MyEvents, meta: { requiresAuth: true } },
 

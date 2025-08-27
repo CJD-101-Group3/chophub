@@ -10,6 +10,10 @@ const goToTicketDetail = (id) => {
     router.push(`/TicketDetailPage/${id}`)
 }
 
+const goToEventReview = (id) => {
+    router.push(`/EventReview/${id}`)
+}
+
 const props = defineProps({
     id: { type: Number, required: true },
     status: {
@@ -18,7 +22,6 @@ const props = defineProps({
         validator: (value) => ['upcoming', 'past', 'reviewed', 'cancelled'].includes(value),
     },
     title: { type: String, required: true },
-    // 【修正3】將 prop 名稱從 eventType 改為 categoryName，以匹配 API 回傳的欄位
     categoryName: { type: String, default: '未知分類' },
     dateTime: { type: String, required: true },
     image_path: {
@@ -30,7 +33,7 @@ const props = defineProps({
 })
 
 // --- 計算圖片來源---
-const VITE_API_BASE_URL = import.meta.env.VITE_BASE_URL;
+const VITE_API_BASE_URL = import.meta.env.VITE_FILE_URL;
 
 const imageSource = computed(() => {
     if (!props.image_path || props.image_path.length === 0) {
@@ -97,10 +100,10 @@ function confirmCancellation() {
         <div class="border-t border-gray-200 p-4 flex justify-end items-center gap-4">
             <!-- 情況一：活動已結束，等待評論 -->
             <div v-if="status === 'past'" class="flex justify-end items-center gap-4">
-                <a :href="`${baseUrl}EventReview`"
+                <button @click="goToEventReview"
                     class="bg-[#F2994A] hover:bg-orange-500 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300">
                     填寫活動問卷
-                </a>
+                </button>
             </div>
 
             <!-- 情況二：活動已評論完成-->
