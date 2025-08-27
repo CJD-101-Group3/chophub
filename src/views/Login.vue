@@ -7,6 +7,7 @@ import Theheader from '../components/Theheader.vue';
 import Thefooter from '../components/Thefooter.vue';
 import Basebutton from '../components/Basebutton.vue';
 
+
 // --- 響應式變數 ---
 const particlesLoaded = async (container) => {
   console.log("Particles container loaded", container);
