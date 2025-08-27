@@ -34,7 +34,7 @@ function toggleStar() {
   <div class="flex flex-col w-full bg-[#FEFEFE] rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2">
     
     <div class="relative">
-      <img :src="postImages" alt="Post Image" class="w-full h-auto object-cover" />
+      <img :src="postImages" alt="Post Image" class="w-full h-[20rem] object-cover" />
     </div>
 
     <div class="flex flex-col flex-grow p-5">
