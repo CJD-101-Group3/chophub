@@ -112,7 +112,10 @@ async function handlePay() {
         const api = joinUrl(import.meta.env.VITE_API_BASE, '/linepay/checkout_payment.php')
         const response = await fetch(api, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Origin': window.location.origin // 告訴後端當前的 origin
+            },
             body: JSON.stringify({
                 event_id: eventId.value,
                 name: nameRef.value,
@@ -120,6 +123,7 @@ async function handlePay() {
                 phone: phoneRef.value,
                 message: messageRef.value || '',
                 quantity: quantity.value,
+                frontend_origin: window.location.origin // 傳送當前的 origin 給後端
             }),
         })
 
@@ -139,6 +143,10 @@ async function handlePay() {
             alert('建立付款失敗：' + (data?.response?.returnMessage || data?.message || '未知錯誤'))
             return
         }
+
+        // 除錯：顯示後端使用的網域和回跳網址
+        console.log('後端使用的前端網域:', data.frontend_origin)
+        console.log('LINE Pay 回跳網址:', data.confirm_url)
 
         // 取 LINE Pay 付款網址（web/app 任何一個能用就跳）
         const payUrl = data?.response?.info?.paymentUrl?.web || data?.response?.info?.paymentUrl?.app

@@ -99,9 +99,10 @@ const mobileArtisans = [
           <div class="flex flex-col-reverse items-center gap-12 text-center lg:flex-row lg:items-center lg:justify-between">
             <div class="space-y-4 lg:text-left">
               <h1 class="text-4xl font-bold">Contact Us</h1>
-              <a href="mailto:chophub@gmail.com" class="flex items-center justify-center lg:justify-start gap-3 text-lg text-gray-300 hover:text-orange-400 transition">
-                <img :src="emailIcon" alt="Email" class="w-12 h-12">
-                <span><h2>chophub@gmail.com</h2></span>
+              <a href="mailto:chophub@gmail.com" 
+                class="flex items-center justify-center lg:justify-start gap-3 text-xl text-gray-300 hover:text-orange-400 transition">
+                <img :src="emailIcon" alt="Email" class="w-6 h-6"> 
+                <span class="font-semibold">chophub@gmail.com</span>
               </a>
             </div>
             <div>
