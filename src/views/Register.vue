@@ -15,6 +15,7 @@ const particlesLoaded = async (container) => {
 const API_BASE = (import.meta.env.VITE_API_BASE ? import.meta.env.VITE_API_BASE.replace(/\/$/, '') : 'https://tibamef2e.com/cjd101/g3/api');
 
 const baseURL = `${API_BASE}/user/`; // 因為 API_BASE 已經包含 /api
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 // 表單欄位
 const account = ref('')
@@ -616,7 +617,7 @@ async function handleSubmit() {
 
         <div class="text-left mb-6">
           <span class="text-sm text-white">已經有帳號嗎？</span>
-          <a :href="`${baseUrl}login`" class="text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors">
+          <a :href="`${BASE_URL}login`" class="text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors">
             立即登入
           </a>
         </div>

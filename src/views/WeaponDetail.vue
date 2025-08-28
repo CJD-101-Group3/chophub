@@ -28,7 +28,12 @@ function getWeaponModel(weapon_id) {
   switch (weapon_id) {
     case '1': return getPublicImg('models/model1.glb')
     case '2': return getPublicImg('models/model2.glb')
-    case '3': return getPublicImg('models/model1.glb')
+    case '3': return getPublicImg('models/model3.glb')
+    case '4': return getPublicImg('models/model4.glb')
+    case '5': return getPublicImg('models/model5.glb')
+    case '6': return getPublicImg('models/model6.glb')
+    case '7': return getPublicImg('models/model7.glb')
+    case '9': return getPublicImg('models/model9.glb')
     default: return getPublicImg('models/model2.glb') // 預設
   }
 }
